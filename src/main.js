@@ -18,15 +18,12 @@ import {
 
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
-Vue.config.productionTip = false;
+const app = createApp(App);
 
-Vue.use(VeeValidate);
-Vue.component('font-awesome-icon', FontAwesomeIcon);
+app.config.productionTip = false;
+app.use(VeeValidate);
+app.component('font-awesome-icon', FontAwesomeIcon);
+app.use(router);
+app.use(store);
 
-new Vue({
-    router,
-    store,
-    render: h => h(App)
-}).$mount('#app');
-
-createApp(App).mount('#app')
+app.mount('#app');
