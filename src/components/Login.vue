@@ -1,11 +1,41 @@
+<script setup>
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import User from '../models/user';
+
+const user = ref(new User('', ''));
+const loading = ref(false);
+const message = ref('');
+const store = useStore();
+const router = useRouter();
+
+const loggedIn = store.state.auth.status.loggedIn;
+
+const handleLogin = () => {
+  loading.value = true;
+  if (user.value.username && user.value.password) {
+    store.dispatch('auth/login', user.value).then(
+        () => {
+          router.push('/profile');
+        },
+        error => {
+          loading.value = false;
+          message.value = (error.response && error.response.data && error.response.data.message) ||
+              error.message ||
+              error.toString();
+        }
+    );
+  } else {
+    loading.value = false;
+  }
+};
+</script>
+
 <template>
   <div class="col-md-12">
     <div class="card card-container">
-      <img
-          id="profile-img"
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          class="profile-img-card"
-      />
+      <h3>Login</h3>
       <form name="form" @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="username">Username</label>
@@ -38,40 +68,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import User from '../models/user';
-
-const user = ref(new User('', ''));
-const loading = ref(false);
-const message = ref('');
-const store = useStore();
-const router = useRouter();
-
-const loggedIn = () => store.state.auth.status.loggedIn;
-
-const handleLogin = () => {
-  loading.value = true;
-  if (user.value.username && user.value.password) {
-    store.dispatch('auth/login', user.value).then(
-        () => {
-          router.push('/profile');
-        },
-        error => {
-          loading.value = false;
-          message.value = (error.response && error.response.data && error.response.data.message) ||
-              error.message ||
-              error.toString();
-        }
-    );
-  } else {
-    loading.value = false;
-  }
-};
-</script>
 
 
 <style scoped>

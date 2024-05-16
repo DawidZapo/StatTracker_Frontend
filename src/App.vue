@@ -1,9 +1,8 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <a href class="navbar-brand" @click.prevent>bezKoder</a>
       <div class="navbar-nav mr-auto">
-        <ol>
+        <ul>
           <li class="nav-item">
             <router-link to="/home" class="nav-link">Home</router-link>
           </li>
@@ -16,7 +15,7 @@
           <li class="nav-item">
             <router-link v-if="currentUser" to="/user" class="nav-link">User</router-link>
           </li>
-        </ol>
+        </ul>
       </div>
 
       <div v-if="!currentUser" class="navbar-nav ml-auto">
@@ -51,37 +50,38 @@
     </nav>
 
     <div class="container">
-      <router-view />
+      <router-view/>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
+import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
+import {computed} from "vue";
 
 const store = useStore();
 const router = useRouter();
 
-const currentUser = () => store.state.auth.user;
+const currentUser = computed(() => store.state.auth.user);
 
-const showAdminBoard = () => {
-  if (currentUser() && currentUser().roles) {
-    return currentUser().roles.includes('ROLE_ADMIN');
+const showAdminBoard = computed(() => {
+  if (currentUser.value && currentUser.value.roles) {
+    return currentUser.value.roles.includes('ROLE_ADMIN');
   }
   return false;
-};
+});
 
-const showModeratorBoard = () => {
-  if (currentUser() && currentUser().roles) {
-    return currentUser().roles.includes('ROLE_MODERATOR');
+const showModeratorBoard = computed(() => {
+  if (currentUser.value && currentUser.value.roles) {
+    return currentUser.value.roles.includes('ROLE_MODERATOR');
   }
   return false;
-};
+});
 
-const logOut = () => {
+const logOut = computed(() => {
   store.dispatch('auth/logout');
   router.push('/login');
-};
+});
 </script>
 

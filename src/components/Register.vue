@@ -1,11 +1,43 @@
+<script setup>
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import User from '../models/user';
+
+const user = ref(new User('', '', ''));
+const submitted = ref(false);
+const successful = ref(false);
+const message = ref('');
+const store = useStore();
+const router = useRouter();
+
+const loggedIn = store.state.auth.status.loggedIn;
+
+const handleRegister = () => {
+  message.value = '';
+  submitted.value = true;
+  store.dispatch('auth/register', user.value).then(
+      data => {
+        message.value = data.message;
+        successful.value = true;
+      },
+      error => {
+        message.value = (error.response && error.response.data && error.response.data.message) ||
+            error.message ||
+            error.toString();
+        successful.value = false;
+      }
+  );
+  if (successful.value) {
+    router.push('/profile');
+  }
+};
+</script>
+
 <template>
   <div class="col-md-12">
     <div class="card card-container">
-      <img
-          id="profile-img"
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          class="profile-img-card"
-      />
+      <h3>Register</h3>
       <form name="form" @submit.prevent="handleRegister">
         <div v-if="!successful">
           <div class="form-group">
@@ -49,42 +81,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import User from '../models/user';
-
-const user = ref(new User('', '', ''));
-const submitted = ref(false);
-const successful = ref(false);
-const message = ref('');
-const store = useStore();
-const router = useRouter();
-
-const loggedIn = () => store.state.auth.status.loggedIn;
-
-const handleRegister = () => {
-  message.value = '';
-  submitted.value = true;
-  store.dispatch('auth/register', user.value).then(
-      data => {
-        message.value = data.message;
-        successful.value = true;
-      },
-      error => {
-        message.value = (error.response && error.response.data && error.response.data.message) ||
-            error.message ||
-            error.toString();
-        successful.value = false;
-      }
-  );
-  if (successful.value) {
-    router.push('/profile');
-  }
-};
-</script>
 
 
 <style scoped>

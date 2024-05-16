@@ -1,11 +1,3 @@
-<template>
-  <div class="container">
-    <header class="jumbotron">
-      <h3>{{content}}</h3>
-    </header>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import UserService from '../services/user.service';
@@ -26,4 +18,12 @@ onMounted(() => {
   );
 });
 </script>
+
+<template>
+  <div class="container">
+    <header class="jumbotron">
+      <h3>{{content}}</h3>
+    </header>
+  </div>
+</template>
 
