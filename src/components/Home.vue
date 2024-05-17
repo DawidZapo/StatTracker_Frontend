@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import UserService from '../services/user.service';
+import BasketballCourt from "@/components/BasketballCourt.vue";
 
 const content = ref('');
 
@@ -25,5 +26,6 @@ onMounted(() => {
     <header class="jumbotron">
       <h3>{{content}}</h3>
     </header>
+    <BasketballCourt></BasketballCourt>
   </div>
 </template>
