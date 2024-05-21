@@ -56,21 +56,21 @@ const selectTeam = (team) => {
   <div>
     <div v-if="selectedTeam">
       <nav class="navbar navbar-expand navbar-light bg-light">
-        <div class="d-flex justify-content-center align-items-center">
-          <ul class="navbar-nav mr-auto mx-5">
-            <li class="nav-item">
+        <div class="w-100">
+          <ul class="navbar-nav d-flex justify-content-center">
+            <li class="nav-item mx-3">
               <router-link to="/teams/info" class="nav-link">Info</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mx-3">
               <router-link to="/teams/stats" class="nav-link">Teams Stats</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mx-3">
               <router-link to="/teams/records" class="nav-link">Team Records</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mx-3">
               <router-link to="/teams/players_stats" class="nav-link">Players' Stats</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mx-3">
               <router-link to="/teams/players_records" class="nav-link">Players' Records</router-link>
             </li>
           </ul>
@@ -78,7 +78,9 @@ const selectTeam = (team) => {
       </nav>
     </div>
     <div v-else>
-      <p>Please select a team.</p>
+      <div class="container mt-4">
+        <h3>Please select team</h3>
+      </div>
     </div>
     <div class="container">
       <router-view></router-view>
