@@ -1,11 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import UserService from '../services/user.service';
+import UserService from '../../services/user.service.js';
+import BasketballCourt from "@/components/BasketballCourt.vue";
 
 const content = ref('');
 
 onMounted(() => {
-  UserService.getUserBoard().then(
+  UserService.getPublicContent().then(
       response => {
         content.value = response.data;
       },
@@ -19,11 +20,12 @@ onMounted(() => {
 });
 </script>
 
+
 <template>
   <div class="container">
     <header class="jumbotron">
       <h3>{{content}}</h3>
     </header>
+<!--    <BasketballCourt></BasketballCourt>-->
   </div>
 </template>
-

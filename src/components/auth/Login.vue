@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import User from '../models/user';
+import User from '../../models/user.js';
 
 const user = ref(new User('', ''));
 const loading = ref(false);

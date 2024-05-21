@@ -1,8 +1,14 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import Home from './components/Home.vue';
-import Login from './components/Login.vue';
-import Register from './components/Register.vue';
+import Home from './components/main_routes/Home.vue';
+import Login from './components/auth/Login.vue';
+import Register from './components/auth/Register.vue';
 import BasketballCourt from "@/components/BasketballCourt.vue";
+import Teams from "@/components/main_routes/Teams.vue";
+import Info from "@/components/team_routes/TeamInfo.vue";
+import TeamStats from "@/components/team_routes/TeamStats.vue";
+import TeamPlayersStats from "@/components/team_routes/TeamPlayersStats.vue";
+import TeamPlayersRecords from "@/components/team_routes/TeamPlayersRecords.vue";
+import TeamRecords from "@/components/team_routes/TeamRecords.vue";
 
 const routes = [
     {
@@ -30,26 +36,43 @@ const routes = [
         path: '/profile',
         name: 'profile',
         // lazy-loaded
-        component: () => import('./components/Profile.vue')
+        component: () => import('./components/main_routes/Profile.vue')
     },
     {
-        path: '/admin',
-        name: 'admin',
-        // lazy-loaded
-        component: () => import('./components/BoardAdmin.vue')
+        path: '/teams',
+        component: () => import('./components/main_routes/Teams.vue'),
+        children: [
+            {
+                path: 'info',
+                component: Info
+            },
+            {
+                path: 'stats',
+                component: TeamStats
+            },
+            {
+              path: 'records',
+              component: TeamRecords
+            },
+            {
+                path: 'players_stats',
+                component: TeamPlayersStats
+            },
+            {
+                path: 'players_records',
+                component: TeamPlayersRecords
+            },
+        ]
     },
     {
-        path: '/mod',
-        name: 'moderator',
-        // lazy-loaded
-        component: () => import('./components/BoardModerator.vue')
+        path: '/players',
+        component: () => import('./components/main_routes/Players.vue')
     },
     {
-        path: '/user',
-        name: 'user',
-        // lazy-loaded
-        component: () => import('./components/BoardUser.vue')
+        path: '/matches',
+        component: () => import('./components/main_routes/Matches.vue')
     }
+
 ];
 
 const router = createRouter({
