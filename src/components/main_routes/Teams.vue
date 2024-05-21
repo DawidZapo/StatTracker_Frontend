@@ -1,6 +1,7 @@
 <script setup>
 
 import StatsForm from "@/components/StatsForm.vue";
+
 </script>
 
 <template>

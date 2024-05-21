@@ -1,20 +1,24 @@
 <script setup>
-import {computed, ref} from 'vue';
+import {computed, onBeforeMount, ref} from 'vue';
+import {useStore} from "vuex";
+import {useRouter} from "vue-router";
+
+const store = useStore();
+const router = useRouter();
 
 const teams = ref([
-  {id: 1, name: 'Loooooooooooong one', location: 'City A', founded: 2000},
-  {id: 2, name: 'Team B', location: 'City B', founded: 1995},
-  {id: 3, name: 'Team C', location: 'City C', founded: 2010},
-  {id: 1, name: 'Team A', location: 'City A', founded: 2000},
-  {id: 2, name: 'Team B', location: 'City B', founded: 1995},
-  {id: 3, name: 'Team C', location: 'City C', founded: 2010},
-  {id: 1, name: 'Team A', location: 'City A', founded: 2000},
-  {id: 2, name: 'Team B', location: 'City B', founded: 1995},
-  {id: 3, name: 'Team C', location: 'City C', founded: 2010},
-  {id: 1, name: 'Team A', location: 'City A', founded: 2000},
-  {id: 2, name: 'Team B', location: 'City B', founded: 1995},
-  {id: 3, name: 'Team C', location: 'City C', founded: 2010},
-  // Add more teams here
+  {id: 1, name: 'KTK Knurow', location: 'City A', founded: 2000},
+  {id: 2, name: 'GTK Gliwice', location: 'City B', founded: 1995},
+  {id: 3, name: 'Slask Wroclaw', location: 'City C', founded: 2010},
+  {id: 4, name: 'Legia Warszawa', location: 'City A', founded: 2000},
+  {id: 5, name: 'Arka Gdynia', location: 'City B', founded: 1995},
+  {id: 6, name: 'Anwil Wloclawek', location: 'City C', founded: 2010},
+  {id: 7, name: 'AZS Koszalin', location: 'City A', founded: 2000},
+  {id: 8, name: 'Dabrowa Gornicza', location: 'City B', founded: 1995},
+  {id: 9, name: 'Czarni Slupsk', location: 'City C', founded: 2010},
+  {id: 10, name: 'Polonia Warszawa', location: 'City A', founded: 2000},
+  {id: 11, name: 'Trefl Sopot', location: 'City B', founded: 1995},
+  {id: 12, name: 'Miasto Szkla Krosno', location: 'City C', founded: 2010},
 ]);
 
 const searchQuery = ref('');
@@ -29,7 +33,15 @@ const filteredTeams = computed(() => {
 
 const selectTeam = (team) => {
   selectedTeam.value = team;
+  store.dispatch('selectTeam', selectedTeam.value.id);
+  router.push({path: '/teams/info'});
+
 };
+
+onBeforeMount(() =>{
+  // store.dispatch('team/resetTeam');
+  selectedTeam.value = null;
+});
 </script>
 
 

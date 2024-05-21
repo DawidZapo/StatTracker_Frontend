@@ -1,5 +1,9 @@
 <script setup>
+import {useStore} from "vuex";
+import {computed} from "vue";
 
+const store = useStore();
+const selectedTeamId = computed(() => store.getters.selectedTeamId);
 </script>
 
 <template>
@@ -7,7 +11,9 @@
     <!--      <h3>{{ selectedTeam.name }}</h3>-->
     <!--      <p>Location: {{ selectedTeam.location }}</p>-->
     <!--      <p>Founded: {{ selectedTeam.founded }}</p>-->
-    team stats here
+    <template v-if="selectedTeamId != null">
+      team stats here || Team ID: {{selectedTeamId}}
+    </template>
   </div>
 </template>
 
