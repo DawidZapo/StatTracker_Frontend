@@ -3,7 +3,7 @@ import {useStore} from "vuex";
 import {computed, onMounted, ref, watch} from "vue";
 import TeamService from "@/services/team/team.service.js";
 import UserService from "@/services/user/user.service.js";
-import Team from "@/models/Team.js";
+import TeamWithPlayers from "@/models/team/TeamWithPlayers.js";
 
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
@@ -12,7 +12,7 @@ const team = ref(null);
 const fetchTeamData = async (id) => {
   try {
     if (id) {
-      const response = await TeamService.getTeam(id);
+      const response = await TeamService.fetchTeam(id);
       team.value = response;
     } else {
       team.value = null;

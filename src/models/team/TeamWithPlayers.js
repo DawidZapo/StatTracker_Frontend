@@ -1,6 +1,6 @@
-import Player from './Player.js';
+import Player from '../player/Player.js';
 
-class Team {
+class TeamWithPlayers {
     constructor(data) {
         this.id = data.id;
         this.name = data.name;
@@ -11,4 +11,4 @@ class Team {
     }
 }
 
-export default Team;
+export default TeamWithPlayers;

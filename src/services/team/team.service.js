@@ -1,16 +1,25 @@
 import authHeader from "@/services/auth/auth-header.js";
 import axios from "axios";
-import Team from "@/models/Team.js";
+import TeamWithPlayers from "@/models/team/TeamWithPlayers.js";
+import Team from "@/models/team/Team.js";
 
 const API_URL = 'http://localhost:8080/api/team/';
 
 class TeamService{
-    getTeam(id){
+    fetchTeam(id){
         return axios.get(API_URL + id, {headers: authHeader()})
             .then(response =>{
-                return new Team(response.data);
+                return new TeamWithPlayers(response.data);
             });
     }
+
+    fetchAllTeam(){
+        return axios.get(API_URL + 'all', {headers: authHeader()})
+            .then(response => {
+                return response.data.map(teamData => new Team(teamData));
+            })
+    }
+
 }
 
 export default new TeamService();

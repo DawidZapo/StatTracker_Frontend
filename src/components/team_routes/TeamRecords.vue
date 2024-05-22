@@ -10,7 +10,7 @@ const selectedTeamId = computed(() => store.getters.selectedTeamId);
 <template>
   <div>
     <template v-if="selectedTeamId != null">
-      Team records here || Team ID: {{selectedTeamId}}
+      TeamWithPlayers records here || TeamWithPlayers ID: {{selectedTeamId}}
     </template>
   </div>
 </template>

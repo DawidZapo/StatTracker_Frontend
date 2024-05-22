@@ -12,7 +12,7 @@ const selectedTeamId = computed(() => store.getters.selectedTeamId);
     <!--      <p>Location: {{ selectedTeam.location }}</p>-->
     <!--      <p>Founded: {{ selectedTeam.founded }}</p>-->
     <template v-if="selectedTeamId != null">
-      team stats here || Team ID: {{selectedTeamId}}
+      team stats here || TeamWithPlayers ID: {{selectedTeamId}}
     </template>
   </div>
 </template>
