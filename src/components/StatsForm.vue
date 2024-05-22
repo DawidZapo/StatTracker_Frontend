@@ -18,7 +18,7 @@ const teams = ref([
   {id: 9, name: 'Czarni Slupsk', location: 'City C', founded: 2010},
   {id: 10, name: 'Polonia Warszawa', location: 'City A', founded: 2000},
   {id: 11, name: 'Trefl Sopot', location: 'City B', founded: 1995},
-  {id: 12, name: 'Miasto Szkla Krosno', location: 'City C', founded: 2010},
+  {id: 12, name: 'Miasto Szkla Krosno', location: 'City C', founded: 2010}
 ]);
 
 const searchQuery = ref('');

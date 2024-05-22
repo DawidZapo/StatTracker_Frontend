@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import UserService from '../../services/user.service.js';
+import UserService from '../../services/user/user.service.js';
 import BasketballCourt from "@/components/BasketballCourt.vue";
 
 const content = ref('');
