@@ -7,20 +7,6 @@ import TeamService from "@/services/team/team.service.js";
 const store = useStore();
 const router = useRouter();
 
-// const teams = ref([
-//   {id: 1, name: 'KTK Knurow', location: 'City A', founded: 2000},
-//   {id: 2, name: 'GTK Gliwice', location: 'City B', founded: 1995},
-//   {id: 3, name: 'Slask Wroclaw', location: 'City C', founded: 2010},
-//   {id: 4, name: 'Legia Warszawa', location: 'City A', founded: 2000},
-//   {id: 5, name: 'Arka Gdynia', location: 'City B', founded: 1995},
-//   {id: 6, name: 'Anwil Wloclawek', location: 'City C', founded: 2010},
-//   {id: 7, name: 'AZS Koszalin', location: 'City A', founded: 2000},
-//   {id: 8, name: 'Dabrowa Gornicza', location: 'City B', founded: 1995},
-//   {id: 9, name: 'Czarni Slupsk', location: 'City C', founded: 2010},
-//   {id: 10, name: 'Polonia Warszawa', location: 'City A', founded: 2000},
-//   {id: 11, name: 'Trefl Sopot', location: 'City B', founded: 1995},
-//   {id: 12, name: 'Miasto Szkla Krosno', location: 'City C', founded: 2010}
-// ]);
 const teams = ref([]);
 const networkError = ref(false);
 const fetchTeamsData = async () => {
@@ -75,6 +61,7 @@ onBeforeMount(() =>{
             </li>
           </ul>
           <input type="text" class="form-control" placeholder="Search team" v-model="searchQuery">
+          <router-link v-show="selectedTeam" to="/teams/edit" class="btn btn-outline-light">Edit Team</router-link>
         </div>
       </div>
     </div>
@@ -91,7 +78,7 @@ onBeforeMount(() =>{
               <router-link to="/teams/stats" class="nav-link">Teams Stats</router-link>
             </li>
             <li class="nav-item mx-3">
-              <router-link to="/teams/records" class="nav-link">TeamWithPlayers Records</router-link>
+              <router-link to="/teams/records" class="nav-link">Team Records</router-link>
             </li>
             <li class="nav-item mx-3">
               <router-link to="/teams/players_stats" class="nav-link">Players' Stats</router-link>
