@@ -4,11 +4,10 @@ import router from './router';
 import store from './store';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import '@fortawesome/fontawesome-free/css/all.css';
 const app = createApp(App);
 
 app.config.productionTip = false;
-app.component('font-awesome-icon', FontAwesomeIcon);
 app.use(router);
 app.use(store);
 
