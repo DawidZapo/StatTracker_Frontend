@@ -54,7 +54,7 @@ const sortPlayers = (column) => {
     <template v-if="teamWithPlayers !== null">
       <div class="d-flex container mt-3">
         <div class="col-md-3">
-          <div class="card">
+          <div class="card small-text">
             <div class="card-header text-center">
               <h4>{{ teamWithPlayers.name }}</h4>
             </div>
@@ -96,7 +96,7 @@ const sortPlayers = (column) => {
         </div>
         <div class="col-md-9 mx-5">
           <div class="table-container">
-            <table class="table table-striped table-hover table-bordered">
+            <table class="table table-striped table-hover table-bordered small-text">
               <thead>
               <tr>
                 <th scope="col">#</th>
