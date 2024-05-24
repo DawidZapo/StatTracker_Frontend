@@ -6,14 +6,14 @@ import TeamService from "@/services/team/team.service.js";
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
 
-const team = ref(null);
+const teamWithPlayers = ref(null);
 const fetchTeamData = async (id) => {
   try {
     if (id) {
       const response = await TeamService.fetchTeam(id);
-      team.value = response;
+      teamWithPlayers.value = response;
     } else {
-      team.value = null;
+      teamWithPlayers.value = null;
     }
   } catch (error) {
     console.error("Error while fetching team: ", error);
@@ -35,7 +35,7 @@ const sortPlayers = (column) => {
     sortColumn.value = column;
     sortDirection.value = 'asc';
   }
-  team.value.currentPlayers.sort((a, b) => {
+  teamWithPlayers.value.currentPlayers.sort((a, b) => {
     let comparison = 0;
     if (a[column] > b[column]) {
       comparison = 1;
@@ -51,12 +51,12 @@ const sortPlayers = (column) => {
 
 <template>
   <div>
-    <template v-if="team !== null">
+    <template v-if="teamWithPlayers !== null">
       <div class="d-flex container mt-3">
         <div class="col-md-3">
           <div class="card">
             <div class="card-header text-center">
-              <h4>{{ team.name }}</h4>
+              <h4>{{ teamWithPlayers.name }}</h4>
             </div>
             <div class="card-body">
               <div class="row mb-2">
@@ -64,7 +64,7 @@ const sortPlayers = (column) => {
                   Location:
                 </div>
                 <div class="col-sm-6">
-                  {{ team.location }}
+                  {{ teamWithPlayers.location }}
                 </div>
               </div>
               <div class="row mb-2">
@@ -72,7 +72,7 @@ const sortPlayers = (column) => {
                   Arena:
                 </div>
                 <div class="col-sm-6">
-                  {{ team.arena }}
+                  {{ teamWithPlayers.arena }}
                 </div>
               </div>
               <div class="row mb-2">
@@ -80,7 +80,7 @@ const sortPlayers = (column) => {
                   Address:
                 </div>
                 <div class="col-sm-6">
-                  {{ team.address }}
+                  {{ teamWithPlayers.address }}
                 </div>
               </div>
               <div class="row mb-2">
@@ -88,7 +88,7 @@ const sortPlayers = (column) => {
                   Players:
                 </div>
                 <div class="col-sm-6">
-                  {{ team.currentPlayers.length }}
+                  {{ teamWithPlayers.currentPlayers.length }}
                 </div>
               </div>
             </div>
@@ -104,32 +104,32 @@ const sortPlayers = (column) => {
                   Full name
                   <i :class="sortColumn === 'lastName' ? sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down' : 'fas fa-sort'"></i>
                 </th>
-                <th scope="col" @click="sortPlayers('height')">
+                <th class="text-center" scope="col" @click="sortPlayers('height')">
                   Height
                   <i :class="sortColumn === 'height' ? sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down' : 'fas fa-sort'"></i>
                 </th>
-                <th scope="col" @click="sortPlayers('weight')">
+                <th class="text-center" scope="col" @click="sortPlayers('weight')">
                   Weight
                   <i :class="sortColumn === 'weight' ? sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down' : 'fas fa-sort'"></i>
                 </th>
-                <th scope="col" @click="sortPlayers('position')">
+                <th class="text-center" scope="col" @click="sortPlayers('position')">
                   Position
                   <i :class="sortColumn === 'position' ? sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down' : 'fas fa-sort'"></i>
                 </th>
-                <th scope="col" @click="sortPlayers('birth')">
+                <th class="text-center" scope="col" @click="sortPlayers('birth')">
                   Birth
                   <i :class="sortColumn === 'birth' ? sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down' : 'fas fa-sort'"></i>
                 </th>
               </tr>
               </thead>
               <tbody>
-              <tr v-for="(player,index) in team.currentPlayers" :key="player.id">
+              <tr v-for="(player,index) in teamWithPlayers.currentPlayers" :key="player.id">
                 <th scope="row">{{ index + 1 }}</th>
                 <td>{{ player.lastName }} {{player.firstName}}</td>
-                <td>{{ player.height }}</td>
-                <td>{{ player.weight }}</td>
-                <td>{{ player.position }}</td>
-                <td>{{player.birth}}</td>
+                <td class="text-center">{{ player.height }}</td>
+                <td class="text-center">{{ player.weight }}</td>
+                <td class="text-center">{{ player.position }}</td>
+                <td class="text-center">{{player.birth}}</td>
               </tr>
               </tbody>
             </table>
