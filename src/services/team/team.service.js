@@ -22,19 +22,12 @@ class TeamService{
             });
     }
 
-
-    fetchTeamWithStatsTotals(id){
-        return axios.get(API_URL +'totals/' + id, {headers: authHeader()})
+    fetchTeamWithStatsTotals(id, opponent = false){
+        const endpoint = opponent ? 'opponent_totals/' : 'totals/';
+        return axios.get(API_URL + endpoint + id, {headers: authHeader()})
             .then(response => {
                 return new TeamWithStatsTotals(response.data);
-            });
-    }
-
-    fetchTeamOpponentWithStatsTotals(id){
-        return axios.get(API_URL + 'opponent_totals/' + id, {headers: authHeader()})
-            .then(response => {
-                return new TeamWithStatsTotals(response.data);
-            });
+            })
     }
 
 }

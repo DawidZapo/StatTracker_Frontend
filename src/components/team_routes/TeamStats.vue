@@ -22,7 +22,7 @@ const fetchTeamData = async (id) => {
 const fetchTeamOpponentData = async (id) => {
   try {
     if(id){
-      opponent.value = await TeamService.fetchTeamOpponentWithStatsTotals(id);
+      opponent.value = await TeamService.fetchTeamWithStatsTotals(id, true);
     }
     else{
       opponent.value = null;
@@ -129,7 +129,7 @@ const opponentStats = createStatsComputed(opponent);
           <td>{{opponent.twoPointShotsMade}} / {{opponent.twoPointShotsAttempted}}</td>
           <td>{{opponent.threePointShotsMade}} / {{opponent.threePointShotsAttempted}}</td>
           <td>{{opponent.freeThrowsMade}} / {{opponent.freeThrowsAttempted}}</td>
-          <td>{{opponentStats.fieldGoalsMade}} / {{opponentStats.fieldGoalsMade}}</td>
+          <td>{{opponentStats.fieldGoalsMade}} / {{opponentStats.fieldGoalsAttempted}}</td>
           <td>{{opponent.offRebounds}}</td>
           <td>{{opponent.defRebounds}}</td>
           <td>{{opponent.assists}}</td>
@@ -165,6 +165,7 @@ const opponentStats = createStatsComputed(opponent);
           <th scope="col">S</th>
           <th scope="col">B</th>
           <th scope="col">BR</th>
+          <th scope="col">PS</th>
           <th scope="col">Eval</th>
         </tr>
         </thead>
