@@ -1,4 +1,4 @@
-class StatTeam {
+class TeamWithStatsTotals {
     constructor(data) {
         this.id = data.id;
         this.name = data.name;
@@ -20,7 +20,8 @@ class StatTeam {
         this.blocks = data.blocks;
         this.blocksReceived = data.blocksReceived;
         this.eval = data.eval;
+        this.possessions = data.possessions;
     }
 }
 
-export default StatTeam;
+export default TeamWithStatsTotals;

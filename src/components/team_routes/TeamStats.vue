@@ -6,10 +6,11 @@ import TeamService from "@/services/team/team.service.js";
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
 const team = ref(null);
+const opponent = ref(null);
 const fetchTeamData = async (id) => {
   try {
     if (id) {
-      team.value = await TeamService.fetchTeamWithStatTotals(id);
+      team.value = await TeamService.fetchTeamWithStatsTotals(id);
     } else {
       team.value = null;
     }
@@ -18,64 +19,58 @@ const fetchTeamData = async (id) => {
   }
 };
 
+const fetchTeamOpponentData = async (id) => {
+  try {
+    if(id){
+      opponent.value = await TeamService.fetchTeamOpponentWithStatsTotals(id);
+    }
+    else{
+      opponent.value = null;
+    }
+  } catch (error){
+    console.log("Error while fetching team opponent with stat totals ", error);
+  }
+};
+
 watch(selectedTeamId, (newId) => {
   fetchTeamData(newId);
+  fetchTeamOpponentData(newId);
 });
 fetchTeamData(selectedTeamId.value);
+fetchTeamOpponentData(selectedTeamId.value);
 
-const fieldGoalsAttempted = computed(()=>{
-  return team.value.twoPointShotsAttempted + team.value.threePointShotsAttempted;
-});
-const fieldGoalMade = computed(()=>{
-  return team.value.twoPointShotsMade + team.value.threePointShotsMade;
-});
-const twoPointPercentage = computed(()=>{
-  return team.value.twoPointShotsMade / team.value.twoPointShotsAttempted * 100;
-});
-const threePointPercentage = computed(()=>{
-  return team.value.threePointShotsMade / team.value.threePointShotsAttempted * 100;
-});
-const fieldGoalPercentage = computed(()=>{
-  return fieldGoalMade.value / fieldGoalsAttempted.value * 100;
-});
-const freeThrowPercentage = computed(()=>{
-  return team.value.freeThrowMade / team.value.freeThrowAttempted * 100;
-});
+const calculatePercentage = (made, attempted) => {
+  return attempted > 0 ? (made / attempted) * 100 : 0;
+};
 
+const calculateAverage = (total, games) => {
+  return games > 0 ? total / games : 0;
+};
+const createStatsComputed = (entity) => {
+  return {
+    fieldGoalsAttempted: computed(() => entity.value.twoPointShotsAttempted + entity.value.threePointShotsAttempted),
+    fieldGoalsMade: computed(() => entity.value.twoPointShotsMade + entity.value.threePointShotsMade),
+    twoPointPercentage: computed(() => parseFloat(calculatePercentage(entity.value.twoPointShotsMade, entity.value.twoPointShotsAttempted).toFixed(2))),
+    threePointPercentage: computed(() => parseFloat(calculatePercentage(entity.value.threePointShotsMade, entity.value.threePointShotsAttempted).toFixed(2))),
+    fieldGoalPercentage: computed(() => parseFloat(calculatePercentage(entity.value.twoPointShotsMade + entity.value.threePointShotsMade, entity.value.twoPointShotsAttempted + entity.value.threePointShotsAttempted).toFixed(2))),
+    freeThrowPercentage: computed(() => parseFloat(calculatePercentage(entity.value.freeThrowsMade, entity.value.freeThrowsAttempted).toFixed(2))),
+    averagePoints: computed(() => calculateAverage(entity.value.totalPoints, entity.value.numberOfGames)),
+    averageOffRebounds: computed(() => calculateAverage(entity.value.offRebounds, entity.value.numberOfGames)),
+    averageDefRebounds: computed(() => calculateAverage(entity.value.defRebounds, entity.value.numberOfGames)),
+    averageAssists: computed(() => calculateAverage(entity.value.assists, entity.value.numberOfGames)),
+    averageFouls: computed(() => calculateAverage(entity.value.fouls, entity.value.numberOfGames)),
+    averageForcedFouls: computed(() => calculateAverage(entity.value.forcedFouls, entity.value.numberOfGames)),
+    averageTurnovers: computed(() => calculateAverage(entity.value.turnOvers, entity.value.numberOfGames)),
+    averageSteals: computed(() => calculateAverage(entity.value.steals, entity.value.numberOfGames)),
+    averageBlocks: computed(() => calculateAverage(entity.value.blocks, entity.value.numberOfGames)),
+    averageBlocksReceived: computed(() => calculateAverage(entity.value.blocksReceived, entity.value.numberOfGames)),
+    averagePossessions: computed(() => calculateAverage(entity.value.possessions, entity.value.numberOfGames)),
+    averageEval: computed(() => calculateAverage(entity.value.eval, entity.value.numberOfGames)),
+  };
+};
 
-const averagePoints = computed(()=>{
-  return team.value.totalPoints / team.value.numberOfGames;
-});
-const averageOffRebounds = computed(()=>{
-  return team.value.offRebounds / team.value.numberOfGames;
-});
-const averageDefRebounds = computed(()=>{
-  return team.value.defRebounds / team.value.numberOfGames;
-});
-const averageAssists = computed(()=>{
-  return team.value.assists / team.value.numberOfGames;
-});
-const averageFouls = computed(()=>{
-  return team.value.fouls / team.value.numberOfGames;
-});
-const averageForcedFouls = computed(()=>{
-  return team.value.forcedFouls / team.value.numberOfGames;
-});
-const averageTurnovers = computed(()=>{
-  return team.value.turnOvers / team.value.numberOfGames;
-});
-const averageSteals = computed(()=>{
-  return team.value.steals / team.value.numberOfGames;
-});
-const averageBlocks = computed(()=>{
-  return team.value.blocks / team.value.numberOfGames;
-});
-const averageBlocksReceived = computed(()=>{
-  return team.value.blocksReceived / team.value.numberOfGames;
-});
-const averageEval = computed(()=>{
-  return team.value.eval / team.value.numberOfGames;
-});
+const teamStats = createStatsComputed(team);
+const opponentStats = createStatsComputed(opponent);
 
 </script>
 
@@ -102,6 +97,7 @@ const averageEval = computed(()=>{
           <th scope="col">S</th>
           <th scope="col">B</th>
           <th scope="col">BR</th>
+          <th scope="col">PS</th>
           <th scope="col">Eval</th>
         </tr>
         </thead>
@@ -110,10 +106,10 @@ const averageEval = computed(()=>{
           <td>{{ team.name }}</td>
           <td>{{ team.numberOfGames }}</td>
           <td>{{team.totalPoints}}</td>
-          <td>{{team.twoPointShotsAttempted}} / {{team.twoPointShotsMade}}</td>
-          <td>{{team.threePointShotsAttempted}} / {{team.threePointShotsMade}}</td>
-          <td>{{team.freeThrowsAttempted}} / {{team.freeThrowsMade}}</td>
-          <td>{{fieldGoalsAttempted}} / {{fieldGoalMade}}</td>
+          <td>{{team.twoPointShotsMade}} / {{team.twoPointShotsAttempted}}</td>
+          <td>{{team.threePointShotsMade}} / {{team.threePointShotsAttempted}}</td>
+          <td>{{team.freeThrowsMade}} / {{team.freeThrowsAttempted}}</td>
+          <td>{{teamStats.fieldGoalsMade}} / {{teamStats.fieldGoalsAttempted}}</td>
           <td>{{team.offRebounds}}</td>
           <td>{{team.defRebounds}}</td>
           <td>{{team.assists}}</td>
@@ -123,7 +119,28 @@ const averageEval = computed(()=>{
           <td>{{team.steals}}</td>
           <td>{{team.blocks}}</td>
           <td>{{team.blocksReceived}}</td>
+          <td>{{team.possessions}}</td>
           <td>{{team.eval}}</td>
+        </tr>
+        <tr>
+          <td>{{ opponent.name }}</td>
+          <td>{{ opponent.numberOfGames }}</td>
+          <td>{{opponent.totalPoints}}</td>
+          <td>{{opponent.twoPointShotsMade}} / {{opponent.twoPointShotsAttempted}}</td>
+          <td>{{opponent.threePointShotsMade}} / {{opponent.threePointShotsAttempted}}</td>
+          <td>{{opponent.freeThrowsMade}} / {{opponent.freeThrowsAttempted}}</td>
+          <td>{{opponentStats.fieldGoalsMade}} / {{opponentStats.fieldGoalsMade}}</td>
+          <td>{{opponent.offRebounds}}</td>
+          <td>{{opponent.defRebounds}}</td>
+          <td>{{opponent.assists}}</td>
+          <td>{{opponent.fouls}}</td>
+          <td>{{opponent.forcedFouls}}</td>
+          <td>{{opponent.turnOvers}}</td>
+          <td>{{opponent.steals}}</td>
+          <td>{{opponent.blocks}}</td>
+          <td>{{opponent.blocksReceived}}</td>
+          <td>{{opponent.possessions}}</td>
+          <td>{{opponent.eval}}</td>
         </tr>
         </tbody>
       </table>
@@ -155,21 +172,42 @@ const averageEval = computed(()=>{
         <tr>
           <td>{{ team.name }}</td>
           <td>{{ team.numberOfGames }}</td>
-          <td>{{averagePoints}}</td>
-          <td>{{twoPointPercentage}}</td>
-          <td>{{threePointPercentage}}</td>
-          <td>{{freeThrowPercentage}}</td>
-          <td>{{fieldGoalPercentage}}</td>
-          <td>{{averageOffRebounds}}</td>
-          <td>{{averageDefRebounds}}</td>
-          <td>{{averageAssists}}</td>
-          <td>{{averageFouls}}</td>
-          <td>{{averageForcedFouls}}</td>
-          <td>{{averageTurnovers}}</td>
-          <td>{{averageSteals}}</td>
-          <td>{{averageBlocks}}</td>
-          <td>{{averageBlocksReceived}}</td>
-          <td>{{averageEval}}</td>
+          <td>{{teamStats.averagePoints}}</td>
+          <td>{{teamStats.twoPointPercentage}}</td>
+          <td>{{teamStats.threePointPercentage}}</td>
+          <td>{{teamStats.freeThrowPercentage}}</td>
+          <td>{{teamStats.fieldGoalPercentage}}</td>
+          <td>{{teamStats.averageOffRebounds}}</td>
+          <td>{{teamStats.averageDefRebounds}}</td>
+          <td>{{teamStats.averageAssists}}</td>
+          <td>{{teamStats.averageFouls}}</td>
+          <td>{{teamStats.averageForcedFouls}}</td>
+          <td>{{teamStats.averageTurnovers}}</td>
+          <td>{{teamStats.averageSteals}}</td>
+          <td>{{teamStats.averageBlocks}}</td>
+          <td>{{teamStats.averageBlocksReceived}}</td>
+          <td>{{teamStats.averagePossessions}}</td>
+          <td>{{teamStats.averageEval}}</td>
+        </tr>
+        <tr>
+          <td>{{ opponent.name }}</td>
+          <td>{{ opponent.numberOfGames }}</td>
+          <td>{{opponentStats.averagePoints}}</td>
+          <td>{{opponentStats.twoPointPercentage}}</td>
+          <td>{{opponentStats.threePointPercentage}}</td>
+          <td>{{opponentStats.freeThrowPercentage}}</td>
+          <td>{{opponentStats.fieldGoalPercentage}}</td>
+          <td>{{opponentStats.averageOffRebounds}}</td>
+          <td>{{opponentStats.averageDefRebounds}}</td>
+          <td>{{opponentStats.averageAssists}}</td>
+          <td>{{opponentStats.averageFouls}}</td>
+          <td>{{opponentStats.averageForcedFouls}}</td>
+          <td>{{opponentStats.averageTurnovers}}</td>
+          <td>{{opponentStats.averageSteals}}</td>
+          <td>{{opponentStats.averageBlocks}}</td>
+          <td>{{opponentStats.averageBlocksReceived}}</td>
+          <td>{{opponentStats.averagePossessions}}</td>
+          <td>{{opponentStats.averageEval}}</td>
         </tr>
         </tbody>
       </table>
