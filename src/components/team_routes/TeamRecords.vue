@@ -56,12 +56,14 @@ fetchTeamRecords(selectedTeamId.value);
       </table>
     </template>
     <template v-else>
-      <h5>Network Error</h5>
+      <NetworkError></NetworkError>
     </template>
 
   </div>
 </template>
 
 <style scoped>
-
+td, th {
+  text-align: center;
+}
 </style>

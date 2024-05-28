@@ -220,7 +220,7 @@ const opponentStats = createStatsComputed(opponent);
       </table>
     </template>
     <template v-else>
-      <h5>Network Error</h5>
+      <NetworkError></NetworkError>
     </template>
   </div>
 </template>

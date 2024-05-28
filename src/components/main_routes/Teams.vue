@@ -3,6 +3,7 @@ import {computed, onBeforeMount, ref} from 'vue';
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 import TeamService from "@/services/team/team.service.js";
+import NetworkError from "@/components/error/NetworkError.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -93,6 +94,9 @@ onBeforeMount(() =>{
     <div v-else>
       <div v-if="!networkError" class="container mt-4">
         <h3>Please select team</h3>
+      </div>
+      <div v-else>
+        <NetworkError></NetworkError>
       </div>
     </div>
     <div class="container">
