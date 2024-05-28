@@ -2,6 +2,7 @@
 import {useStore} from "vuex";
 import {computed, onMounted, ref, watch} from "vue";
 import TeamService from "@/services/team/team.service.js";
+import Loading from "@/components/error/Loading.vue";
 
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
@@ -138,7 +139,7 @@ const sortPlayers = (column) => {
       </div>
     </template>
     <template v-else>
-      <NetworkError></NetworkError>
+      <Loading></Loading>
     </template>
   </div>
 </template>

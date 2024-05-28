@@ -1,5 +1,6 @@
 export class Record {
-    constructor(name, value, date, opponent, score) {
+    constructor(order,name, value, date, opponent, score) {
+        this.order = order;
         this.name = name;
         this.value = value;
         this.date = date;
