@@ -76,8 +76,11 @@ const opponentStats = createStatsComputed(opponent);
 
 <template>
   <div>
-    <template v-if="team != null">
-      <h5>Totals</h5>
+    <template v-if="team !== null && opponent !== null">
+      <div class="d-flex justify-content-center mt-2">
+        <h5>Totals</h5>
+      </div>
+      <hr class="my-2">
       <table class="table table-striped table-hover table-bordered small-text">
         <thead>
         <tr>
@@ -123,8 +126,8 @@ const opponentStats = createStatsComputed(opponent);
           <td>{{team.eval}}</td>
         </tr>
         <tr>
-          <td>{{ opponent.name }}</td>
-          <td>{{ opponent.numberOfGames }}</td>
+          <td>{{opponent.name}}</td>
+          <td>{{opponent.numberOfGames}}</td>
           <td>{{opponent.totalPoints}}</td>
           <td>{{opponent.twoPointShotsMade}} / {{opponent.twoPointShotsAttempted}}</td>
           <td>{{opponent.threePointShotsMade}} / {{opponent.threePointShotsAttempted}}</td>
@@ -145,7 +148,10 @@ const opponentStats = createStatsComputed(opponent);
         </tbody>
       </table>
 
-      <h5>Averages</h5>
+      <div class="d-flex justify-content-center mt-2">
+        <h5>Averages</h5>
+      </div>
+      <hr class="my-2">
       <table class="table table-striped table-hover table-bordered small-text">
         <thead>
         <tr>
@@ -191,7 +197,7 @@ const opponentStats = createStatsComputed(opponent);
           <td>{{teamStats.averageEval}}</td>
         </tr>
         <tr>
-          <td>{{ opponent.name }}</td>
+          <td>{{opponent.name}}</td>
           <td>{{ opponent.numberOfGames }}</td>
           <td>{{opponentStats.averagePoints}}</td>
           <td>{{opponentStats.twoPointPercentage}}</td>
@@ -212,6 +218,9 @@ const opponentStats = createStatsComputed(opponent);
         </tr>
         </tbody>
       </table>
+    </template>
+    <template v-else>
+      <h5>Network Error</h5>
     </template>
   </div>
 </template>

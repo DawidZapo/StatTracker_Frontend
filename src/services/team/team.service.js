@@ -4,6 +4,8 @@ import TeamWithPlayers from "@/models/team/TeamWithPlayers.js";
 import Team from "@/models/team/Team.js";
 import TeamWithStatTotals from "@/models/team/TeamWithStatsTotals.js";
 import TeamWithStatsTotals from "@/models/team/TeamWithStatsTotals.js";
+import {TeamWithRecords} from "@/models/team/TeamWithRecords.js";
+import {Record} from "@/models/team/Record.js";
 
 const API_URL = 'http://localhost:8080/api/team/';
 
@@ -27,8 +29,21 @@ class TeamService{
         return axios.get(API_URL + endpoint + id, {headers: authHeader()})
             .then(response => {
                 return new TeamWithStatsTotals(response.data);
-            })
+            });
     }
+
+    fetchTeamWithRecords(id) {
+        return axios.get(API_URL + 'records/' + id, { headers: authHeader() })
+            .then(response => {
+                const records = response.data.records || {}; // Zabezpieczenie przed null lub undefined
+                const recordsArray = Object.entries(records).map(([key, value]) => {
+                    return new Record(value.name, value.value, value.date, value.opponent, value.score);
+                });
+                return new TeamWithRecords(recordsArray);
+            });
+    }
+
+
 
 }
 

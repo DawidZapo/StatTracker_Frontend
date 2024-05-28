@@ -137,6 +137,9 @@ const sortPlayers = (column) => {
         </div>
       </div>
     </template>
+    <template v-else>
+      <h5>Network Error</h5>
+    </template>
   </div>
 </template>
 
