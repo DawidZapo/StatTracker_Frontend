@@ -1,3 +1,5 @@
+import {createStatsComputed} from '@/assets/scripts/stats'
+import {reactive} from "vue";
 class PlayerWithStatsTotals {
     constructor({
                     id,
@@ -48,6 +50,9 @@ class PlayerWithStatsTotals {
         this.evaluation = evaluation;
         this.possessions = possessions;
         this.timeOnCourtInMin = this.formatTimeOnCourt();
+
+        const reactiveEntity = reactive(this);
+        this.stats = createStatsComputed(reactiveEntity);
     }
 
     formatTimeOnCourt() {

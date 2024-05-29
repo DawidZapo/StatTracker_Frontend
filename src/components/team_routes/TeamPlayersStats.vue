@@ -84,6 +84,61 @@ fetchTeamWithPlayerStatsTotals(selectedTeamId.value);
         </tbody>
       </table>
 
+      <div class="d-flex justify-content-center mt-2">
+        <h5>Averages</h5>
+      </div>
+      <hr class="my-2">
+      <table class="table table-striped table-hover table-bordered small-text">
+        <thead>
+        <tr>
+          <th scope="col">Player</th>
+          <th scope="col">M</th>
+          <th scope="col">S5</th>
+          <th scope="col">MIN</th>
+          <th scope="col">Pts</th>
+          <th scope="col">2PT</th>
+          <th scope="col">3PT</th>
+          <th scope="col">FT</th>
+          <th scope="col">FG</th>
+          <th scope="col">OR</th>
+          <th scope="col">DF</th>
+          <th scope="col">A</th>
+          <th scope="col">F</th>
+          <th scope="col">FF</th>
+          <th scope="col">TO</th>
+          <th scope="col">S</th>
+          <th scope="col">B</th>
+          <th scope="col">BR</th>
+          <th scope="col">PS</th>
+          <th scope="col">Eval</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="player in teamWithPlayerStatsTotals.players">
+          <td>{{ player.fullName }}</td>
+          <td>{{ player.numberOfGames }}</td>
+          <td>{{player.startingFive}}</td>
+          <td>{{player.timeOnCourtInMin}}</td>
+          <td>{{player.stats.averagePoints}}</td>
+          <td>{{player.stats.twoPointPercentage}}</td>
+          <td>{{player.stats.threePointPercentage}}</td>
+          <td>{{player.stats.freeThrowPercentage}}</td>
+          <td>{{player.stats.fieldGoalPercentage}}</td>
+          <td>{{player.stats.averageOffRebounds}}</td>
+          <td>{{player.stats.averageDefRebounds}}</td>
+          <td>{{player.stats.averageAssists}}</td>
+          <td>{{player.stats.averageFouls}}</td>
+          <td>{{player.stats.averageForcedFouls}}</td>
+          <td>{{player.stats.averageTurnovers}}</td>
+          <td>{{player.stats.averageSteals}}</td>
+          <td>{{player.stats.averageBlocks}}</td>
+          <td>{{player.stats.averageBlocksReceived}}</td>
+          <td>{{player.stats.averagePossessions}}</td>
+          <td>{{player.stats.averageEval}}</td>
+        </tr>
+        </tbody>
+      </table>
+
     </template>
   </div>
 </template>

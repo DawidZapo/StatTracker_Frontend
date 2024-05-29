@@ -19,7 +19,7 @@ class TeamWithStatsTotals {
         this.steals = data.steals;
         this.blocks = data.blocks;
         this.blocksReceived = data.blocksReceived;
-        this.eval = data.eval;
+        this.evaluation = data.evaluation;
         this.possessions = data.possessions;
     }
 }

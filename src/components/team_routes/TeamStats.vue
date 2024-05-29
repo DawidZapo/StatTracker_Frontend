@@ -66,7 +66,7 @@ const createStatsComputed = (entity) => {
     averageBlocks: computed(() => calculateAverage(entity.value.blocks, entity.value.numberOfGames)),
     averageBlocksReceived: computed(() => calculateAverage(entity.value.blocksReceived, entity.value.numberOfGames)),
     averagePossessions: computed(() => calculateAverage(entity.value.possessions, entity.value.numberOfGames)),
-    averageEval: computed(() => calculateAverage(entity.value.eval, entity.value.numberOfGames)),
+    averageEval: computed(() => calculateAverage(entity.value.evaluation, entity.value.numberOfGames)),
   };
 };
 
@@ -124,7 +124,7 @@ const opponentStats = createStatsComputed(opponent);
           <td>{{team.blocks}}</td>
           <td>{{team.blocksReceived}}</td>
           <td>{{team.possessions}}</td>
-          <td>{{team.eval}}</td>
+          <td>{{team.evaluation}}</td>
         </tr>
         <tr>
           <td>{{opponent.name}}</td>
@@ -144,7 +144,7 @@ const opponentStats = createStatsComputed(opponent);
           <td>{{opponent.blocks}}</td>
           <td>{{opponent.blocksReceived}}</td>
           <td>{{opponent.possessions}}</td>
-          <td>{{opponent.eval}}</td>
+          <td>{{opponent.evaluation}}</td>
         </tr>
         </tbody>
       </table>
