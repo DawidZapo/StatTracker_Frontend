@@ -38,7 +38,7 @@ fetchTeamRecords(selectedTeamId.value);
       <table class="table table-striped table-hover table-bordered small-text">
         <thead>
         <tr>
-          <th scope="col">Name</th>
+          <th scope="col">Record</th>
           <th scope="col">Value</th>
           <th scope="col">Date</th>
           <th scope="col">Opponent</th>

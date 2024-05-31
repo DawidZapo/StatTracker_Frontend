@@ -33,12 +33,13 @@ class TeamService{
             });
     }
 
-    fetchTeamWithRecords(id) {
-        return axios.get(API_URL + 'records/' + id, { headers: authHeader() })
+    fetchTeamWithRecords(id, player = false) {
+        const endpoint = player ? 'player_records/' : 'records/'
+        return axios.get(API_URL + endpoint + id, { headers: authHeader() })
             .then(response => {
                 const records = response.data.records || {};
                 const recordsArray = Object.entries(records).map(([key, value]) => {
-                    return new Record(value.order, value.name, value.value, value.date, value.opponent, value.score);
+                    return new Record(value.order, value.name, value.playerFullName, value.value, value.date, value.opponent, value.score);
                 });
                 return new TeamWithRecords(recordsArray);
             });
