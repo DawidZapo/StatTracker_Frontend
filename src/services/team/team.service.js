@@ -11,7 +11,7 @@ import TeamWithPlayerStatsTotals from "@/models/team/TeamWithPlayerStatsTotals.j
 const API_URL = 'http://localhost:8080/api/team/';
 
 class TeamService{
-    fetchTeam(id){
+    fetchTeamWithPlayers(id){
         return axios.get(API_URL + id, {headers: authHeader()})
             .then(response =>{
                 return new TeamWithPlayers(response.data);
@@ -52,6 +52,16 @@ class TeamService{
             });
     }
 
+    saveTeamWithPlayersDto(teamWithPlayers){
+        return axios.post(API_URL + 'save', teamWithPlayers, {headers: authHeader()})
+            .then(response => {
+                return response.data;
+            })
+            .catch(error => {
+                console.error("Error while saving team: " + error);
+                throw error
+            });
+    }
 
 
 }
