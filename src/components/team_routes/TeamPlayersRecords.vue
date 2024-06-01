@@ -2,6 +2,7 @@
 import {useStore} from "vuex";
 import {computed, ref, watch} from "vue";
 import TeamService from "@/services/team/team.service.js";
+import Loading from "@/components/error/Loading.vue";
 
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
@@ -28,11 +29,11 @@ fetchTeamWithPlayerRecords(selectedTeamId.value);
 
 <template>
   <div>
+    <div class="d-flex justify-content-center mt-2">
+      <h5>Players' records</h5>
+    </div>
+    <hr class="my-2">
     <template v-if="teamWithPlayerRecords != null">
-      <div class="d-flex justify-content-center mt-2">
-        <h5>Players' records</h5>
-      </div>
-      <hr class="my-2">
       <table class="table table-striped table-hover table-bordered small-text">
         <thead>
         <tr>
@@ -55,6 +56,9 @@ fetchTeamWithPlayerRecords(selectedTeamId.value);
         </tr>
         </tbody>
       </table>
+    </template>
+    <template v-else>
+      <Loading></Loading>
     </template>
   </div>
 </template>

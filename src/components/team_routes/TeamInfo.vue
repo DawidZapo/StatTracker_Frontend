@@ -1,6 +1,6 @@
 <script setup>
 import {useStore} from "vuex";
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import TeamService from "@/services/team/team.service.js";
 import Loading from "@/components/error/Loading.vue";
 
@@ -11,8 +11,7 @@ const teamWithPlayers = ref(null);
 const fetchTeamData = async (id) => {
   try {
     if (id) {
-      const response = await TeamService.fetchTeam(id);
-      teamWithPlayers.value = response;
+      teamWithPlayers.value = await TeamService.fetchTeamWithPlayers(id);
     } else {
       teamWithPlayers.value = null;
     }

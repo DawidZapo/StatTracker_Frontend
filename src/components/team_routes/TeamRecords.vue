@@ -30,11 +30,11 @@ fetchTeamRecords(selectedTeamId.value);
 
 <template>
   <div>
+    <div class="d-flex justify-content-center mt-2">
+      <h5>Records</h5>
+    </div>
+    <hr class="my-2">
     <template v-if="teamWithRecords !== null">
-      <div class="d-flex justify-content-center mt-2">
-        <h5>Records</h5>
-      </div>
-      <hr class="my-2">
       <table class="table table-striped table-hover table-bordered small-text">
         <thead>
         <tr>

@@ -77,11 +77,11 @@ const opponentStats = createStatsComputed(opponent);
 
 <template>
   <div>
+    <div class="d-flex justify-content-center mt-2">
+      <h5>Totals</h5>
+    </div>
+    <hr class="my-2">
     <template v-if="team !== null && opponent !== null">
-      <div class="d-flex justify-content-center mt-2">
-        <h5>Totals</h5>
-      </div>
-      <hr class="my-2">
       <table class="table table-striped table-hover table-bordered small-text">
         <thead>
         <tr>
