@@ -93,7 +93,7 @@ onBeforeMount(() =>{
     </div>
     <div v-else>
       <div v-if="!networkError" class="container mt-4">
-        <h3>Please select team</h3>
+        <h3>Please search team</h3>
       </div>
       <div v-else>
         <NetworkError></NetworkError>

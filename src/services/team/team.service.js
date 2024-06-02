@@ -15,6 +15,10 @@ class TeamService{
         return axios.get(API_URL + id, {headers: authHeader()})
             .then(response =>{
                 return new TeamWithPlayers(response.data);
+            })
+            .catch(error => {
+                console.error("Error while fetching team with players: " + error);
+                throw error
             });
     }
 
@@ -22,6 +26,10 @@ class TeamService{
         return axios.get(API_URL + 'all', {headers: authHeader()})
             .then(response => {
                 return response.data.map(teamData => new Team(teamData));
+            })
+            .catch(error => {
+                console.error("Error while fetching teams: " + error);
+                throw error
             });
     }
 
@@ -30,6 +38,10 @@ class TeamService{
         return axios.get(API_URL + endpoint + id, {headers: authHeader()})
             .then(response => {
                 return new TeamWithStatsTotals(response.data);
+            })
+            .catch(error => {
+                console.error("Error while fetching team with stats totals: " + error);
+                throw error
             });
     }
 
@@ -42,13 +54,22 @@ class TeamService{
                     return new Record(value.order, value.name, value.playerFullName, value.value, value.date, value.opponent, value.score);
                 });
                 return new TeamWithRecords(recordsArray);
+            })
+            .catch(error => {
+                console.error("Error while fetching team with records: " + error);
+                throw error
             });
+
     }
 
     fetchTeamWithPlayerStatsTotals(id){
         return axios.get(API_URL + 'player_totals/' + id, {headers: authHeader()})
             .then(response => {
                 return new TeamWithPlayerStatsTotals(response.data.players);
+            })
+            .catch(error => {
+                console.error("Error while fetching team with players' stats totals: " + error);
+                throw error
             });
     }
 

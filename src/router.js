@@ -11,6 +11,9 @@ import TeamPlayersRecords from "@/components/team_routes/TeamPlayersRecords.vue"
 import TeamRecords from "@/components/team_routes/TeamRecords.vue";
 import AddTeam from "@/components/AddTeam.vue";
 import EditTeam from "@/components/EditTeam.vue";
+import PlayerStats from "@/components/player_routes/PlayerStats.vue";
+import PlayerRecords from "@/components/player_routes/PlayerRecords.vue";
+import PlayerInfo from "@/components/player_routes/PlayerInfo.vue";
 
 const routes = [
     {
@@ -76,7 +79,21 @@ const routes = [
     },
     {
         path: '/players',
-        component: () => import('./components/main_routes/Players.vue')
+        component: () => import('./components/main_routes/Players.vue'),
+        children: [
+            {
+                path: 'info',
+                component: PlayerInfo
+            },
+            {
+                path: 'stats',
+                component: PlayerStats
+            },
+            {
+                path: 'records',
+                component: PlayerRecords
+            }
+        ]
     },
     {
         path: '/matches',
