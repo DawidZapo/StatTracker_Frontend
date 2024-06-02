@@ -50,9 +50,13 @@ const sortPlayers = (column) => {
 </script>
 
 <template>
-  <div>
+  <div class="container shadow-lg">
+    <div class="d-flex justify-content-center">
+      <h5 class="mt-2">Team info</h5>
+    </div>
+    <hr class="my-2">
     <template v-if="teamWithPlayers !== null">
-      <div class="d-flex container mt-3">
+      <div class="d-flex mt-3">
         <div class="col-md-3">
           <div class="card small-text">
             <div class="card-header text-center">
@@ -94,8 +98,8 @@ const sortPlayers = (column) => {
             </div>
           </div>
         </div>
-        <div class="col-md-9 mx-5">
-          <div class="table-container">
+        <div class="col-md-8 mx-5">
+          <div>
             <table class="table table-striped table-hover table-bordered small-text">
               <thead>
               <tr>

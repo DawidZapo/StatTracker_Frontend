@@ -29,13 +29,13 @@ fetchTeamRecords(selectedTeamId.value);
 </script>
 
 <template>
-  <div>
-    <div class="d-flex justify-content-center mt-2">
-      <h5>Records</h5>
+  <div class="container shadow-lg" >
+    <div class="d-flex justify-content-center">
+      <h5 class="mt-2">Records</h5>
     </div>
     <hr class="my-2">
     <template v-if="teamWithRecords !== null">
-      <table class="table table-striped table-hover table-bordered small-text">
+      <table class="table table-striped table-hover table-bordered small-text ">
         <thead>
         <tr>
           <th scope="col">Record</th>
@@ -59,7 +59,7 @@ fetchTeamRecords(selectedTeamId.value);
     <template v-else>
       <Loading></Loading>
     </template>
-
+    <div style="height: 1px"></div>
   </div>
 </template>
 

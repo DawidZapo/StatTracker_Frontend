@@ -4,10 +4,7 @@ import {useStore} from "vuex";
 import {computed, ref, watch} from "vue";
 import Loading from "@/components/error/Loading.vue";
 import TeamService from "@/services/team/team.service.js";
-import {configure, defineRule, Field, ErrorMessage,} from "vee-validate";
-import {numeric, required} from "@vee-validate/rules";
-import { parse, isValid } from 'date-fns';
-
+import PlayerService from "@/services/player/player.service.js";
 
 const store = useStore();
 const selectedTeamId = computed(()=>store.getters.selectedTeamId);
@@ -39,9 +36,33 @@ const handleSubmit = async () => {
   try{
     submitResponse.value = await TeamService.saveTeamWithPlayersDto(team.value);
     submitSuccess.value = true;
+
   }catch (error) {
     console.error("Error while saving team: ", error);
     submitResponse.value = 'Error while saving team';
+    submitSuccess.value = false;
+  }
+};
+
+const confirmRemovePlayer = (player) => {
+  if (confirm("Do you really want to delete this player from the team?")) {
+    removePlayer(player);
+  }
+};
+
+const removePlayer = async (player) => {
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  try{
+    submitResponse.value = await PlayerService.removePlayerFromTeam(player);
+    submitSuccess.value = true;
+
+    const indexToRemove = team.value.currentPlayers.findIndex(playerInTeam => playerInTeam.id === player.id);
+    team.value.currentPlayers.splice(indexToRemove, 1);
+
+
+  }catch (error) {
+    console.error("Error while removing player from team: ", error);
+    submitResponse.value = 'Error while removing player from team';
     submitSuccess.value = false;
   }
 };
@@ -56,10 +77,11 @@ const handleSubmit = async () => {
           {{submitResponse}}
         </div>
       </div>
-      <form @submit.prevent="handleSubmit" class="container mt-4 shadow-lg">
+      <form @submit.prevent="handleSubmit" class="container shadow-lg">
         <div class="d-flex justify-content-center">
           <h5 class="mt-2">Edit team</h5>
         </div>
+        <hr class="my-2">
         <div class="d-flex mt-3">
           <div class="col-md-3">
             <input type="hidden" v-model="team.id">
@@ -99,6 +121,7 @@ const handleSubmit = async () => {
                 <th scope="col">Weight</th>
                 <th scope="col">Position</th>
                 <th scope="col">Birth</th>
+                <th scope="col">Action</th>
               </tr>
               </thead>
               <tbody>
@@ -123,6 +146,11 @@ const handleSubmit = async () => {
                 </td>
                 <td>
                   <input type="date" class="small-text custom-input text-center" v-model="player.birth">
+                </td>
+                <td style="text-align: center; vertical-align: middle;">
+                  <button @click="confirmRemovePlayer(player)" type="button" class="btn small-text">
+                    <i class="fa fa-trash"></i>
+                  </button>
                 </td>
               </tr>
               </tbody>

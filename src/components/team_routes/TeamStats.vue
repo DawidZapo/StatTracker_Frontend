@@ -76,9 +76,9 @@ const opponentStats = createStatsComputed(opponent);
 </script>
 
 <template>
-  <div>
-    <div class="d-flex justify-content-center mt-2">
-      <h5>Totals</h5>
+  <div class="container shadow-lg">
+    <div class="d-flex justify-content-center">
+      <h5 class="mt-2">Totals</h5>
     </div>
     <hr class="my-2">
     <template v-if="team !== null && opponent !== null">
@@ -223,6 +223,7 @@ const opponentStats = createStatsComputed(opponent);
     <template v-else>
       <Loading></Loading>
     </template>
+    <div style="height: 1px"></div>
   </div>
 </template>
 
