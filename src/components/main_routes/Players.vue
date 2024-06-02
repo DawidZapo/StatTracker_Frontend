@@ -127,6 +127,11 @@ const handlePlayerClick = (player) => {
 
 </template>
 
-<style lang="scss" scoped>
-
+<style scoped>
+.card-body {
+  transition: opacity 0.3s ease;
+}
+.card-body:hover {
+  opacity: 0.8;
+}
 </style>

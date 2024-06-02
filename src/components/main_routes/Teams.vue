@@ -27,10 +27,24 @@ const selectedTeam = ref(null);
 
 const filteredTeams = computed(() => {
   if (!searchQuery.value) {
-    return teams.value;
+    return [];
   }
-  return teams.value.filter(team => team.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
+  return teams.value.filter(team =>
+      team.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
 });
+const handleInput = () => {
+  if(selectedTeam){
+    selectedTeam.value = null;
+  }
+};
+
+const handleTeamClick = (team) => {
+  selectedTeam.value = team;
+  searchQuery.value = team.name;
+  store.dispatch('selectTeam', team.id);
+  router.push({path: '/teams/info'});
+};
 
 const selectTeam = (team) => {
   selectedTeam.value = team;
@@ -52,16 +66,7 @@ onBeforeMount(() =>{
       <div class="navbar-brand" style="font-size: 1.1rem">Teams</div>
       <div class="collapse navbar-collapse" id="navbarNav">
         <div class="input-group">
-          <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-            {{ selectedTeam ? selectedTeam.name : 'Select team' }}
-          </button>
-          <ul class="dropdown-menu">
-            <li v-for="team in filteredTeams" :key="team.id">
-              <a class="dropdown-item" @click="selectTeam(team)">{{ team.name }}</a>
-            </li>
-          </ul>
-          <input type="text" class="form-control" placeholder="Search team" v-model="searchQuery">
+          <input @input="handleInput" type="text" class="form-control" placeholder="Search team" v-model="searchQuery">
           <router-link v-show="selectedTeam" to="/teams/edit" class="btn btn-outline-light">Edit Team</router-link>
         </div>
       </div>
@@ -90,23 +95,57 @@ onBeforeMount(() =>{
           </ul>
         </div>
       </nav>
+      <div class="container">
+        <router-view></router-view>
+      </div>
     </div>
     <div v-else>
-      <div v-if="!networkError" class="container mt-4">
-        <h3>Please search team</h3>
+      <div class="container mt-1">
+        <div v-if="filteredTeams.length === 0" class="mt-4" >
+          <h3> Please search player</h3>
+        </div>
+        <div v-else>
+          <div class="card card-body small-text text-center">
+            <div class="row">
+              <div class="col">
+                <strong>Team name</strong>
+              </div>
+              <div class="col">
+                <strong>Location </strong>
+              </div>
+              <div class="col">
+                <strong>Arena</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-for="team in filteredTeams" :key="team.id" class="card mb-1">
+          <div class="card-body small-text text-center" @click="handleTeamClick(team)" style="cursor: pointer">
+            <div class="row">
+              <div class="col">
+                {{ team.name }}
+              </div>
+              <div class="col">
+                {{ team.location }}
+              </div>
+              <div class="col">
+                {{ team.arena }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div v-else>
-        <NetworkError></NetworkError>
-      </div>
+      <div style="height: 1px"></div>
     </div>
-    <div class="container">
-      <router-view></router-view>
-    </div>
-
   </div>
 </template>
 
 
 <style scoped>
-
+.card-body {
+  transition: opacity 0.3s ease;
+}
+.card-body:hover {
+  opacity: 0.8;
+}
 </style>
