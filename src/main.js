@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './assets/css/styles.css';
 
+
 const app = createApp(App);
 
 app.config.productionTip = false;
