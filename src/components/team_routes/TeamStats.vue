@@ -8,10 +8,18 @@ const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
 const team = ref(null);
 const opponent = ref(null);
-const fetchTeamData = async (id) => {
+const seasons = ref([]);
+const selectedSeason = ref('all');
+const all = ref('all');
+const fetchTeamData = async (id, season = null) => {
   try {
     if (id) {
-      team.value = await TeamService.fetchTeamWithStatsTotals(id);
+      if(season != null){
+        team.value = await TeamService.fetchTeamWithStatsTotals(id, season);
+      }
+      else{
+        team.value = await TeamService.fetchTeamWithStatsTotals(id, 'all');
+      }
     } else {
       team.value = null;
     }
@@ -20,10 +28,15 @@ const fetchTeamData = async (id) => {
   }
 };
 
-const fetchTeamOpponentData = async (id) => {
+const fetchTeamOpponentData = async (id, season = null) => {
   try {
     if(id){
-      opponent.value = await TeamService.fetchTeamWithStatsTotals(id, true);
+      if(season != null){
+        opponent.value = await TeamService.fetchOpponentWithStatsTotals(id, season);
+      }
+      else{
+        opponent.value = await TeamService.fetchOpponentWithStatsTotals(id, 'all');
+      }
     }
     else{
       opponent.value = null;
@@ -33,19 +46,43 @@ const fetchTeamOpponentData = async (id) => {
   }
 };
 
+const fetchSeasons = async (id) => {
+  try{
+    if(id){
+      seasons.value = await TeamService.fetchPossibleSeasonsFromTeam(id);
+      if (seasons.value.length > 0) {
+        // selectedSeason.value = all.value;
+      }
+    }
+    else{
+      seasons.value = [];
+    }
+  }catch (error){
+    console.error("Error while fetching possible seasons");
+  }
+};
+
 watch(selectedTeamId, (newId) => {
   fetchTeamData(newId);
   fetchTeamOpponentData(newId);
+  fetchSeasons(newId);
 });
+
+watch(selectedSeason, (newSeason) => {
+  fetchTeamData(selectedTeamId.value, newSeason);
+  fetchTeamOpponentData(selectedTeamId.value, newSeason);
+});
+
 fetchTeamData(selectedTeamId.value);
 fetchTeamOpponentData(selectedTeamId.value);
+fetchSeasons(selectedTeamId.value);
 
 const calculatePercentage = (made, attempted) => {
   return attempted > 0 ? (made / attempted) * 100 : 0;
 };
 
 const calculateAverage = (total, games) => {
-  return games > 0 ? total / games : 0;
+  return parseFloat((games > 0 ? total / games : 0).toFixed(2));
 };
 const createStatsComputed = (entity) => {
   return {
@@ -77,8 +114,23 @@ const opponentStats = createStatsComputed(opponent);
 
 <template>
   <div class="container shadow-lg">
-    <div class="d-flex justify-content-center">
-      <h5 class="mt-2">Totals</h5>
+    <div class="d-flex">
+      <div class="col-md-4 d-flex align-items-center">
+        <template v-if="seasons.length !== 0">
+          <select id="season-select" class="form-control w-50 small-text text-center" v-model="selectedSeason">
+            <option :value="all" value="all">All seasons</option>
+            <option v-for="season in seasons" :key="season" :value="season">
+              {{ season }}
+            </option>
+          </select>
+        </template>
+      </div>
+      <div class="col-md-4 d-flex justify-content-center">
+        <h5 class="mt-2">Totals</h5>
+      </div>
+      <div class="col-md-4">
+
+      </div>
     </div>
     <hr class="my-2">
     <template v-if="team !== null && opponent !== null">

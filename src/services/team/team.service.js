@@ -33,9 +33,19 @@ class TeamService{
             });
     }
 
-    fetchTeamWithStatsTotals(id, opponent = false){
-        const endpoint = opponent ? 'opponent_totals/' : 'totals/';
-        return axios.get(API_URL + endpoint + id, {headers: authHeader()})
+    fetchTeamWithStatsTotals(id, season){
+        return axios.get(API_URL + 'totals/' + id + '/' + season, {headers: authHeader()})
+            .then(response => {
+                return new TeamWithStatsTotals(response.data);
+            })
+            .catch(error => {
+                console.error("Error while fetching team with stats totals: " + error);
+                throw error
+            });
+    }
+
+    fetchOpponentWithStatsTotals(id, season){
+        return axios.get(API_URL + 'opponent_totals/' + id + '/' + season, {headers: authHeader()})
             .then(response => {
                 return new TeamWithStatsTotals(response.data);
             })
@@ -81,6 +91,17 @@ class TeamService{
             .catch(error => {
                 console.error("Error while saving team: " + error);
                 throw error
+            });
+    }
+
+    fetchPossibleSeasonsFromTeam(id){
+        return axios.get(API_URL + 'seasons/' + id, {headers:authHeader()})
+            .then(response => {
+                return response.data;
+            })
+            .catch(error => {
+               console.error("Error while fetching seasons");
+               throw error;
             });
     }
 

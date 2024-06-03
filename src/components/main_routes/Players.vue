@@ -61,7 +61,7 @@ const handlePlayerClick = (player) => {
           <h3> Please search player</h3>
         </div>
         <div v-else>
-          <div class="card card-body small-text text-center">
+          <div class="card card-body small-text text-center mb-1" style="background-color: #f3f3f3">
             <div class="row">
               <div class="col">
                 <strong>First name</strong>
@@ -82,7 +82,7 @@ const handlePlayerClick = (player) => {
           </div>
         </div>
         <div v-for="player in filteredPlayers" :key="player.id" class="card mb-1">
-          <div class="card-body small-text text-center" @click="handlePlayerClick(player)" style="cursor: pointer">
+          <div id="searchCardBody" class="card-body small-text text-center" @click="handlePlayerClick(player)" style="cursor: pointer">
             <div class="row">
               <div class="col">
                 {{ player.firstName }}
@@ -128,10 +128,10 @@ const handlePlayerClick = (player) => {
 </template>
 
 <style scoped>
-.card-body {
+#searchCardBody {
   transition: opacity 0.3s ease;
 }
-.card-body:hover {
+#searchCardBody:hover {
   opacity: 0.8;
 }
 </style>

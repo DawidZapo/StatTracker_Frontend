@@ -102,10 +102,10 @@ onBeforeMount(() =>{
     <div v-else>
       <div class="container mt-1">
         <div v-if="filteredTeams.length === 0" class="mt-4" >
-          <h3> Please search player</h3>
+          <h3> Please search team</h3>
         </div>
         <div v-else>
-          <div class="card card-body small-text text-center">
+          <div class="card card-body small-text text-center mb-1" style="background-color: #f3f3f3">
             <div class="row">
               <div class="col">
                 <strong>Team name</strong>
@@ -120,7 +120,7 @@ onBeforeMount(() =>{
           </div>
         </div>
         <div v-for="team in filteredTeams" :key="team.id" class="card mb-1">
-          <div class="card-body small-text text-center" @click="handleTeamClick(team)" style="cursor: pointer">
+          <div id="searchCardBody" class="card-body small-text text-center" @click="handleTeamClick(team)" style="cursor: pointer">
             <div class="row">
               <div class="col">
                 {{ team.name }}
@@ -142,10 +142,10 @@ onBeforeMount(() =>{
 
 
 <style scoped>
-.card-body {
+#searchCardBody {
   transition: opacity 0.3s ease;
 }
-.card-body:hover {
+#searchCardBody:hover {
   opacity: 0.8;
 }
 </style>
