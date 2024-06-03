@@ -86,8 +86,8 @@ class TeamService{
 
     }
 
-    fetchTeamWithPlayerStatsTotals(id){
-        return axios.get(API_URL + 'player_totals/' + id, {headers: authHeader()})
+    fetchTeamWithPlayerStatsTotals(id, season){
+        return axios.get(API_URL + 'player_totals/' + id + '/' + season, {headers: authHeader()})
             .then(response => {
                 return new TeamWithPlayerStatsTotals(response.data.players);
             })

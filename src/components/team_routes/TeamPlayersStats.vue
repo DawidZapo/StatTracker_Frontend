@@ -7,21 +7,45 @@ import Loading from "@/components/error/Loading.vue";
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
 const teamWithPlayerStatsTotals = ref(null);
+const seasons = ref([]);
+const selectedSeason = ref('all');
+const all = ref('all');
 
-const fetchTeamWithPlayerStatsTotals = async (id) => {
+const fetchTeamWithPlayerStatsTotals = async (id, season = null) => {
   try{
     if(id){
-      teamWithPlayerStatsTotals.value = await TeamService.fetchTeamWithPlayerStatsTotals(id);
+      if(season != null){
+        teamWithPlayerStatsTotals.value = await TeamService.fetchTeamWithPlayerStatsTotals(id, season);
+      }
+      else{
+        teamWithPlayerStatsTotals.value = await TeamService.fetchTeamWithPlayerStatsTotals(id, 'all');
+      }
     }
   }catch (error) {
     console.error("Error while fetching team with player stats totals: ", error);
   }
-}
+};
+const fetchSeasons = async (id) => {
+  try{
+    if(id){
+      seasons.value = await TeamService.fetchPossibleSeasonsFromTeam(id);
+    }
+    else{
+      seasons.value = [];
+    }
+  }catch (error){
+    console.error("Error while fetching possible seasons");
+  }
+};
 
 watch(selectedTeamId, (newId) => {
   fetchTeamWithPlayerStatsTotals(newId);
 });
+watch(selectedSeason, (newSeason) => {
+  fetchTeamWithPlayerStatsTotals(selectedTeamId.value, newSeason);
+});
 fetchTeamWithPlayerStatsTotals(selectedTeamId.value);
+fetchSeasons(selectedTeamId.value);
 
 
 </script>
@@ -29,8 +53,23 @@ fetchTeamWithPlayerStatsTotals(selectedTeamId.value);
 
 <template>
   <div class="container shadow-lg">
-    <div class="d-flex justify-content-center">
-      <h5 class="mt-2">Totals</h5>
+    <div class="d-flex">
+      <div class="col-md-4 d-flex align-items-center">
+        <template v-if="seasons.length !== 0">
+          <select id="season-select" class="form-control w-50 small-text text-center" v-model="selectedSeason">
+            <option :value="all" value="all">All seasons</option>
+            <option v-for="season in seasons" :key="season" :value="season">
+              {{ season }}
+            </option>
+          </select>
+        </template>
+      </div>
+      <div class="col-md-4 d-flex justify-content-center">
+        <h5 class="mt-2">Player Totals</h5>
+      </div>
+      <div class="col-md-4">
+
+      </div>
     </div>
     <hr class="my-2">
     <template v-if="teamWithPlayerStatsTotals !== null">
@@ -118,7 +157,7 @@ fetchTeamWithPlayerStatsTotals(selectedTeamId.value);
         <tr v-for="player in teamWithPlayerStatsTotals.players">
           <td>{{ player.fullName }}</td>
           <td>{{ player.numberOfGames }}</td>
-          <td>{{player.startingFive}}</td>
+          <td>{{(player.startingFive / player.numberOfGames).toFixed(2)}}</td>
           <td>{{player.timeOnCourtInMin}}</td>
           <td>{{player.stats.averagePoints}}</td>
           <td>{{player.stats.twoPointPercentage}}</td>
