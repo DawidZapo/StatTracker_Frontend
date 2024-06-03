@@ -7,11 +7,19 @@ import Loading from "@/components/error/Loading.vue";
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
 const teamWithRecords = ref(null);
+const seasons = ref([]);
+const selectedSeason = ref('all');
+const all = ref('all');
 
-const fetchTeamRecords = async (id) => {
+const fetchTeamRecords = async (id, season = null) => {
   try{
     if(id){
-      teamWithRecords.value = await TeamService.fetchTeamWithRecords(id);
+      if(season != null){
+        teamWithRecords.value = await TeamService.fetchTeamWithRecords(id, season);
+      }
+      else{
+        teamWithRecords.value = await TeamService.fetchTeamWithRecords(id, 'all');
+      }
     }
     else{
       teamWithRecords.value = null;
@@ -21,17 +29,49 @@ const fetchTeamRecords = async (id) => {
   }
 };
 
+const fetchSeasons = async (id) => {
+  try{
+    if(id){
+      seasons.value = await TeamService.fetchPossibleSeasonsFromTeam(id);
+    }
+    else{
+      seasons.value = [];
+    }
+  }catch (error){
+    console.error("Error while fetching possible seasons");
+  }
+};
+
+watch(selectedSeason, (newSeason) => {
+  fetchTeamRecords(selectedTeamId.value, newSeason);
+});
 watch(selectedTeamId, (newId) => {
   fetchTeamRecords(newId);
 });
 fetchTeamRecords(selectedTeamId.value);
+fetchSeasons(selectedTeamId.value);
 
 </script>
 
 <template>
   <div class="container shadow-lg" >
-    <div class="d-flex justify-content-center">
-      <h5 class="mt-2">Records</h5>
+    <div class="d-flex">
+      <div class="col-md-4 d-flex align-items-center">
+        <template v-if="seasons.length !== 0">
+          <select id="season-select" class="form-control w-50 small-text text-center" v-model="selectedSeason">
+            <option :value="all" value="all">All seasons</option>
+            <option v-for="season in seasons" :key="season" :value="season">
+              {{ season }}
+            </option>
+          </select>
+        </template>
+      </div>
+      <div class="col-md-4 d-flex justify-content-center">
+        <h5 class="mt-2">Records</h5>
+      </div>
+      <div class="col-md-4">
+
+      </div>
     </div>
     <hr class="my-2">
     <template v-if="teamWithRecords !== null">

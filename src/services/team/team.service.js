@@ -55,9 +55,23 @@ class TeamService{
             });
     }
 
-    fetchTeamWithRecords(id, player = false) {
-        const endpoint = player ? 'player_records/' : 'records/'
-        return axios.get(API_URL + endpoint + id, { headers: authHeader() })
+    fetchTeamWithRecords(id, season) {
+        return axios.get(API_URL + 'records/' + id + '/' + season, { headers: authHeader() })
+            .then(response => {
+                const records = response.data.records || {};
+                const recordsArray = Object.entries(records).map(([key, value]) => {
+                    return new Record(value.order, value.name, value.playerFullName, value.value, value.date, value.opponent, value.score);
+                });
+                return new TeamWithRecords(recordsArray);
+            })
+            .catch(error => {
+                console.error("Error while fetching team with records: " + error);
+                throw error
+            });
+
+    }
+    fetchTeamPlayerWithRecords(id) {
+        return axios.get(API_URL + 'player_records/' + id, { headers: authHeader() })
             .then(response => {
                 const records = response.data.records || {};
                 const recordsArray = Object.entries(records).map(([key, value]) => {

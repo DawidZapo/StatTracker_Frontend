@@ -50,9 +50,6 @@ const fetchSeasons = async (id) => {
   try{
     if(id){
       seasons.value = await TeamService.fetchPossibleSeasonsFromTeam(id);
-      if (seasons.value.length > 0) {
-        // selectedSeason.value = all.value;
-      }
     }
     else{
       seasons.value = [];

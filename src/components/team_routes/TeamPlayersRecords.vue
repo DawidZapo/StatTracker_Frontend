@@ -11,7 +11,7 @@ const teamWithPlayerRecords = ref(null);
 const fetchTeamWithPlayerRecords = async (id) => {
   try{
     if(id){
-      teamWithPlayerRecords.value = await TeamService.fetchTeamWithRecords(id, true);
+      teamWithPlayerRecords.value = await TeamService.fetchTeamPlayerWithRecords(id);
     }
     else{
       teamWithPlayerRecords.value = null;
