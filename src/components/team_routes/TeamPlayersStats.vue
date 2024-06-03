@@ -65,7 +65,7 @@ fetchSeasons(selectedTeamId.value);
         </template>
       </div>
       <div class="col-md-4 d-flex justify-content-center">
-        <h5 class="mt-2">Player Totals</h5>
+        <h5 class="mt-2">Players' Totals</h5>
       </div>
       <div class="col-md-4">
 

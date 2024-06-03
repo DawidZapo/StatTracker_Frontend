@@ -7,11 +7,19 @@ import Loading from "@/components/error/Loading.vue";
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
 const teamWithPlayerRecords = ref(null);
+const seasons = ref([]);
+const selectedSeason = ref('all');
+const all = ref('all');
 
-const fetchTeamWithPlayerRecords = async (id) => {
+const fetchTeamWithPlayerRecords = async (id, season = null) => {
   try{
     if(id){
-      teamWithPlayerRecords.value = await TeamService.fetchTeamPlayerWithRecords(id);
+      if(season != null){
+        teamWithPlayerRecords.value = await TeamService.fetchTeamPlayerWithRecords(id, season);
+      }
+      else{
+        teamWithPlayerRecords.value = await TeamService.fetchTeamPlayerWithRecords(id, 'all');
+      }
     }
     else{
       teamWithPlayerRecords.value = null;
@@ -19,18 +27,51 @@ const fetchTeamWithPlayerRecords = async (id) => {
   }catch (error) {
     console.error("Error while fetching team with player records: ", error);
   }
-}
+};
+const fetchSeasons = async (id) => {
+  try{
+    if(id){
+      seasons.value = await TeamService.fetchPossibleSeasonsFromTeam(id);
+    }
+    else{
+      seasons.value = [];
+    }
+  }catch (error){
+    console.error("Error while fetching possible seasons");
+  }
+};
 
 watch(selectedTeamId, (newId) => {
   fetchTeamWithPlayerRecords(newId);
 });
+watch(selectedSeason, (newSeason) => {
+  fetchTeamWithPlayerRecords(selectedTeamId.value, newSeason);
+});
+
 fetchTeamWithPlayerRecords(selectedTeamId.value);
+fetchSeasons(selectedTeamId.value);
+
 </script>
 
 <template>
   <div class="container shadow-lg">
-    <div class="d-flex justify-content-center">
-      <h5 class="mt-2">Players' records</h5>
+    <div class="d-flex">
+      <div class="col-md-4 d-flex align-items-center">
+        <template v-if="seasons.length !== 0">
+          <select id="season-select" class="form-control w-50 small-text text-center" v-model="selectedSeason">
+            <option :value="all" value="all">All seasons</option>
+            <option v-for="season in seasons" :key="season" :value="season">
+              {{ season }}
+            </option>
+          </select>
+        </template>
+      </div>
+      <div class="col-md-4 d-flex justify-content-center">
+        <h5 class="mt-2">Players' Records</h5>
+      </div>
+      <div class="col-md-4">
+
+      </div>
     </div>
     <hr class="my-2">
     <template v-if="teamWithPlayerRecords != null">

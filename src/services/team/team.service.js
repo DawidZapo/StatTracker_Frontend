@@ -70,8 +70,8 @@ class TeamService{
             });
 
     }
-    fetchTeamPlayerWithRecords(id) {
-        return axios.get(API_URL + 'player_records/' + id, { headers: authHeader() })
+    fetchTeamPlayerWithRecords(id, season) {
+        return axios.get(API_URL + 'player_records/' + id + '/' + season, { headers: authHeader() })
             .then(response => {
                 const records = response.data.records || {};
                 const recordsArray = Object.entries(records).map(([key, value]) => {
