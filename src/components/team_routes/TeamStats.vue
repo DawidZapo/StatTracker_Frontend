@@ -3,6 +3,7 @@ import {useStore} from "vuex";
 import {computed, ref, watch} from "vue";
 import TeamService from "@/services/team/team.service.js";
 import Loading from "@/components/error/Loading.vue";
+import SeasonSelector from "@/components/helper/SeasonSelector.vue";
 
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
@@ -113,14 +114,7 @@ const opponentStats = createStatsComputed(opponent);
   <div class="container shadow-lg">
     <div class="d-flex">
       <div class="col-md-4 d-flex align-items-center">
-        <template v-if="seasons.length !== 0">
-          <select id="season-select" class="form-control w-50 small-text text-center" v-model="selectedSeason">
-            <option :value="all" value="all">All seasons</option>
-            <option v-for="season in seasons" :key="season" :value="season">
-              {{ season }}
-            </option>
-          </select>
-        </template>
+        <SeasonSelector :selected-season="selectedSeason" :seasons="seasons" @updateSelectedSeason="selectedSeason = $event"></SeasonSelector>
       </div>
       <div class="col-md-4 d-flex justify-content-center">
         <h5 class="mt-2">Totals</h5>
