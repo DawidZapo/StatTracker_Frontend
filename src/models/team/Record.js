@@ -1,11 +1,11 @@
 export class Record {
-    constructor(order,name,playerFullName, value, date, opponent, score) {
-        this.order = order;
-        this.name = name;
-        this.playerFullName = playerFullName;
-        this.value = value;
-        this.date = date;
-        this.opponent = opponent;
-        this.score = score;
+    constructor(data) {
+        this.order = data.order;
+        this.name = data.name;
+        this.playerFullName = data.playerFullName;
+        this.value = data.value;
+        this.date = data.date;
+        this.opponent = data.opponent;
+        this.score = data.score;
     }
 }

@@ -42,15 +42,7 @@ class PlayerService{
     fetchPlayerRecords(id, season){
         return axios.get(API_URL + 'records/' + id + '/' + season, {headers: authHeader()})
             .then(response => {
-                return response.data.map(recordData => new Record(
-                    recordData.order,
-                    recordData.name,
-                    recordData.playerFullName,
-                    recordData.value,
-                    recordData.date,
-                    recordData.opponent,
-                    recordData.score
-                ));
+                return response.data.map(recordData => new Record(recordData));
             })
             .catch(error => {
                 console.error("Error while fetching player records: " + error);

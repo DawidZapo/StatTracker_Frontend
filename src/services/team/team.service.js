@@ -60,7 +60,7 @@ class TeamService{
             .then(response => {
                 const records = response.data.records || {};
                 const recordsArray = Object.entries(records).map(([key, value]) => {
-                    return new Record(value.order, value.name, value.playerFullName, value.value, value.date, value.opponent, value.score);
+                    return new Record(value);
                 });
                 return new TeamWithRecords(recordsArray);
             })
@@ -75,7 +75,7 @@ class TeamService{
             .then(response => {
                 const records = response.data.records || {};
                 const recordsArray = Object.entries(records).map(([key, value]) => {
-                    return new Record(value.order, value.name, value.playerFullName, value.value, value.date, value.opponent, value.score);
+                    return new Record(value);
                 });
                 return new TeamWithRecords(recordsArray);
             })
