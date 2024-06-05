@@ -6,8 +6,8 @@ import Loading from "@/components/error/Loading.vue";
 
 const store = useStore();
 const selectedTeamId = computed(() => store.getters.selectedTeamId);
-
 const teamWithPlayers = ref(null);
+
 const fetchTeamData = async (id) => {
   try {
     if (id) {
