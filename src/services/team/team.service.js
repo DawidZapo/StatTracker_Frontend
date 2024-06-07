@@ -2,7 +2,6 @@ import authHeader from "@/services/auth/auth-header.js";
 import axios from "axios";
 import TeamWithPlayers from "@/models/team/TeamWithPlayers.js";
 import Team from "@/models/team/Team.js";
-import TeamWithStatTotals from "@/models/team/TeamWithStatsTotals.js";
 import TeamWithStatsTotals from "@/models/team/TeamWithStatsTotals.js";
 import {TeamWithRecords} from "@/models/team/TeamWithRecords.js";
 import {Record} from "@/models/team/Record.js";

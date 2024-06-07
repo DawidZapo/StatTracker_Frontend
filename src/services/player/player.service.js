@@ -2,6 +2,7 @@ import axios from "axios";
 import authHeader from "@/services/auth/auth-header.js";
 import PlayerWithTeam from "@/models/player/PlayerWithTeam.js";
 import {Record} from "@/models/team/Record.js";
+import PlayerWithStatsTotalsWithSeason from "@/models/player/PlayerWithStatsTotalsWithSeason.js";
 
 const API_URL = 'http://localhost:8080/api/player/';
 
@@ -46,6 +47,17 @@ class PlayerService{
             })
             .catch(error => {
                 console.error("Error while fetching player records: " + error);
+                throw error;
+            });
+    }
+
+    fetchPlayerWithStatsTotalsWithSeason(id){
+        return axios.get(API_URL + 'totals/' + id, {headers: authHeader()})
+            .then(response => {
+                return response.data.map(playerData => new PlayerWithStatsTotalsWithSeason(playerData));
+            })
+            .catch(error => {
+                console.error("Error while fetching player with stats totals with season: " + error);
                 throw error;
             });
     }
