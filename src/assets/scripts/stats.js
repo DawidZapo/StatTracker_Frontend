@@ -28,5 +28,6 @@ export const createStatsComputed = (entity) => {
         averageBlocksReceived: computed(() => calculateAverage(entity.blocksReceived, entity.numberOfGames)),
         averagePossessions: computed(() => calculateAverage(entity.possessions, entity.numberOfGames)),
         averageEval: computed(() => calculateAverage(entity.evaluation, entity.numberOfGames)),
+        averageTimeOnCourt: computed( () => calculateAverage(entity.timeOnCourt, entity.numberOfGames))
     };
 };

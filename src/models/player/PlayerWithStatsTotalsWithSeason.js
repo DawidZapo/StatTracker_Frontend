@@ -2,7 +2,7 @@ import { createStatsComputed } from '@/assets/scripts/stats';
 import { reactive } from 'vue';
 import PlayerWithStatsTotals from './PlayerWithStatsTotals';
 
-class ExtendedPlayerWithStats extends PlayerWithStatsTotals {
+class PlayerWithStatsTotalsWithSeason extends PlayerWithStatsTotals {
     constructor({
                     id,
                     fullName,
@@ -64,4 +64,4 @@ class ExtendedPlayerWithStats extends PlayerWithStatsTotals {
     }
 }
 
-export default ExtendedPlayerWithStats;
+export default PlayerWithStatsTotalsWithSeason;
