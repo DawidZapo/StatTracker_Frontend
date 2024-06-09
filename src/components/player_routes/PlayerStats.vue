@@ -4,6 +4,7 @@ import {computed, ref, watch} from "vue";
 import {useStore} from "vuex";
 import PlayerService from "@/services/player/player.service.js";
 import {createStatsComputed} from "@/assets/scripts/stats.js";
+import Loading from "@/components/error/Loading.vue";
 
 const store = useStore();
 const playerWithSeasons = ref([]);
@@ -124,7 +125,7 @@ fetchPlayerWithSeasons(selectedPlayerId.value);
           <td>{{ player.fullName }}</td>
           <td>{{ player.numberOfGames }}</td>
           <td>{{(player.startingFive / player.numberOfGames).toFixed(2)}}</td>
-          <td>{{player.timeOnCourtInMin}}</td>
+          <td>{{player.stats.averageTimeOnCourtInMin}}</td>
           <td>{{player.stats.averagePoints}}</td>
           <td>{{player.stats.twoPointPercentage}}</td>
           <td>{{player.stats.threePointPercentage}}</td>
@@ -145,9 +146,10 @@ fetchPlayerWithSeasons(selectedPlayerId.value);
         </tbody>
       </table>
     </template>
+    <template v-else>
+      <Loading></Loading>
+    </template>
   </div>
-  {{playerWithSeasons}}
-
 </template>
 
 <style scoped>

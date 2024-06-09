@@ -5,7 +5,7 @@ class PlayerWithStatsTotals {
                     id,
                     fullName,
                     numberOfGames,
-                    timeOnCourt,
+                    timeOnCourtInMs,
                     startingFive,
                     totalPoints,
                     twoPointShotsAttempted,
@@ -29,7 +29,7 @@ class PlayerWithStatsTotals {
         this.id = id;
         this.fullName = fullName;
         this.numberOfGames = numberOfGames;
-        this.timeOnCourt = timeOnCourt;
+        this.timeOnCourtInMs = timeOnCourtInMs;
         this.startingFive = startingFive;
         this.totalPoints = totalPoints;
         this.twoPointShotsAttempted = twoPointShotsAttempted;
@@ -49,15 +49,15 @@ class PlayerWithStatsTotals {
         this.blocksReceived = blocksReceived;
         this.evaluation = evaluation;
         this.possessions = possessions;
-        this.timeOnCourtInMin = this.formatTimeOnCourt();
+        this.timeOnCourtInMin = this.formatTimeOnCourt(this.timeOnCourtInMs);
 
         const reactiveEntity = reactive(this);
         this.stats = createStatsComputed(reactiveEntity);
     }
 
-    formatTimeOnCourt() {
-        const minutes = Math.floor(this.timeOnCourt / 60000);
-        const seconds = ((this.timeOnCourt % 60000) / 1000).toFixed(0);
+    formatTimeOnCourt(timeOnCourtInMs) {
+        const minutes = Math.floor(timeOnCourtInMs / 60000);
+        const seconds = ((timeOnCourtInMs % 60000) / 1000).toFixed(0);
         return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
 }

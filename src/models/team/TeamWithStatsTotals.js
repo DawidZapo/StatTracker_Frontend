@@ -1,3 +1,6 @@
+import {reactive} from "vue";
+import {createStatsComputed} from "@/assets/scripts/stats.js";
+
 class TeamWithStatsTotals {
     constructor(data) {
         this.id = data.id;
@@ -21,6 +24,9 @@ class TeamWithStatsTotals {
         this.blocksReceived = data.blocksReceived;
         this.evaluation = data.evaluation;
         this.possessions = data.possessions;
+
+        const reactiveEntity = reactive(this);
+        this.stats = createStatsComputed(reactiveEntity, false);
     }
 }
 

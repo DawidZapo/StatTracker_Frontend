@@ -5,11 +5,17 @@ const calculatePercentage = (made, attempted) => {
 };
 
 const calculateAverage = (total, games) => {
-    return games > 0 ? total / games : 0;
+    return parseFloat((games > 0 ? total / games : 0).toFixed(2));
 };
 
-export const createStatsComputed = (entity) => {
-    return {
+const formatTimeOnCourt = (timeOnCourtInMs) => {
+    const minutes = Math.floor(timeOnCourtInMs / 60000);
+    const seconds = ((timeOnCourtInMs % 60000) / 1000).toFixed(0);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+export const createStatsComputed = (entity, includeTimeOnCourt = true) => {
+    const stats = {
         fieldGoalsAttempted: computed(() => entity.twoPointShotsAttempted + entity.threePointShotsAttempted),
         fieldGoalsMade: computed(() => entity.twoPointShotsMade + entity.threePointShotsMade),
         twoPointPercentage: computed(() => parseFloat(calculatePercentage(entity.twoPointShotsMade, entity.twoPointShotsAttempted).toFixed(2))),
@@ -28,6 +34,11 @@ export const createStatsComputed = (entity) => {
         averageBlocksReceived: computed(() => calculateAverage(entity.blocksReceived, entity.numberOfGames)),
         averagePossessions: computed(() => calculateAverage(entity.possessions, entity.numberOfGames)),
         averageEval: computed(() => calculateAverage(entity.evaluation, entity.numberOfGames)),
-        averageTimeOnCourt: computed( () => calculateAverage(entity.timeOnCourt, entity.numberOfGames))
     };
+
+    if (includeTimeOnCourt) {
+        stats.averageTimeOnCourtInMin = computed(() => formatTimeOnCourt(calculateAverage(entity.timeOnCourtInMs, entity.numberOfGames)));
+    }
+
+    return stats;
 };

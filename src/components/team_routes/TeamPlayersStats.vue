@@ -152,7 +152,7 @@ fetchSeasons(selectedTeamId.value);
           <td>{{ player.fullName }}</td>
           <td>{{ player.numberOfGames }}</td>
           <td>{{(player.startingFive / player.numberOfGames).toFixed(2)}}</td>
-          <td>{{player.timeOnCourtInMin}}</td>
+          <td>{{player.stats.averageTimeOnCourtInMin}}</td>
           <td>{{player.stats.averagePoints}}</td>
           <td>{{player.stats.twoPointPercentage}}</td>
           <td>{{player.stats.threePointPercentage}}</td>
