@@ -36,7 +36,7 @@ fetchPlayerWithSeasons(selectedPlayerId.value);
     </div>
     <hr class="my-2">
     <template v-if="playerWithSeasons !== null">
-      <table class="table table-striped table-hover table-bordered small-text">
+      <table class="table table-striped table-hover table-bordered small-text text-center">
         <thead>
         <tr>
           <th scope="col">Season</th>
@@ -93,7 +93,7 @@ fetchPlayerWithSeasons(selectedPlayerId.value);
         <h5>Averages</h5>
       </div>
       <hr class="my-2">
-      <table class="table table-striped table-hover table-bordered small-text">
+      <table class="table table-striped table-hover table-bordered small-text text-center">
         <thead>
         <tr>
           <th scope="col">Season</th>
@@ -149,6 +149,7 @@ fetchPlayerWithSeasons(selectedPlayerId.value);
     <template v-else>
       <Loading></Loading>
     </template>
+    <div style="height: 1px"></div>
   </div>
 </template>
 

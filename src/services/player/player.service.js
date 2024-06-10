@@ -62,6 +62,17 @@ class PlayerService{
             });
     }
 
+    fetchPossibleSeasonsFromPlayer(id){
+        return axios.get(API_URL + 'seasons/' + id, {headers:authHeader()})
+            .then(response => {
+                return response.data;
+            })
+            .catch(error => {
+                console.error("Error while fetching seasons");
+                throw error;
+            });
+    }
+
 
 }
 
