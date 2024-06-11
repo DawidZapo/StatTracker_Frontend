@@ -3,7 +3,7 @@ import {computed, ref, watch} from "vue";
 import {useStore} from "vuex";
 import PlayerService from "@/services/player/player.service.js";
 import SeasonSelector from "@/components/helper/SeasonSelector.vue";
-import TeamService from "@/services/team/team.service.js";
+import Loading from "@/components/error/Loading.vue";
 
 const records = ref([]);
 const store = useStore();
