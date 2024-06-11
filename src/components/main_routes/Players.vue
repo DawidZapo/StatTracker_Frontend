@@ -51,6 +51,7 @@ const handlePlayerClick = (player) => {
         <div class="collapse navbar-collapse" id="navbarNav">
           <div class="input-group">
             <input @input="handleInput" type="text" class="form-control" placeholder="Search player" v-model="search">
+            <router-link v-show="selectedPlayer" to="/players/edit" class="btn btn-outline-light">Edit Player</router-link>
           </div>
         </div>
       </div>

@@ -73,6 +73,17 @@ class PlayerService{
             });
     }
 
+    savePlayerWithTeam(playerWithTeam){
+        return axios.post(API_URL + 'save', playerWithTeam, {headers: authHeader()})
+            .then(response => {
+                return response.data;
+            })
+            .catch(error => {
+                console.error("Error while saving team: " + error);
+                throw error
+            });
+    }
+
 
 }
 

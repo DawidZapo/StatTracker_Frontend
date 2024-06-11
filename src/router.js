@@ -14,6 +14,7 @@ import EditTeam from "@/components/EditTeam.vue";
 import PlayerStats from "@/components/player_routes/PlayerStats.vue";
 import PlayerRecords from "@/components/player_routes/PlayerRecords.vue";
 import PlayerInfo from "@/components/player_routes/PlayerInfo.vue";
+import EditPlayer from "@/components/EditPlayer.vue";
 
 const routes = [
     {
@@ -92,6 +93,10 @@ const routes = [
             {
                 path: 'records',
                 component: PlayerRecords
+            },
+            {
+                path: 'edit',
+                component: EditPlayer
             }
         ]
     },
