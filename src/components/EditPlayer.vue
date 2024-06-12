@@ -88,7 +88,7 @@ const handleSubmit = async () => {
             <div class="row mb-3 d-flex align-items-center">
               <div class="container w-50">
                 <h6 class="mx-1">Birthdate</h6>
-                <input class="small-text custom-input text-center" v-model="player.birth">
+                <input type="date" class="small-text custom-input text-center" v-model="player.birth">
               </div>
             </div>
             <div class="row mb-3 d-flex align-items-center">
@@ -104,13 +104,13 @@ const handleSubmit = async () => {
             <div class="row mb-3 d-flex align-items-center">
               <div class="container w-50">
                 <h6 class="mx-1">Height</h6>
-                <input class="small-text custom-input text-center" v-model="player.height">
+                <input type="number" class="small-text custom-input text-center" v-model="player.height">
               </div>
             </div>
             <div class="row mb-3 d-flex align-items-center">
               <div class="container w-50">
                 <h6 class="mx-1">Weight</h6>
-                <input class="small-text custom-input text-center" v-model="player.weight">
+                <input type="number" class="small-text custom-input text-center" v-model="player.weight">
               </div>
             </div>
           </div>

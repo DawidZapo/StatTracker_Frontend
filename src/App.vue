@@ -37,7 +37,7 @@ const logOut = computed(() => {
               <router-link to="/players" class="nav-link">Players</router-link>
             </li>
             <li class="nav-item">
-              <router-link to="/matches" class="nav-link">Matches</router-link>
+              <router-link to="/games" class="nav-link">Games</router-link>
             </li>
           </template>
         </ul>

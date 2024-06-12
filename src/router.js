@@ -15,6 +15,9 @@ import PlayerStats from "@/components/player_routes/PlayerStats.vue";
 import PlayerRecords from "@/components/player_routes/PlayerRecords.vue";
 import PlayerInfo from "@/components/player_routes/PlayerInfo.vue";
 import EditPlayer from "@/components/EditPlayer.vue";
+import GameTeamStats from "@/components/game_routes/GameTeamStats.vue";
+import GamePlayerStats from "@/components/game_routes/GamePlayerStats.vue";
+import GamePlayByPlay from "@/components/game_routes/GamePlayByPlay.vue";
 
 const routes = [
     {
@@ -101,8 +104,22 @@ const routes = [
         ]
     },
     {
-        path: '/matches',
-        component: () => import('./components/main_routes/Matches.vue')
+        path: '/games',
+        component: () => import('./components/main_routes/Games.vue'),
+        children: [
+            {
+                path: 'stats',
+                component: GameTeamStats
+            },
+            {
+                path: 'player_stats',
+                component: GamePlayerStats
+            },
+            {
+                path: 'play_by_play',
+                component: GamePlayByPlay
+            }
+        ]
     }
 
 ];

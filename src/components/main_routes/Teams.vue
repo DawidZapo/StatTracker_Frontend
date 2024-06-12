@@ -3,7 +3,6 @@ import {computed, onBeforeMount, ref} from 'vue';
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 import TeamService from "@/services/team/team.service.js";
-import NetworkError from "@/components/error/Loading.vue";
 
 const store = useStore();
 const router = useRouter();

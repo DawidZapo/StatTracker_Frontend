@@ -4,10 +4,10 @@
 
 <template>
   <div>
-
+    hello game player stats
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 
 </style>
