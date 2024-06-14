@@ -67,42 +67,44 @@ const handleGameClick = (game) => {
       </div>
       <div v-else>
         <div class="card card-body small-text text-center mb-1" style="background-color: #f3f3f3">
-          <div class="row">
+          <div class="row mx-1">
             <div class="col">
-              <strong>First name</strong>
+              <strong>Season</strong>
             </div>
             <div class="col">
-              <strong>Last name </strong>
+              <strong>Home Team</strong>
             </div>
             <div class="col">
-              <strong>Team name</strong>
+              <strong>Away Team</strong>
             </div>
             <div class="col">
-              <strong>Position</strong>
+              <strong>Date</strong>
             </div>
             <div class="col">
-              <strong>Birth</strong>
+              <strong>Time</strong>
             </div>
           </div>
         </div>
       </div>
-      <div v-for="game in filteredGames" :key="game.id" class="card mb-1">
-        <div id="searchCardBody" class="card-body small-text text-center" @click="handleGameClick(game)" style="cursor: pointer">
-          <div class="row">
-            <div class="col">
-              {{ game.id }}
-            </div>
-            <div class="col">
-              {{ game.home }}
-            </div>
-            <div class="col">
-              {{ game.away }}
-            </div>
-            <div class="col">
-              {{ game.date }}
-            </div>
-            <div class="col">
-              {{ game.time }}
+      <div :class="{'card card-body results-container' : filteredGames.length > 0}">
+        <div v-for="game in filteredGames" :key="game.id" class="card mb-1">
+          <div id="searchCardBody" class="card-body small-text text-center" @click="handleGameClick(game)" style="cursor: pointer">
+            <div class="row">
+              <div class="col">
+                {{ game.season }}
+              </div>
+              <div class="col">
+                {{ game.home }}
+              </div>
+              <div class="col">
+                {{ game.away }}
+              </div>
+              <div class="col">
+                {{ game.date }}
+              </div>
+              <div class="col">
+                {{ game.time }}
+              </div>
             </div>
           </div>
         </div>

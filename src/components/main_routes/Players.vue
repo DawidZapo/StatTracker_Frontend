@@ -62,8 +62,8 @@ const handlePlayerClick = (player) => {
           <h3> Please search player</h3>
         </div>
         <div v-else>
-          <div class="card card-body small-text text-center mb-1" style="background-color: #f3f3f3">
-            <div class="row">
+          <div class="card card-body small-text text-center mb-1" style="background-color: #f3f3f3;">
+            <div class="row mx-1">
               <div class="col">
                 <strong>First name</strong>
               </div>
@@ -82,23 +82,25 @@ const handlePlayerClick = (player) => {
             </div>
           </div>
         </div>
-        <div v-for="player in filteredPlayers" :key="player.id" class="card mb-1">
-          <div id="searchCardBody" class="card-body small-text text-center" @click="handlePlayerClick(player)" style="cursor: pointer">
-            <div class="row">
-              <div class="col">
-                {{ player.firstName }}
-              </div>
-              <div class="col">
-                {{ player.lastName }}
-              </div>
-              <div class="col">
-                {{ player.teamName }}
-              </div>
-              <div class="col">
-                {{ player.position }}
-              </div>
-              <div class="col">
-                {{ player.birth }}
+        <div :class="{'card card-body results-container' : filteredPlayers.length > 0}">
+          <div v-for="player in filteredPlayers" :key="player.id" class="card mb-1">
+            <div id="searchCardBody" class="card-body small-text text-center" @click="handlePlayerClick(player)" style="cursor: pointer">
+              <div class="row">
+                <div class="col">
+                  {{ player.firstName }}
+                </div>
+                <div class="col">
+                  {{ player.lastName }}
+                </div>
+                <div class="col">
+                  {{ player.teamName }}
+                </div>
+                <div class="col">
+                  {{ player.position }}
+                </div>
+                <div class="col">
+                  {{ player.birth }}
+                </div>
               </div>
             </div>
           </div>
@@ -135,4 +137,5 @@ const handlePlayerClick = (player) => {
 #searchCardBody:hover {
   opacity: 0.8;
 }
+
 </style>

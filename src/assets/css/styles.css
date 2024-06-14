@@ -45,3 +45,8 @@
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+.results-container {
+    max-height: 360px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+}

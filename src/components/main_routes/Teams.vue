@@ -105,7 +105,7 @@ onBeforeMount(() =>{
         </div>
         <div v-else>
           <div class="card card-body small-text text-center mb-1" style="background-color: #f3f3f3">
-            <div class="row">
+            <div class="row mx-1">
               <div class="col">
                 <strong>Team name</strong>
               </div>
@@ -118,17 +118,19 @@ onBeforeMount(() =>{
             </div>
           </div>
         </div>
-        <div v-for="team in filteredTeams" :key="team.id" class="card mb-1">
-          <div id="searchCardBody" class="card-body small-text text-center" @click="handleTeamClick(team)" style="cursor: pointer">
-            <div class="row">
-              <div class="col">
-                {{ team.name }}
-              </div>
-              <div class="col">
-                {{ team.location }}
-              </div>
-              <div class="col">
-                {{ team.arena }}
+        <div :class="{'card card-body results-container' : filteredTeams.length > 0}">
+          <div v-for="team in filteredTeams" :key="team.id" class="card mb-1">
+            <div id="searchCardBody" class="card-body small-text text-center" @click="handleTeamClick(team)" style="cursor: pointer">
+              <div class="row">
+                <div class="col">
+                  {{ team.name }}
+                </div>
+                <div class="col">
+                  {{ team.location }}
+                </div>
+                <div class="col">
+                  {{ team.arena }}
+                </div>
               </div>
             </div>
           </div>
