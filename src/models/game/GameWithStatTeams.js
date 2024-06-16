@@ -1,3 +1,5 @@
+import {createPercentageComputed} from "@/assets/scripts/stats.js";
+
 class StatLine {
     constructor({
                     timeOnCourtInMs,
@@ -52,6 +54,7 @@ class Player {
         this.shirtNumber = shirtNumber;
         this.startingFive = startingFive;
         this.statLine = new StatLine(statLine);
+        this.percentage = createPercentageComputed(statLine);
     }
 }
 
@@ -64,6 +67,7 @@ class Team {
         this.arena = arena;
         this.scores = scores;
         this.statLine = new StatLine(statLine);
+        this.percentage = createPercentageComputed(statLine);
         this.players = players.map(player => new Player(player));
     }
 }

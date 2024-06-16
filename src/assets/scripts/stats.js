@@ -14,6 +14,15 @@ const formatTimeOnCourt = (timeOnCourtInMs) => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
+export const createPercentageComputed = (statLine) =>{
+    return {
+        twoPoint: computed(() => parseFloat(calculatePercentage(statLine.twoMade, statLine.twoAttempted).toFixed(2))),
+        threePoint: computed(() => parseFloat(calculatePercentage(statLine.threeMade, statLine.threeAttempted).toFixed(2))),
+        freeThrow: computed(() => parseFloat(calculatePercentage(statLine.freeThrowMade, statLine.freeThrowAttempted).toFixed(2))),
+        fieldGoal: computed(()=> parseFloat(calculatePercentage(statLine.twoMade + statLine.threeMade, statLine.twoAttempted + statLine.threeAttempted).toFixed(2)))
+    };
+}
+
 export const createStatsComputed = (entity, includeTimeOnCourt = true) => {
     const stats = {
         fieldGoalsAttempted: computed(() => entity.twoPointShotsAttempted + entity.threePointShotsAttempted),
