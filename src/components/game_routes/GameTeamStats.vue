@@ -77,14 +77,10 @@ watch(selectedGameId, (newId) => {
           <tr>
             <th scope="col">Team</th>
             <th scope="col">PTS</th>
-            <th scope="col">2PT</th>
-            <th scope="col">2PT %</th>
-            <th scope="col">3PT</th>
-            <th scope="col">3PT %</th>
-            <th scope="col">FT</th>
-            <th scope="col">FT %</th>
-            <th scope="col">FG</th>
-            <th scope="col">FG %</th>
+            <th scope="col" colspan="2">2PT</th>
+            <th scope="col" colspan="2">3PT</th>
+            <th scope="col" colspan="2">FT</th>
+            <th scope="col" colspan="2">FG</th>
             <th scope="col">OR</th>
             <th scope="col">DF</th>
             <th scope="col">A</th>
@@ -103,13 +99,13 @@ watch(selectedGameId, (newId) => {
             <td>{{game.home.name}}</td>
             <td>{{game.home.statLine.totalPoints}}</td>
             <td>{{game.home.statLine.twoMade}} / {{game.home.statLine.twoAttempted}}</td>
-            <td>{{game.home.percentage.twoPoint}}</td>
+            <td>{{game.home.statLine.percentage.twoPoint}} %</td>
             <td>{{game.home.statLine.threeMade}} / {{game.home.statLine.threeAttempted}}</td>
-            <td>{{game.home.percentage.threePoint}}</td>
+            <td>{{game.home.statLine.percentage.threePoint}} % </td>
             <td>{{game.home.statLine.freeThrowMade}} / {{game.home.statLine.freeThrowAttempted}}</td>
-            <td>{{game.home.percentage.freeThrow}}</td>
+            <td>{{game.home.statLine.percentage.freeThrow}} %</td>
             <td>{{game.home.statLine.twoMade + game.home.statLine.threeMade}} / {{game.home.statLine.twoAttempted + game.home.statLine.threeAttempted}}</td>
-            <td>{{game.home.percentage.fieldGoal}}</td>
+            <td>{{game.home.statLine.percentage.fieldGoal}} %</td>
             <td>{{game.home.statLine.offRebounds}}</td>
             <td>{{game.home.statLine.defRebounds}}</td>
             <td>{{game.home.statLine.assists}}</td>
@@ -126,13 +122,13 @@ watch(selectedGameId, (newId) => {
             <td>{{game.away.name}}</td>
             <td>{{game.away.statLine.totalPoints}}</td>
             <td>{{game.away.statLine.twoMade}} / {{game.away.statLine.twoAttempted}}</td>
-            <td>{{game.away.percentage.twoPoint}}</td>
+            <td>{{game.away.statLine.percentage.twoPoint}} %</td>
             <td>{{game.away.statLine.threeMade}} / {{game.away.statLine.threeAttempted}}</td>
-            <td>{{game.away.percentage.threePoint}}</td>
+            <td>{{game.away.statLine.percentage.threePoint}} %</td>
             <td>{{game.away.statLine.freeThrowMade}} / {{game.away.statLine.freeThrowAttempted}}</td>
-            <td>{{game.away.percentage.freeThrow}}</td>
+            <td>{{game.away.statLine.percentage.freeThrow}} %</td>
             <td>{{game.away.statLine.twoMade + game.away.statLine.threeMade}} / {{game.away.statLine.twoAttempted + game.away.statLine.threeAttempted}}</td>
-            <td>{{game.away.percentage.fieldGoal}}</td>
+            <td>{{game.away.statLine.percentage.fieldGoal}} %</td>
             <td>{{game.away.statLine.offRebounds}}</td>
             <td>{{game.away.statLine.defRebounds}}</td>
             <td>{{game.away.statLine.assists}}</td>

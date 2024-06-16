@@ -1,86 +1,65 @@
 import {createPercentageComputed} from "@/assets/scripts/stats.js";
 
 class StatLine {
-    constructor({
-                    timeOnCourtInMs,
-                    twoAttempted,
-                    twoMade,
-                    threeAttempted,
-                    threeMade,
-                    freeThrowAttempted,
-                    freeThrowMade,
-                    totalPoints,
-                    offRebounds,
-                    defRebounds,
-                    assists,
-                    fouls,
-                    forcedFouls,
-                    turnovers,
-                    steals,
-                    blocks,
-                    blocksReceived,
-                    evaluation,
-                    plusMinus,
-                    possessions
-                }) {
-        this.timeOnCourtInMs = timeOnCourtInMs;
-        this.twoAttempted = twoAttempted;
-        this.twoMade = twoMade;
-        this.threeAttempted = threeAttempted;
-        this.threeMade = threeMade;
-        this.freeThrowAttempted = freeThrowAttempted;
-        this.freeThrowMade = freeThrowMade;
-        this.totalPoints = totalPoints;
-        this.offRebounds = offRebounds;
-        this.defRebounds = defRebounds;
-        this.assists = assists;
-        this.fouls = fouls;
-        this.forcedFouls = forcedFouls;
-        this.turnovers = turnovers;
-        this.steals = steals;
-        this.blocks = blocks;
-        this.blocksReceived = blocksReceived;
-        this.evaluation = evaluation;
-        this.plusMinus = plusMinus;
-        this.possessions = possessions;
+    constructor(data) {
+        this.timeOnCourtInMs = data.timeOnCourtInMs;
+        this.twoAttempted = data.twoAttempted;
+        this.twoMade = data.twoMade;
+        this.threeAttempted = data.threeAttempted;
+        this.threeMade = data.threeMade;
+        this.freeThrowAttempted = data.freeThrowAttempted;
+        this.freeThrowMade = data.freeThrowMade;
+        this.totalPoints = data.totalPoints;
+        this.offRebounds = data.offRebounds;
+        this.defRebounds = data.defRebounds;
+        this.assists = data.assists;
+        this.fouls = data.fouls;
+        this.forcedFouls = data.forcedFouls;
+        this.turnovers = data.turnovers;
+        this.steals = data.steals;
+        this.blocks = data.blocks;
+        this.blocksReceived = data.blocksReceived;
+        this.evaluation = data.evaluation;
+        this.plusMinus = data.plusMinus;
+        this.possessions = data.possessions;
+        this.percentage = createPercentageComputed(data);
     }
 }
 
 class Player {
-    constructor({ id, firstName, lastName, shirtNumber, startingFive, statLine }) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.shirtNumber = shirtNumber;
-        this.startingFive = startingFive;
-        this.statLine = new StatLine(statLine);
-        this.percentage = createPercentageComputed(statLine);
+    constructor(data) {
+        this.id = data.id;
+        this.firstName = data.firstName;
+        this.lastName = data.lastName;
+        this.shirtNumber = data.shirtNumber;
+        this.startingFive = data.startingFive;
+        this.statLine = new StatLine(data.statLine);
     }
 }
 
 class Team {
-    constructor({ id, name, location, address, arena, scores, statLine, players }) {
-        this.id = id;
-        this.name = name;
-        this.location = location;
-        this.address = address;
-        this.arena = arena;
-        this.scores = scores;
-        this.statLine = new StatLine(statLine);
-        this.percentage = createPercentageComputed(statLine);
-        this.players = players.map(player => new Player(player));
+    constructor(data) {
+        this.id = data.id;
+        this.name = data.name;
+        this.location = data.location;
+        this.address = data.address;
+        this.arena = data.arena;
+        this.scores = data.scores;
+        this.statLine = new StatLine(data.statLine);
+        this.percentage = createPercentageComputed(data.statLine);
+        this.players = data.players.map(player => new Player(player));
     }
 }
 
 class GameWithStatTeams {
-    constructor({ id, date, time, season, home, away, official }) {
-        this.id = id;
-        this.date = date;
-        this.time = time;
-        this.season = season;
-        this.home = new Team(home);
-        this.away = new Team(away);
-        this.official = official;
+    constructor(data) {
+        this.id = data.id;
+        this.date = data.date;
+        this.time = data.time;
+        this.season = data.season;
+        this.home = new Team(data.home);
+        this.away = new Team(data.away);
+        this.official = data.official;
     }
 }
 
