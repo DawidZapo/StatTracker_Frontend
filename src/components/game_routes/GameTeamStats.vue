@@ -1,64 +1,79 @@
 <script setup>
 
 import {useStore} from "vuex";
-import {computed} from "vue";
+import {computed, ref, watch} from "vue";
+import GameService from "@/services/game/game.service.js";
+import Loading from "@/components/error/Loading.vue";
 
 const store = useStore();
 const selectedGameId = computed(()=> store.getters.selectedGameId);
+const game = ref(null);
+
+const fetchGame = async (id) => {
+  try{
+    if(id){
+      game.value = await GameService.fetchGameWithStatTeams(id);
+    }
+  }catch (error) {
+    console.error("Error while fetching game with stat teams: " + error);
+    game.value = null;
+  }
+};
+
+fetchGame(selectedGameId.value);
+watch(selectedGameId, (newId) => {
+  fetchGame(newId);
+});
 
 </script>
 
 <template>
-  <div class="container shadow-lg">
-    {{selectedGameId}}
+  <div v-if="game !== null" class="container shadow-lg p-3">
     <div class="row d-flex justify-content-center event-info">
       <div class="col-4 text-center event-info">
         <div class="d-flex justify-content-between">
-          <div>2024-05-04</div>
+          <div>{{game.date}}</div>
           <div class="line">|</div>
-          <div>17:00</div>
+          <div>{{game.time}}</div>
           <div class="line">|</div>
-          <div>Arena Osir</div>
+          <div>{{game.home.arena}}</div>
           <div class="line">|</div>
-          <div>Knurów</div>
+          <div>{{ game.home.location }}</div>
         </div>
       </div>
     </div>
     <hr class="my-2"></hr>
     <div class="row">
         <div class="col-3 text-end d-flex align-items-center justify-content-end">
-          <h1>KTK Knurów</h1>
+          <h1>{{game.home.name}}</h1>
         </div>
         <div class="col-6" style="align-content: center">
           <div class="row">
             <div class="col-4 text-end">
-              <h1>80</h1>
+              <h1>{{ game.home.statLine.totalPoints }}</h1>
             </div>
             <div class="col-4">
               <div class="row text-center event-info">
                 <div class="d-flex justify-content-between">
-                  <div>10</div>
-                  <div>20</div>
-                  <div>15</div>
-                  <div>20</div>
+                  <div v-for="quarter in game.home.scores">{{quarter}}</div>
                 </div>
               </div>
               <div class="d-flex justify-content-between event-info">
-                <div>10</div>
-                <div>20</div>
-                <div>15</div>
-                <div>20</div>
+                <div v-for="quarter in game.away.scores">{{quarter}}</div>
               </div>
             </div>
             <div class="col-4 text-start">
-              <h1>89</h1>
+              <h1>{{ game.away.statLine.totalPoints }}</h1>
             </div>
           </div>
         </div>
         <div class="col-3 text-start d-flex align-items-center justify-content-start">
-          <h1>Anwil Włocławek</h1>
+          <h1>{{game.away.name}}</h1>
         </div>
     </div>
+  </div>
+  <div v-else class="container shadow-lg">
+    <Loading></Loading>
   </div>
 </template>
 
