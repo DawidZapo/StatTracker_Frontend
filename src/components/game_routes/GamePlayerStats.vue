@@ -35,7 +35,9 @@ watch(selectedGameId, (newId) => {
       <table class="table table-striped table-hover table-bordered small-text text-center">
         <thead>
         <tr>
+          <th scope="col">No.</th>
           <th scope="col">Player</th>
+          <th scope="col">S5</th>
           <th scope="col">PTS</th>
           <th scope="col" colspan="2">2PT</th>
           <th scope="col" colspan="2">3PT</th>
@@ -56,7 +58,9 @@ watch(selectedGameId, (newId) => {
         </thead>
         <tbody>
         <tr v-for="player in game.home.players">
+          <td>{{player.shirtNumber}}</td>
           <td>{{player.firstName +  ' ' + player.lastName}}</td>
+          <td>{{ player.startingFive ? '1' : '0' }}</td>
           <td>{{player.statLine.totalPoints}}</td>
           <td>{{player.statLine.twoMade}} / {{player.statLine.twoAttempted}}</td>
           <td>{{player.statLine.percentage.twoPoint}} %</td>
@@ -88,7 +92,9 @@ watch(selectedGameId, (newId) => {
       <table class="table table-striped table-hover table-bordered small-text text-center">
         <thead>
         <tr>
-          <th scope="col">Team</th>
+          <th scope="col">No.</th>
+          <th scope="col">Player</th>
+          <th scope="col">S5</th>
           <th scope="col">PTS</th>
           <th scope="col" colspan="2">2PT</th>
           <th scope="col" colspan="2">3PT</th>
@@ -109,7 +115,9 @@ watch(selectedGameId, (newId) => {
         </thead>
         <tbody>
         <tr v-for="player in game.away.players">
+          <td>{{player.shirtNumber}}</td>
           <td>{{player.firstName +  ' ' + player.lastName}}</td>
+          <td>{{ player.startingFive ? '1' : '0' }}</td>
           <td>{{player.statLine.totalPoints}}</td>
           <td>{{player.statLine.twoMade}} / {{player.statLine.twoAttempted}}</td>
           <td>{{player.statLine.percentage.twoPoint}} %</td>
