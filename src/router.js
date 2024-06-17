@@ -18,6 +18,7 @@ import EditPlayer from "@/components/EditPlayer.vue";
 import GameTeamStats from "@/components/game_routes/GameTeamStats.vue";
 import GamePlayerStats from "@/components/game_routes/GamePlayerStats.vue";
 import GamePlayByPlay from "@/components/game_routes/GamePlayByPlay.vue";
+import GameCreation from "@/components/game_routes/GameCreation.vue";
 
 const routes = [
     {
@@ -46,6 +47,10 @@ const routes = [
         name: 'profile',
         // lazy-loaded
         component: () => import('./components/main_routes/Profile.vue')
+    },
+    {
+        path: '/game_creation',
+        component: GameCreation
     },
     {
         path: '/teams',
@@ -118,7 +123,7 @@ const routes = [
             {
                 path: 'play_by_play',
                 component: GamePlayByPlay
-            }
+            },
         ]
     }
 

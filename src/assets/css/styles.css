@@ -50,3 +50,7 @@
     overflow-y: auto;
     background-color: #f9f9f9;
 }
+.disabled{
+    pointer-events: none;
+    opacity: 0.6;
+}
