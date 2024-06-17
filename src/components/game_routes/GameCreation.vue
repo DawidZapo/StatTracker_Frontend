@@ -53,6 +53,57 @@ const selectedAwayId = computed(()=> store.getters.selectedAwayTeamId);
 const selectedHome = ref(null);
 const selectedAway = ref(null);
 
+const selectedHomePlayersForGame = ref([]);
+const selectedHomeStartingFive = ref([]);
+const selectedAwayPlayersForGame = ref([]);
+const selectedAwayStartingFive = ref([]);
+const isHomeSelectedForGame = (id) =>{
+  return selectedHomePlayersForGame.value.includes(id);
+};
+const isAwaySelectedForGame = (id) => {
+  return selectedAwayPlayersForGame.value.includes(id);
+};
+
+function validatePlayerLists(playersForGame, startingFive) {
+  if (playersForGame.length < 5 || playersForGame.length > 12) {
+    return false;
+  }
+  if (startingFive.length !== 5) {
+    return false;
+  }
+  return true;
+}
+
+const isValidHome = computed(()=>{
+  return validatePlayerLists(selectedHomePlayersForGame.value, selectedHomeStartingFive.value);
+});
+const isValidAway = computed(()=>{
+  return validatePlayerLists(selectedAwayPlayersForGame.value, selectedAwayStartingFive.value);
+});
+
+watch(selectedHomePlayersForGame, (newPlayersForGame, oldPlayersForGame) => {
+  oldPlayersForGame.forEach(playerId => {
+    if (!newPlayersForGame.includes(playerId)) {
+      const index = selectedHomeStartingFive.value.indexOf(playerId);
+      if (index !== -1) {
+        selectedHomeStartingFive.value.splice(index, 1);
+      }
+    }
+  });
+}, { deep: true });
+watch(selectedAwayPlayersForGame, (newPlayersForGame, oldPlayersForGame) => {
+  oldPlayersForGame.forEach(playerId => {
+    if (!newPlayersForGame.includes(playerId)) {
+      const index = selectedAwayStartingFive.value.indexOf(playerId);
+      if (index !== -1) {
+        selectedAwayStartingFive.value.splice(index, 1);
+      }
+    }
+  });
+}, { deep: true });
+
+
+
 function generateSeasons(selectedDate) {
   const startDate = new Date(selectedDate);
   const currentYear = startDate.getFullYear();
@@ -139,7 +190,33 @@ const handleAwayClick = () => {
             </div>
             <div class="card-body">
               <template v-if="selectedHome !== null">
-                {{selectedHome}}
+                <table class="table table-striped table-hover table-bordered small-text text-center">
+                  <thead>
+                  <tr>
+                    <th scope="col">Selected</th>
+                    <th scope="col">Player</th>
+                    <th scope="col">S5</th>
+                    <th scope="col">Shirt no.</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="(player,index) in selectedHome.currentPlayers">
+                    <td style="width: 10%; align-content: center">
+                      <input type="checkbox" :value="player.id" v-model="selectedHomePlayersForGame">
+                    </td>
+                    <td style="align-content: center" :class="{'disabled' : !isHomeSelectedForGame(player.id)}">
+                      {{ player.firstName + ' ' + player.lastName }}
+                    </td>
+                    <td style="width: 10%; align-content: center" :class="{'disabled' : !isHomeSelectedForGame(player.id)}">
+                      <input type="checkbox" :value="player.id" v-model="selectedHomeStartingFive">
+                    </td>
+                    <td style="width: 20%; align-content: center" :class="{'disabled' : !isHomeSelectedForGame(player.id)}">
+                      <input type="number" class="custom-input">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div v-show="!isValidHome" class="alert alert-danger small-text" style="padding: 3px; text-align: center">Adjust lineup</div>
               </template>
             </div>
           </div>
@@ -154,7 +231,33 @@ const handleAwayClick = () => {
             </div>
             <div class="card-body">
               <template v-if="selectedAway !== null">
-                {{selectedAway}}
+                <table class="table table-striped table-hover table-bordered small-text text-center">
+                  <thead>
+                  <tr>
+                    <th scope="col">Selected</th>
+                    <th scope="col">Player</th>
+                    <th scope="col">S5</th>
+                    <th scope="col">Shirt no.</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="(player,index) in selectedAway.currentPlayers">
+                    <td style="width: 10%; align-content: center">
+                      <input type="checkbox" :value="player.id" v-model="selectedAwayPlayersForGame">
+                    </td>
+                    <td style="align-content: center" :class="{'disabled' : !isAwaySelectedForGame(player.id)}">
+                      {{ player.firstName + ' ' + player.lastName }}
+                    </td>
+                    <td style="width: 10%; align-content: center" :class="{'disabled' : !isAwaySelectedForGame(player.id)}">
+                      <input type="checkbox" :value="player.id" v-model="selectedAwayStartingFive">
+                    </td>
+                    <td style="width: 20%; align-content: center" :class="{'disabled' : !isAwaySelectedForGame(player.id)}">
+                      <input type="number" class="custom-input">
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <div v-show="!isValidAway" class="alert alert-danger small-text" style="padding: 3px; text-align: center">Adjust lineup</div>
               </template>
             </div>
           </div>
