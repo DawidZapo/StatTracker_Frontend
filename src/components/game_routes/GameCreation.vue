@@ -4,6 +4,7 @@ import {computed, ref, watch} from "vue";
 import TeamService from "@/services/team/team.service.js";
 import {useStore} from "vuex";
 import GameCreated from "@/models/game/GameCreated.js";
+import GameService from "@/services/game/game.service.js";
 
 const today = new Date().toISOString().slice(0, 10);
 const now = new Date();
@@ -55,6 +56,7 @@ const transformPlayersList = (players) => {
 
 fetchAllTeams();
 
+const createGameResponse = ref(null);
 const store = useStore();
 const myDate = ref(today);
 const seasons = ref(generateSeasons(myDate.value));
@@ -64,9 +66,17 @@ const selectedHome = ref(null);
 const selectedAway = ref(null);
 const isHomeValid = ref(false);
 const isAwayValid = ref(false);
+const isTheSameTeamSelected = computed(()=> {
+  if(selectedAwayId.value === null || selectedHomeId.value === null){
+    return false;
+  }
+  else{
+    return selectedHomeId.value === selectedAwayId.value;
+  }
+});
 const isSubmissionValid = computed(()=>{
   return isAwayValid.value && isHomeValid.value && selectedHome !== null && selectedAway !== null;
-})
+});
 
 const selectedHomePlayersForGame = ref([]);
 const selectedAwayPlayersForGame = ref([]);
@@ -124,6 +134,18 @@ watch(selectedAwayPlayersForGame, (newPlayers, oldPlayers) => {
   isAwayValid.value = validatePlayerList(newPlayers) && validateShirtNumbers(newPlayers);
 }, { deep: true });
 
+watch(selectedHome, (newValue, oldValue) => {
+  if (newValue && (!oldValue || newValue.id !== oldValue.id)) {
+    selectedHomePlayersForGame.value = [];
+  }
+});
+watch(selectedAway, (newValue, oldValue) => {
+  if (newValue && (!oldValue || newValue.id !== oldValue.id)) {
+    selectedAwayPlayersForGame.value = [];
+  }
+});
+
+
 const handleSelectionForGame = (player, isSelected) => {
   if(isSelected){
     player.startingFive = false;
@@ -168,8 +190,14 @@ const handleAwayClick = () => {
 };
 
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const gameCreated = new GameCreated(gameData.value);
+  try{
+    createGameResponse.value = await GameService.createGame(gameCreated);
+  }
+  catch (error){
+    console.error("Error while creating game: " + error);
+  }
   console.log(gameCreated);
 };
 
@@ -223,6 +251,7 @@ const handleSubmit = () => {
       </div>
       <hr class="my-2">
       <div class="container">
+        <div v-show="isTheSameTeamSelected" class="alert alert-danger small-text" style="padding: 3px; text-align: center">The same team selected</div>
         <div class="row">
           <div class="col">
             <div class="card">
@@ -307,7 +336,7 @@ const handleSubmit = () => {
             </div>
           </div>
         </div>
-        <button :disabled="!isSubmissionValid" type="submit" class="btn btn-success w-100">Create</button>
+        <button :disabled="!isSubmissionValid || isTheSameTeamSelected" type="submit" class="btn btn-success w-100">Create</button>
       </div>
     </form>
   </div>

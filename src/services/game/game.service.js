@@ -28,5 +28,16 @@ class GameService{
                 throw error;
             })
     }
+
+    createGame(gameCreated){
+        return axios.post(API_URL + 'create', gameCreated, {headers: authHeader()})
+            .then(response => {
+                return response.data;
+            })
+            .catch(error => {
+                console.error("Error while creating game: " + error);
+                throw error;
+            });
+    }
 }
 export default new GameService();
