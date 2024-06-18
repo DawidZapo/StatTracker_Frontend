@@ -122,8 +122,19 @@ function validatePlayerList(players) {
 
 const validateShirtNumbers = (players) => {
   const shirtNumbers = players.map(player => player.shirtNumber);
+  const areNumbersInRange = shirtNumbers.every(number => number >= 0 && number <= 99);
   const uniqueShirtNumbers = new Set(shirtNumbers);
-  return shirtNumbers.length === uniqueShirtNumbers.size;
+  return shirtNumbers.length === uniqueShirtNumbers.size && areNumbersInRange;
+};
+const validateInput = (player) => {
+  let value = parseInt(player.shirtNumber, 10);
+
+  if (isNaN(value)) {
+    player.shirtNumber = null;
+  } else if (value < 0 || value > 99) {
+    player.shirtNumber = Math.max(0, Math.min(value, 99));
+  }
+
 };
 
 
@@ -284,7 +295,7 @@ const handleSubmit = async () => {
                         <input type="checkbox" v-model="player.startingFive">
                       </td>
                       <td style="width: 20%; align-content: center" :class="{'disabled' : handleDisable(player.id, true)}">
-                        <input type="number" class="custom-input" v-model="player.shirtNumber">
+                        <input type="number" class="custom-input" v-model="player.shirtNumber" @input="() => validateInput(player)">
                       </td>
                     </tr>
                     </tbody>
@@ -325,7 +336,7 @@ const handleSubmit = async () => {
                         <input type="checkbox" v-model="player.startingFive">
                       </td>
                       <td style="width: 20%; align-content: center" :class="{'disabled' : handleDisable(player.id, false)}">
-                        <input type="number" class="custom-input" v-model="player.shirtNumber">
+                        <input type="number" class="custom-input" v-model="player.shirtNumber" @input="() => validateInput(player)">
                       </td>
                     </tr>
                     </tbody>
