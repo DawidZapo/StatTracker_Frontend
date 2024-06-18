@@ -53,6 +53,8 @@ const selectedHomeId = computed(()=> store.getters.selectedHomeTeamId);
 const selectedAwayId = computed(()=> store.getters.selectedAwayTeamId);
 const selectedHome = ref(null);
 const selectedAway = ref(null);
+const isHomeValid = ref(false);
+const isAwayValid = ref(false)
 
 const selectedHomePlayersForGame = ref([]);
 const selectedHomeStartingFive = ref([]);
@@ -88,43 +90,41 @@ const isAwaySelectedForGame = (id) => {
   return selectedAwayPlayersForGame.value.includes(id);
 };
 
-function validatePlayerLists(playersForGame, startingFive) {
-  if (playersForGame.length < 5 || playersForGame.length > 12) {
+
+function validatePlayerList(players) {
+  const numPlayers = players.length;
+  const numStartingFive = players.filter(player => player.startingFive).length;
+
+  if (numPlayers < 5 || numPlayers > 12) {
     return false;
   }
-  if (startingFive.length !== 5) {
+  if (numStartingFive !== 5) {
     return false;
   }
   return true;
 }
 
-const isValidHome = computed(()=>{
-  return validatePlayerLists(selectedHomePlayersForGame.value, selectedHomeStartingFive.value);
-});
-const isValidAway = computed(()=>{
-  return validatePlayerLists(selectedAwayPlayersForGame.value, selectedAwayStartingFive.value);
-});
+watch(selectedHomePlayersForGame, (newPlayers, oldPlayers) => {
+  isHomeValid.value = validatePlayerList(newPlayers);
+}, { deep: true });
+watch(selectedAwayPlayersForGame, (newPlayers, oldPlayers) => {
+  isAwayValid.value = validatePlayerList(newPlayers);
+}, { deep: true });
 
-watch(selectedHomePlayersForGame, (newPlayersForGame, oldPlayersForGame) => {
-  oldPlayersForGame.forEach(playerId => {
-    if (!newPlayersForGame.includes(playerId)) {
-      const index = selectedHomeStartingFive.value.indexOf(playerId);
-      if (index !== -1) {
-        selectedHomeStartingFive.value.splice(index, 1);
-      }
-    }
-  });
-}, { deep: true });
-watch(selectedAwayPlayersForGame, (newPlayersForGame, oldPlayersForGame) => {
-  oldPlayersForGame.forEach(playerId => {
-    if (!newPlayersForGame.includes(playerId)) {
-      const index = selectedAwayStartingFive.value.indexOf(playerId);
-      if (index !== -1) {
-        selectedAwayStartingFive.value.splice(index, 1);
-      }
-    }
-  });
-}, { deep: true });
+const handleSelectionForGame = (player, isSelected) => {
+  if(isSelected){
+    player.startingFive = false;
+  }
+};
+
+const handleDisable = (id, isHome) => {
+  if(isHome){
+    return !selectedHomePlayersForGame.value.map(player => player.id).includes(id);
+  }
+  else{
+    return !selectedAwayPlayersForGame.value.map(player => player.id).includes(id);
+  }
+};
 
 
 
@@ -234,21 +234,21 @@ const handleSubmit = () => {
                     <tbody>
                     <tr v-for="(player,index) in selectedHome.currentPlayers">
                       <td style="width: 10%; align-content: center">
-                        <input type="checkbox" :value="player.id" v-model="selectedHomePlayersForGame">
+                        <input type="checkbox" :value="player" v-model="selectedHomePlayersForGame" @change="handleSelectionForGame(player, $event)">
                       </td>
-                      <td style="align-content: center" :class="{'disabled' : !isHomeSelectedForGame(player.id)}">
+                      <td style="align-content: center" :class="{'disabled' : handleDisable(player.id, true)}">
                         {{ player.firstName + ' ' + player.lastName }}
                       </td>
-                      <td style="width: 10%; align-content: center" :class="{'disabled' : !isHomeSelectedForGame(player.id)}">
-                        <input type="checkbox" :value="player.id" v-model="selectedHomeStartingFive">
+                      <td style="width: 10%; align-content: center" :class="{'disabled' : handleDisable(player.id, true)}">
+                        <input type="checkbox" v-model="player.startingFive">
                       </td>
-                      <td style="width: 20%; align-content: center" :class="{'disabled' : !isHomeSelectedForGame(player.id)}">
-                        <input type="number" class="custom-input">
+                      <td style="width: 20%; align-content: center" :class="{'disabled' : handleDisable(player.id, true)}">
+                        <input type="number" class="custom-input" v-model="player.shirtNumber">
                       </td>
                     </tr>
                     </tbody>
                   </table>
-                  <div v-show="!isValidHome" class="alert alert-danger small-text" style="padding: 3px; text-align: center">Adjust lineup</div>
+                  <div v-show="!isHomeValid" class="alert alert-danger small-text" style="padding: 3px; text-align: center">Adjust lineup</div>
                 </template>
               </div>
             </div>
@@ -275,21 +275,21 @@ const handleSubmit = () => {
                     <tbody>
                     <tr v-for="(player,index) in selectedAway.currentPlayers">
                       <td style="width: 10%; align-content: center">
-                        <input type="checkbox" :value="player.id" v-model="selectedAwayPlayersForGame">
+                        <input type="checkbox" :value="player" v-model="selectedAwayPlayersForGame" @change="handleSelectionForGame(player, $event)">
                       </td>
-                      <td style="align-content: center" :class="{'disabled' : !isAwaySelectedForGame(player.id)}">
+                      <td style="align-content: center" :class="{'disabled' : handleDisable(player.id, false)}">
                         {{ player.firstName + ' ' + player.lastName }}
                       </td>
-                      <td style="width: 10%; align-content: center" :class="{'disabled' : !isAwaySelectedForGame(player.id)}">
-                        <input type="checkbox" :value="player.id" v-model="selectedAwayStartingFive">
+                      <td style="width: 10%; align-content: center" :class="{'disabled' : handleDisable(player.id, false)}">
+                        <input type="checkbox" v-model="player.startingFive">
                       </td>
-                      <td style="width: 20%; align-content: center" :class="{'disabled' : !isAwaySelectedForGame(player.id)}">
-                        <input type="number" class="custom-input">
+                      <td style="width: 20%; align-content: center" :class="{'disabled' : handleDisable(player.id, false)}">
+                        <input type="number" class="custom-input" v-model="player.shirtNumber">
                       </td>
                     </tr>
                     </tbody>
                   </table>
-                  <div v-show="!isValidAway" class="alert alert-danger small-text" style="padding: 3px; text-align: center">Adjust lineup</div>
+                  <div v-show="!isAwayValid" class="alert alert-danger small-text" style="padding: 3px; text-align: center">Adjust lineup</div>
                 </template>
               </div>
             </div>

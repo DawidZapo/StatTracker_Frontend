@@ -7,6 +7,8 @@ class Player {
         this.weight = data.weight;
         this.position = data.position;
         this.birth = data.birth;
+        this.startingFive = false;
+        this.shirtNumber = 1;
     }
 }
 
