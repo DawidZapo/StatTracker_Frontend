@@ -41,14 +41,23 @@ const fetchTeam = async (id, isHome) => {
   }catch (error) {
     console.error("Error while fetching team: " + error);
   }
-}
+};
+
+const transformPlayersList = (players) => {
+  return players.map(player => ({
+    id: player.id,
+    firstName: player.firstName,
+    lastName: player.lastName,
+    shirtNumber: player.shirtNumber,
+    startingFive: player.startingFive
+  }));
+};
 
 fetchAllTeams();
 
 const store = useStore();
 const myDate = ref(today);
 const seasons = ref(generateSeasons(myDate.value));
-const myTime = ref(currentTime);
 const selectedHomeId = computed(()=> store.getters.selectedHomeTeamId);
 const selectedAwayId = computed(()=> store.getters.selectedAwayTeamId);
 const selectedHome = ref(null);
@@ -57,31 +66,32 @@ const isHomeValid = ref(false);
 const isAwayValid = ref(false)
 
 const selectedHomePlayersForGame = ref([]);
-const selectedHomeStartingFive = ref([]);
 const selectedAwayPlayersForGame = ref([]);
-const selectedAwayStartingFive = ref([]);
+const formattedHomePlayers = computed(()=>{
+  return transformPlayersList(selectedHomePlayersForGame.value);
+});
+const formattedAwayPlayers = computed(()=>{
+  return transformPlayersList(selectedAwayPlayersForGame.value);
+});
+
 
 const gameData = ref({
   id: null,
-  date: '',
-  time: '',
-  season: '',
-  official: '',
-  quarterLengthMin: '',
-  home: {
-    id: null,
-    name: '',
-    players: [
-      { id: null, firstName: '', lastName: '', shirtNumber: null, startingFive: false }
-    ]
-  },
-  away: {
-    id: null,
-    name: '',
-    players: [
-      { id: null, firstName: '', lastName: '', shirtNumber: null, startingFive: false }
-    ]
-  }
+  date: today,
+  time: currentTime,
+  season: seasons.value[0],
+  official: true,
+  quarterLengthMin: 10,
+  home: computed(() => ({
+    id: selectedHome.value.id,
+    name: selectedHome.value.name,
+    players: formattedHomePlayers.value
+  })),
+  away: computed(() => ({
+    id: selectedAway.value.id,
+    name: selectedAway.value.name,
+    players: formattedAwayPlayers.value
+  }))
 });
 const isHomeSelectedForGame = (id) =>{
   return selectedHomePlayersForGame.value.includes(id);
