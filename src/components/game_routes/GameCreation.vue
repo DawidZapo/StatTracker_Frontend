@@ -63,7 +63,10 @@ const selectedAwayId = computed(()=> store.getters.selectedAwayTeamId);
 const selectedHome = ref(null);
 const selectedAway = ref(null);
 const isHomeValid = ref(false);
-const isAwayValid = ref(false)
+const isAwayValid = ref(false);
+const isSubmissionValid = computed(()=>{
+  return isAwayValid.value && isHomeValid.value && selectedHome !== null && selectedAway !== null;
+})
 
 const selectedHomePlayersForGame = ref([]);
 const selectedAwayPlayersForGame = ref([]);
@@ -93,13 +96,6 @@ const gameData = ref({
     players: formattedAwayPlayers.value
   }))
 });
-const isHomeSelectedForGame = (id) =>{
-  return selectedHomePlayersForGame.value.includes(id);
-};
-const isAwaySelectedForGame = (id) => {
-  return selectedAwayPlayersForGame.value.includes(id);
-};
-
 
 function validatePlayerList(players) {
   const numPlayers = players.length;
@@ -114,11 +110,18 @@ function validatePlayerList(players) {
   return true;
 }
 
+const validateShirtNumbers = (players) => {
+  const shirtNumbers = players.map(player => player.shirtNumber);
+  const uniqueShirtNumbers = new Set(shirtNumbers);
+  return shirtNumbers.length === uniqueShirtNumbers.size;
+};
+
+
 watch(selectedHomePlayersForGame, (newPlayers, oldPlayers) => {
-  isHomeValid.value = validatePlayerList(newPlayers);
+  isHomeValid.value = validatePlayerList(newPlayers) && validateShirtNumbers(newPlayers);
 }, { deep: true });
 watch(selectedAwayPlayersForGame, (newPlayers, oldPlayers) => {
-  isAwayValid.value = validatePlayerList(newPlayers);
+  isAwayValid.value = validatePlayerList(newPlayers) && validateShirtNumbers(newPlayers);
 }, { deep: true });
 
 const handleSelectionForGame = (player, isSelected) => {
@@ -180,7 +183,6 @@ const handleSubmit = () => {
       </div>
       <hr class="my-2">
       <div class="container text-center">
-        <button type="submit" class="btn btn-success">Create</button>
         <div class="row">
           <div class="col">
             <div class="row d-flex align-items-center justify-content-center mx-4">
@@ -305,6 +307,7 @@ const handleSubmit = () => {
             </div>
           </div>
         </div>
+        <button :disabled="!isSubmissionValid" type="submit" class="btn btn-success w-100">Create</button>
       </div>
     </form>
   </div>
