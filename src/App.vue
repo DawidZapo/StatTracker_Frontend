@@ -20,7 +20,7 @@ const logOut = computed(() => {
   router.push('/login');
 });
 
-const isGameCreationRoute = computed(()=> route.path.startsWith('/game_creation'));
+const isGameCreationRoute = computed(()=> route.path.startsWith('/game_creationonpurposefalse'));
 const getDisabledClass = () => {
   return isGameCreationRoute.value ? 'disabled' : '';
 };
