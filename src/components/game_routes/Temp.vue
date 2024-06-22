@@ -50,22 +50,52 @@ const describeArc = (x, y, radius, startAngle, endAngle) => {
     <path d="M0 0 H13 V3 H0 L 0 0" fill="red"></path>
     <path d="M13 0 L38 0 L38 13 L24.5 13 Q 20.5 6.2 13 3" fill="blue"></path>
     <path d="M24.5 13 L 38 13 L 38 37 L 24.5 37 Q 30.9 25 24.5 13" fill="red"></path>
-
     <path transform="scale(1, -1) translate(0, -50)" d="M13 0 L38 0 L38 13 L24.5 13 Q 20.5 6.2 13 3" fill="blue"></path>
     <path transform="scale(1, -1) translate(0, -50)" d="M0 0 H13 V3 H0 L 0 0" fill="red"></path>
 
 
     <path d="M0 3 L 13 3 L 8.6 15 L0 15" fill="purple"></path>
     <path d="M8.6 15 L 13 3 Q 20.5 6.5  24.5 13 L 16.2 18.1 Q 14 15.9  11 15.1 L8.6 15 " fill="black"></path>
-
+    <path d="M24.5 13 Q31 25  24.5 37 L 16.3 31.9 Q 21.7 25 16.3 18.1" fill="grey"></path>
     <path transform="scale(1, -1) translate(0, -50)" d="M0 3 L 13 3 L 8.6 15 L0 15" fill="purple"></path>
     <path transform="scale(1, -1) translate(0, -50)" d="M8.6 15 L 13 3 Q 20.5 6.5  24.5 13 L 16.2 18.1 Q 14 15.9  11 15.1 L8.6 15 " fill="black"></path>
 
+
+    <path d="M0 15 L 8.7 15 L 11 15.2 L 12.87 15.73 L8.24 21.2 L 6.5 21 L 0 21" fill="blue"></path>
+    <path d="M8.24 21.2 L 12.87 15.73 L 19 25 L 11  25" fill="yellow"></path>
+    <path transform="scale(1, -1) translate(0, -50)" d="M0 15 L 8.7 15 L 11 15.2 L 12.87 15.73 L8.24 21.2 L 6.5 21 L 0 21" fill="blue"></path>
+
+
+
 <!--    lines temp-->
-    <line x1="5" y1="25" x2="13" y2="3" stroke="red" stroke-width="0.2"></line>
-    <line x1="5" y1="25" x2="24.5" y2="13" stroke="red" stroke-width="0.2"></line>
-    <line x1="5" y1="25" x2="24.5" y2="37" stroke="red" stroke-width="0.2"></line>
-    <line x1="5" y1="25" x2="13" y2="47" stroke="red" stroke-width="0.2"></line>
+<!--    <line x1="5" y1="25" x2="13" y2="3" stroke="red" stroke-width="0.2"></line>-->
+    <line x1="8.6" y1="15" x2="13" y2="3" stroke="red" stroke-width="0.2"></line>
+<!--    <line x1="5" y1="25" x2="24.5" y2="13" stroke="red" stroke-width="0.2"></line>-->
+    <line x1="16.2" y1="18.1" x2="24.5" y2="13" stroke="red" stroke-width="0.2"></line>
+<!--    <line x1="5" y1="25" x2="24.5" y2="37" stroke="red" stroke-width="0.2"></line>-->
+    <line transform="scale(1, -1) translate(0, -50)" x1="8.6" y1="15" x2="13" y2="3" stroke="red" stroke-width="0.2"></line>
+<!--    <line x1="5" y1="25" x2="13" y2="47" stroke="red" stroke-width="0.2"></line>-->
+    <line transform="scale(1, -1) translate(0, -50)" x1="16.2" y1="18.1" x2="24.5" y2="13" stroke="red" stroke-width="0.2"></line>
+    <path
+        :d="describeArc(9, 25, 10, 0, 180)"
+        fill="none"
+        stroke="red"
+        stroke-width="0.2"
+    />
+    <line x1="0" y1="15" x2="9" y2="15" stroke="red" stroke-width="0.2"></line>
+    <line x1="0" y1="35" x2="9" y2="35" stroke="red" stroke-width="0.2"></line>
+    <path
+        :d="describeArc(7, 25, 4, 0, 180)"
+        fill="none"
+        stroke="red"
+        stroke-width="0.2"
+    />
+    <line x1="0" y1="21" x2="7" y2="21" stroke="red" stroke-width="0.2"></line>
+    <line x1="0" y1="29" x2="7" y2="29" stroke="red" stroke-width="0.2"></line>
+
+<!--    <line x1="5" y1="25" x2="22" y2="5" stroke="yellow" stroke-width="0.2"></line>-->
+    <line x1="8.24" y1="21.2" x2="12.87" y2="15.73" stroke="red" stroke-width="0.2"></line>
+    <line transform="scale(1, -1) translate(0, -50)" x1="8.24" y1="21.2" x2="12.87" y2="15.73" stroke="red" stroke-width="0.2"></line>
 
 
     <!-- center Circle -->
@@ -145,16 +175,6 @@ const describeArc = (x, y, radius, startAngle, endAngle) => {
     <line x1="0" y1="0" x2="0" y2="50" stroke="white" stroke-width="0.2"/>
     <line x1="47" y1="0" x2="47" y2="50" stroke="white" stroke-width="0.2"/>
 
-
-<!--    temp lines for zone-->
-    <path
-        :d="describeArc(9, 25, 10, 0, 180)"
-        fill="none"
-        stroke="white"
-        stroke-width="0.2"
-    />
-    <line x1="0" y1="15" x2="9" y2="15" stroke="white" stroke-width="0.2"></line>
-    <line x1="0" y1="35" x2="9" y2="35" stroke="white" stroke-width="0.2"></line>
 
 
     <!--    <path d="M13 0 L38 0 L38 13 L24.5 13 L 19 6.5 L13 3 L13 0" fill="blue"></path>-->
