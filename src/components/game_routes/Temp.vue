@@ -54,17 +54,19 @@ const handleMouseLeave = () => {
       width="500"
       height="500">
 <!--      transform="rotate(90 50 47)">-->
+
     <!-- background -->
     <rect width="100%" height="100%" fill="tan"/>
 
 
     <!--    zones-->
-    <path @mouseover="highlightZone('back-court')" d="M38 0 L 47 0 L 47 50 L38 50" :fill="highlightedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+    <path @mouseover="highlightZone('back-court')" d="M38 0 L 47 0 L 47 25 L41 25 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+    <path @mouseover="highlightZone('back-court')" transform="scale(1, -1) translate(0, -50)" d="M38 0 L 47 0 L 47 25 L41 25 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
 
     <path @mouseover="highlightZone('right-corner-3pt')" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'right-corner-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-    <path @mouseover="highlightZone('right-wing-3pt')" d="M13 0 L38 0 L38 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'right-wing-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-    <path @mouseover="highlightZone('top-3pt')" d="M24.5 13 L 38 13 L 38 37 L 24.5 37 Q 30.9 25 24.5 13" :fill="highlightedZone === 'top-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-    <path @mouseover="highlightZone('left-wing-3pt')" transform="scale(1, -1) translate(0, -50)" d="M13 0 L38 0 L38 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'left-wing-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+    <path @mouseover="highlightZone('right-wing-3pt')" d="M13 0 L31 0 Q 36 5 39 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'right-wing-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+    <path @mouseover="highlightZone('top-3pt')" d="M24.5 13 L 39 13 Q 43 25  39 37 L 24.5 37 Q 30.9 25 24.5 13" :fill="highlightedZone === 'top-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+    <path @mouseover="highlightZone('left-wing-3pt')" transform="scale(1, -1) translate(0, -50)" d="M13 0 L31 0 Q 36 5 39 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'left-wing-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
     <path @mouseover="highlightZone('left-corner-3pt')" transform="scale(1, -1) translate(0, -50)" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'left-corner-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
 
     <path @mouseover="highlightZone('right-corner-2pt')" :fill="highlightedZone === 'right-corner-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 3 L 13 3 L 8.6 15 L0 15" fill="none"></path>
@@ -83,7 +85,7 @@ const handleMouseLeave = () => {
 
     <!-- center Circle -->
     <path
-        :d="describeArc(47, 25, 6, 180, 360)"
+        :d="describeArc(47, 25, 5.5, 180, 360)"
         fill="none"
         stroke="black"
         stroke-width="0.2"
@@ -180,17 +182,19 @@ const handleMouseLeave = () => {
     <line transform="scale(1, -1) translate(0, -50)" x1="8.24" y1="21.2" x2="12.87" y2="15.73" stroke="white" stroke-width="0.2"></line>
 
     <line x1="13" y1="0" x2="13" y2="3" stroke="white" stroke-width="0.2"></line>
-    <line x1="24.5" y1="13" x2="38" y2="13" stroke="white" stroke-width="0.2"></line>
-    <line x1="24.5" y1="37" x2="38" y2="37" stroke="white" stroke-width="0.2"></line>
+    <line x1="24.5" y1="13" x2="39" y2="13" stroke="white" stroke-width="0.2"></line>
+    <line x1="24.5" y1="37" x2="39" y2="37" stroke="white" stroke-width="0.2"></line>
     <line x1="13" y1="47" x2="13" y2="50" stroke="white" stroke-width="0.2"></line>
-    <line x1="38" y1="0" x2="38" y2="50" stroke="white" stroke-width="0.2"></line>
+<!--    <line x1="38" y1="0" x2="38" y2="50" stroke="white" stroke-width="0.2"></line>-->
+
+    <path :d="describeArc(4.75, 25, 36.24, 0, 180)" fill="none" stroke="white" stroke-width="0.2"></path>
 
 
     <!--      bounds-->
-    <line x1="0" y1="0" x2="47" y2="0" stroke="black" stroke-width="0.2"/>
-    <line x1="0" y1="50" x2="47" y2="50" stroke="black" stroke-width="0.2"/>
+    <line x1="0" y1="0.1" x2="47" y2="0.1" stroke="black" stroke-width="0.2"/>
+    <line x1="0" y1="49.9" x2="47" y2="49.9" stroke="black" stroke-width="0.2"/>
     <line x1="0" y1="0" x2="0" y2="50" stroke="black" stroke-width="0.2"/>
-    <line x1="47" y1="0" x2="47" y2="50" stroke="black" stroke-width="0.2"/>
+    <line x1="47" y1="0.1" x2="47" y2="50" stroke="black" stroke-width="0.2"/>
 
 
   </svg>
