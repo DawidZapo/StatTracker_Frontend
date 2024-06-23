@@ -39,5 +39,6 @@ class GameService{
                 throw error;
             });
     }
+
 }
 export default new GameService();

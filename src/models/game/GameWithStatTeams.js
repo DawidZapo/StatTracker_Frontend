@@ -2,6 +2,7 @@ import {createPercentageComputed} from "@/assets/scripts/stats.js";
 
 class StatLine {
     constructor(data) {
+        this.id = data.id;
         this.timeOnCourtInMs = data.timeOnCourtInMs;
         this.twoAttempted = data.twoAttempted;
         this.twoMade = data.twoMade;

@@ -1,11 +1,11 @@
 import {createStore} from 'vuex';
 
-import { auth } from './auth.module';
-import {team} from "@/store/team.module.js";
-import {player} from "@/store/player.module.js";
-import {game} from "@/store/game.module.js";
-import {homeTeam} from "@/store/hometeam.module.js";
-import {awayTeam} from "@/store/awayteam.module.js";
+import { auth } from './moduls/auth.module.js';
+import {team} from "@/store/moduls/team.module.js";
+import {player} from "@/store/moduls/player.module.js";
+import {game} from "@/store/moduls/game.module.js";
+import {homeTeam} from "@/store/moduls/hometeam.module.js";
+import {awayTeam} from "@/store/moduls/awayteam.module.js";
 
 export default createStore({
     modules: {

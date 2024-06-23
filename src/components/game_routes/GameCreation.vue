@@ -5,6 +5,8 @@ import TeamService from "@/services/team/team.service.js";
 import {useStore} from "vuex";
 import GameCreated from "@/models/game/GameCreated.js";
 import GameService from "@/services/game/game.service.js";
+import {useRouter} from "vue-router";
+
 
 const today = new Date().toISOString().slice(0, 10);
 const now = new Date();
@@ -56,8 +58,9 @@ const transformPlayersList = (players) => {
 
 fetchAllTeams();
 
-const createGameResponse = ref(null);
+const createGameId = ref(null);
 const store = useStore();
+const router = useRouter();
 const myDate = ref(today);
 const seasons = ref(generateSeasons(myDate.value));
 const selectedHomeId = computed(()=> store.getters.selectedHomeTeamId);
@@ -204,12 +207,13 @@ const handleAwayClick = () => {
 const handleSubmit = async () => {
   const gameCreated = new GameCreated(gameData.value);
   try{
-    createGameResponse.value = await GameService.createGame(gameCreated);
+    // createGameId.value = await GameService.createGame(gameCreated);
+    await store.dispatch('selectGame', 11241241124);
+     await router.push('/game_handler');
   }
   catch (error){
     console.error("Error while creating game: " + error);
   }
-  console.log(gameCreated);
 };
 
 </script>

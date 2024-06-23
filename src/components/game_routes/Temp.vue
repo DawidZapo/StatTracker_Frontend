@@ -52,15 +52,15 @@ const handleMouseLeave = () => {
       xmlns="http://www.w3.org/2000/svg"
       @click="handleClick"
       width="500"
-      height="500">
-<!--      transform="rotate(90 50 47)">-->
+      height="500"
+      transform="rotate(90 50 47)">
 
     <!-- background -->
     <rect width="100%" height="100%" fill="tan"/>
 
 
     <!--    zones-->
-    <path @mouseover="highlightZone('back-court')" d="M38 0 L 47 0 L 47 25 L41 25 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+    <path @mouseover="highlightZone('back-court')" d="M38 0 L 47 0 L 47 25.5 L41 25.5 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
     <path @mouseover="highlightZone('back-court')" transform="scale(1, -1) translate(0, -50)" d="M38 0 L 47 0 L 47 25 L41 25 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
 
     <path @mouseover="highlightZone('right-corner-3pt')" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'right-corner-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
@@ -76,8 +76,8 @@ const handleMouseLeave = () => {
     <path @mouseover="highlightZone('left-corner-2pt')" :fill="highlightedZone === 'left-corner-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M8.6 15 L 13 3 Q 20.5 6.5  24.5 13 L 16.2 18.1 Q 14 15.9  11 15.1 L8.6 15 " fill="none"></path>
 
     <path @mouseover="highlightZone('right-low-post')" :fill="highlightedZone === 'right-low-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 15 L 8.7 15 L 11 15.2 L 12.87 15.73 L8.24 21.2 L 6.5 21 L 0 21" fill="none"></path>
-    <path @mouseover="highlightZone('high-post')" :fill="highlightedZone === 'high-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M8.24 21.2 L 12.87 15.73 Q 18.5 18.6  19 25 L 11  25 Q 11 22  8.24 21.2" fill="none"></path>
-    <path @mouseover="highlightZone('high-post')" :fill="highlightedZone === 'high-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M8.24 21.2 L 12.87 15.73 Q 18.5 18.6  19 25 L 11  25 Q 11 22  8.24 21.2" fill="none"></path>
+    <path @mouseover="highlightZone('high-post')" :fill="highlightedZone === 'high-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M8.24 21.2 L 12.87 15.73 Q 18.5 18.3  19 25.1 L 11  25.1 Q 11 22  8.24 21.2" fill="none"></path>
+    <path @mouseover="highlightZone('high-post')" :fill="highlightedZone === 'high-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M8.24 21.2 L 12.87 15.73 Q 18.5 18.3  19 25.1 L 11  25.1 Q 11 22  8.24 21.2" fill="none"></path>
     <path @mouseover="highlightZone('left-low-post')" :fill="highlightedZone === 'left-low-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M0 15 L 8.7 15 L 11 15.2 L 12.87 15.73 L8.24 21.2 L 6.5 21 L 0 21" fill="none"></path>
 
     <path @mouseover="highlightZone('under-basket')" :fill="highlightedZone === 'under-basket' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 21 L 7 21 Q 11 21.5  11 25 Q 11 28.5  7 29 L 0 29" fill="none"></path>
