@@ -1,11 +1,25 @@
 <script setup>
 import {ref} from 'vue';
 import {useStore} from "vuex";
+import GameService from "@/services/game/game.service.js";
 
 const store = useStore();
 const selectedGameId = store.getters.selectedGameId;
 const highlightedZone = ref(null);
 const game = ref(null);
+
+const fetchGameToHandle = async (id) => {
+  try{
+    if(id){
+      game.value = await GameService.fetchGameToHandle(id);
+    }
+  }catch (error) {
+    console.error("Error while fetching game to handle: " + error);
+    game.value = null;
+  }
+};
+
+fetchGameToHandle(selectedGameId);
 
 const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
   const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -35,7 +49,7 @@ const handleMouseLeave = () => {
 </script>
 
 <template>
-  {{selectedGameId}}
+  {{game}}
   <div>
     <svg
         viewBox="0 0 47 50"

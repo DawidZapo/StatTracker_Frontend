@@ -208,7 +208,7 @@ const handleSubmit = async () => {
   const gameCreated = new GameCreated(gameData.value);
   try{
     // createGameId.value = await GameService.createGame(gameCreated);
-    await store.dispatch('selectGame', 11241241124);
+    await store.dispatch('selectGame', 1);
      await router.push('/game_handler');
   }
   catch (error){
@@ -351,7 +351,8 @@ const handleSubmit = async () => {
             </div>
           </div>
         </div>
-        <button :disabled="!isSubmissionValid || isTheSameTeamSelected" type="submit" class="btn btn-success w-100">Create</button>
+<!--        :disabled="!isSubmissionValid || isTheSameTeamSelected"-->
+        <button  type="submit" class="btn btn-success w-100">Create</button>
       </div>
     </form>
   </div>

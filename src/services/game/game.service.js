@@ -3,6 +3,7 @@ import authHeader from "@/services/auth/auth-header.js";
 import GameWithTeamNames from "@/models/game/GameWithTeamNames.js";
 import GameWIthStatTeams from "@/models/game/GameWithStatTeams.js";
 import GameWithStatTeams from "@/models/game/GameWithStatTeams.js";
+import GameToHandle from "@/models/game/GameToHandle.js";
 
 const API_URL = 'http://localhost:8080/api/game/';
 
@@ -36,6 +37,17 @@ class GameService{
             })
             .catch(error => {
                 console.error("Error while creating game: " + error);
+                throw error;
+            });
+    }
+
+    fetchGameToHandle(id){
+        return axios.get(API_URL + 'to_handle/' + id, {headers: authHeader()})
+            .then(response => {
+                return new GameToHandle(response.data);
+            })
+            .catch(error => {
+                console.error("Error while fetching game to handle: " + error);
                 throw error;
             });
     }
