@@ -20,7 +20,7 @@ const logOut = computed(() => {
   router.push('/login');
 });
 
-const isGameCreationRoute = computed(()=> route.path.startsWith('/game_creationonpurposefalse'));
+const isGameCreationRoute = computed(()=> route.path.startsWith('/game_handler'));
 const getDisabledClass = () => {
   return isGameCreationRoute.value ? 'disabled' : '';
 };
@@ -29,7 +29,7 @@ const getDisabledClass = () => {
 
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <nav class="navbar navbar-expand navbar-dark bg-dark" v-show="!isGameCreationRoute">
       <div class="col-md-4 d-flex justify-content-center align-items-center">
         <ul class="navbar-nav mr-auto mx-4">
           <li class="nav-item">
@@ -85,7 +85,6 @@ const getDisabledClass = () => {
           </ul>
         </div>
       </div>
-
     </nav>
 
     <div>

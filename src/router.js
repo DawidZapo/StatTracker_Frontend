@@ -19,7 +19,7 @@ import GameTeamStats from "@/components/game_routes/GameTeamStats.vue";
 import GamePlayerStats from "@/components/game_routes/GamePlayerStats.vue";
 import GamePlayByPlay from "@/components/game_routes/GamePlayByPlay.vue";
 import GameCreation from "@/components/game_routes/GameCreation.vue";
-import GameHandler from "@/components/game_routes/GameHandler.vue";
+import GameHandler from "@/components/game_handling/GameHandler.vue";
 import Temp from "@/components/game_routes/Temp.vue";
 
 const routes = [

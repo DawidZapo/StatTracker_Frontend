@@ -1,3 +1,25 @@
+function createPlay(playData) {
+    switch (playData.playType) {
+        case "ASSIST":
+            return new Assist(playData);
+        case "BLOCK":
+            return new Block(playData);
+        case "FOUL":
+            return new Foul(playData);
+        case "SHOTPLAY":
+            return new ShotPlay(playData);
+        case "TURNOVER":
+            return new Turnover(playData);
+        case "STEAL":
+            return new Steal(playData);
+        case "REBOUND":
+            return new Rebound(playData);
+        default:
+            throw new Error(`Unknown play type: ${playData.playType}`);
+    }
+}
+
+
 class Play {
     constructor(data) {
         if (this.constructor === Play) {
@@ -102,26 +124,7 @@ class Player {
         this.shirtNumber = data.shirtNumber;
         this.startingFive = data.startingFive;
         this.stats = new Stats(data.stats);
-        this.plays = data.plays.map(playData => {
-            switch (playData.playType) {
-                case "ASSIST":
-                    return new Assist(playData);
-                case "BLOCK":
-                    return new Block(playData);
-                case "FOUL":
-                    return new Foul(playData);
-                case "SHOTPLAY":
-                    return new ShotPlay(playData);
-                case "TURNOVER":
-                    return new Turnover(playData);
-                case "STEAL":
-                    return new Steal(playData);
-                case "REBOUND":
-                    return new Rebound(playData);
-                default:
-                    throw new Error(`Unknown play type: ${playData.playType}`);
-            }
-        });
+        this.plays = data.plays.map(playData => {createPlay(playData)});
     }
 }
 
@@ -145,26 +148,7 @@ class GameToHandle {
         this.timeRemainingMs = data.timeRemainingMs;
         this.home = new Team(data.home);
         this.away = new Team(data.away);
-        this.plays = data.plays.map(playData => {
-            switch (playData.playType) {
-                case "ASSIST":
-                    return new Assist(playData);
-                case "BLOCK":
-                    return new Block(playData);
-                case "FOUL":
-                    return new Foul(playData);
-                case "SHOTPLAY":
-                    return new ShotPlay(playData);
-                case "TURNOVER":
-                    return new Turnover(playData);
-                case "STEAL":
-                    return new Steal(playData);
-                case "REBOUND":
-                    return new Rebound(playData);
-                default:
-                    throw new Error(`Unknown play type: ${playData.playType}`);
-            }
-        });
+        this.plays = data.plays.map(playData => {createPlay(playData)});
     }
 }
 
