@@ -10,17 +10,23 @@ import FoulSelector from "@/components/play_selectors/FoulSelector.vue";
 import BlockSelector from "@/components/play_selectors/BlockSelector.vue";
 import TurnoverSelector from "@/components/play_selectors/TurnoverSelector.vue";
 import StealSelector from "@/components/play_selectors/StealSelector.vue";
+import {getStartingFive} from "@/assets/scripts/stats.js";
 
 const store = useStore();
 const selectedGameId = store.getters.selectedGameId;
 const highlightedZone = ref(null);
 const game = ref(null);
 const selectedAction = ref(null);
+const homeLineUp = ref([]);
+const awayLineUp = ref([]);
+const isSwapSelected = ref(false);
 
 const fetchGameToHandle = async (id) => {
   try{
     if(id){
       game.value = await GameService.fetchGameToHandle(id);
+      homeLineUp.value = getStartingFive(game.value.home.players);
+      awayLineUp.value = getStartingFive(game.value.away.players);
     }
   }catch (error) {
     console.error("Error while fetching game to handle: " + error);
@@ -127,10 +133,12 @@ const activeTab = ref('panel');
 
       <div v-show="activeTab === 'panel'">
         <div class="container shadow-lg small-text">
-          <div class="row">
+<!--          <div class="card" style="position: absolute;top: 22%;left: 6%;width: 55%;z-index: 1000;">hello</div>-->
+          <div class="row mb-1">
             <div class="col-7 d-flex">
+
               <div class="col-4 text-center">
-                <div class="d-flex my-3" v-for="player in game.home.players">
+                <div class="d-flex my-3" v-for="player in homeLineUp">
                   <div class="card col-2 no-overflow">
                     #{{player.shirtNumber}}
                   </div>
@@ -142,7 +150,10 @@ const activeTab = ref('panel');
                   </div>
                 </div>
               </div>
-              <div class="col-4 d-flex justify-content-center">
+              <div v-if="isSwapSelected" class="col-4">
+
+              </div>
+              <div v-if="!isSwapSelected" class="col-4 d-flex justify-content-center">
                 <svg
                     viewBox="0 0 47 50"
                     xmlns="http://www.w3.org/2000/svg"
@@ -296,7 +307,7 @@ const activeTab = ref('panel');
                 </svg>
               </div>
               <div class="col-4 text-center">
-                <div class="d-flex my-3" v-for="player in game.away.players">
+                <div class="d-flex my-3" v-for="player in awayLineUp">
                   <div class="card col-2 no-overflow">
                     #{{player.shirtNumber}}
                   </div>
@@ -349,6 +360,7 @@ const activeTab = ref('panel');
               </div>
             </div>
           </div>
+
           <div class="row">
             <div class="col">
               <div class="card">
