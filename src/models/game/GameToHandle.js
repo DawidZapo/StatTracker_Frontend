@@ -32,6 +32,7 @@ class Play {
         this.comments = data.comments;
         this.playType = data.playType;
         this.hand = data.hand;
+        this.offTheDribble = data.offTheDribble;
     }
 }
 
