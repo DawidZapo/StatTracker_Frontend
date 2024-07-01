@@ -21,9 +21,10 @@ const homeLineUp = ref([]);
 const awayLineUp = ref([]);
 const homeBench = ref([]);
 const awayBench = ref([]);
-const isSwapSelected = ref(false);
-const homeLineUpSelectedPlayerId = ref(null);
-const homeBenchSelectedPlayerId = ref(null);
+const homeLineUpSelectedPlayer = ref(null);
+const homeBenchSelectedPlayer = ref(null);
+const awayLineUpSelectedPlayer = ref(null);
+const awayBenchSelectedPlayer = ref(null);
 
 const fetchGameToHandle = async (id) => {
   try{
@@ -73,27 +74,61 @@ const handleMouseLeave = () => {
 
 const activeTab = ref('panel');
 
-const swapPlayer = (playerOnId, playerOffId, bench, lineup) => {
-  const playerOffIndex = lineup.findIndex(player => player.playerId === playerOffId);
-  const playerOnIndex = bench.findIndex(player => player.playerId === playerOnId);
-
-  if (playerOffIndex !== -1 && playerOnIndex !== -1) {
-    const [playerOff] = lineup.splice(playerOffIndex, 1);
-    bench.push(playerOff);
-
-    const [playerOn] = bench.splice(playerOnIndex, 1);
-    lineup.push(playerOn);
-
-  } else {
-    console.log(`Nie udało się znaleźć zawodników o podanych ID w odpowiednich listach.`);
+const clickSwapPlayerIcon = (player, team) => {
+  if(team === 'home'){
+    if(homeLineUpSelectedPlayer.value === player){
+      homeLineUpSelectedPlayer.value = null;
+      return
+    }
+    homeLineUpSelectedPlayer.value = player;
+  }
+  else if (team === 'away'){
+    if(awayLineUpSelectedPlayer.value === player){
+      awayLineUpSelectedPlayer.value = null;
+      return;
+    }
+    awayLineUpSelectedPlayer.value = player;
+  }
+  else{
+    console.error('Wrong team in clickSwapPlayerIcon function');
   }
 };
 
-watch([homeBenchSelectedPlayerId, homeLineUpSelectedPlayerId],([newField1, newField2], [oldField1, oldField2])=>{
-  if(homeBenchSelectedPlayerId.value !== null && homeLineUpSelectedPlayerId.value !== null){
-    swapPlayer(newField1, newField2, homeBench.value, homeLineUp.value);
-    homeBenchSelectedPlayerId.value = null;
-    homeLineUpSelectedPlayerId.value = null;
+const swapPlayer = (playerOn, playerOff, positionSwapped, bench, lineup) => {
+  const playerOffIndex = lineup.findIndex(player => player.playerId === playerOff.playerId);
+  const playerOnIndex = bench.findIndex(player => player.playerId === playerOn.playerId);
+
+  if (playerOffIndex !== -1 && playerOnIndex !== -1) {
+    const [playerOn] = bench.splice(playerOnIndex, 1);
+    playerOn.positionOnCourt = positionSwapped;
+    lineup.push(playerOn);
+
+    const [playerOff] = lineup.splice(playerOffIndex, 1);
+    playerOff.positionOnCourt = 0;
+    bench.push(playerOff);
+
+  } else {
+    console.log(`Couldn't find players in lists`);
+  }
+};
+
+watch([homeBenchSelectedPlayer, homeLineUpSelectedPlayer],([newField1, newField2], [oldField1, oldField2])=>{
+  if(homeBenchSelectedPlayer.value !== null && homeLineUpSelectedPlayer.value !== null){
+    swapPlayer(newField1, newField2, newField2.positionOnCourt, homeBench.value, homeLineUp.value);
+    homeBenchSelectedPlayer.value = null;
+    homeLineUpSelectedPlayer.value = null;
+
+    homeLineUp.value.sort((a,b) => a.positionOnCourt - b.positionOnCourt);
+  }
+});
+
+watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2], [oldField1, oldField2])=>{
+  if(awayBenchSelectedPlayer.value !== null && awayLineUpSelectedPlayer.value !== null){
+    swapPlayer(newField1, newField2, newField2.positionOnCourt, awayBench.value, awayLineUp.value);
+    awayBenchSelectedPlayer.value = null;
+    awayLineUpSelectedPlayer.value = null;
+
+    awayLineUp.value.sort((a,b) => a.positionOnCourt - b.positionOnCourt);
   }
 });
 
@@ -168,7 +203,7 @@ watch([homeBenchSelectedPlayerId, homeLineUpSelectedPlayerId],([newField1, newFi
 
       <div v-show="activeTab === 'panel'">
         <div class="container shadow-lg small-text">
-          <div v-if="homeLineUpSelectedPlayerId !== null" class="card p-2 text-center" style="position: absolute;top: 23.5%;left: 23.5%;width: 16%;z-index: 1000;">
+          <div v-if="homeLineUpSelectedPlayer !== null" class="card p-2 text-center" style="position: absolute;top: 22.6%;left: 23.5%;width: 16%;z-index: 1000;background-color: #fafafa">
             <div class="d-flex" v-for="player in homeBench">
               <div class="card col-2 no-overflow">
                 #{{player.shirtNumber}}
@@ -176,12 +211,12 @@ watch([homeBenchSelectedPlayerId, homeLineUpSelectedPlayerId],([newField1, newFi
               <div class="card col-9 no-overflow custom-btn-light">
                 {{player.firstName.substring(0,1)}}. {{player.lastName}}
               </div>
-              <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : homeBenchSelectedPlayerId === player.playerId}">
-                <i class="fa-solid fa-rotate" @click="homeBenchSelectedPlayerId=player.playerId"></i>
+              <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : homeBenchSelectedPlayer === player}">
+                <i class="fa-solid fa-rotate" @click="homeBenchSelectedPlayer=player"></i>
               </div>
             </div>
             <div class="d-flex justify-content-center mt-2">
-              <button @click="homeLineUpSelectedPlayerId = null ; homeBenchSelectedPlayerId = null" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
+              <button @click="homeLineUpSelectedPlayer = null ; homeBenchSelectedPlayer = null" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
                 <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
               </button>
             </div>
@@ -197,15 +232,12 @@ watch([homeBenchSelectedPlayerId, homeLineUpSelectedPlayerId],([newField1, newFi
                   <div class="card col-9 no-overflow custom-btn-light">
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                   </div>
-                  <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : homeLineUpSelectedPlayerId === player.playerId}">
-                    <i class="fa-solid fa-rotate" @click="homeLineUpSelectedPlayerId=player.playerId"></i>
+                  <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : homeLineUpSelectedPlayer === player}">
+                    <i class="fa-solid fa-rotate" @click="clickSwapPlayerIcon(player, 'home')"></i>
                   </div>
                 </div>
               </div>
-              <div v-if="isSwapSelected" class="col-4">
-
-              </div>
-              <div v-if="!isSwapSelected" class="col-4 d-flex justify-content-center">
+              <div class="col-4 d-flex justify-content-center">
                 <svg
                     viewBox="0 0 47 50"
                     xmlns="http://www.w3.org/2000/svg"
@@ -366,9 +398,28 @@ watch([homeBenchSelectedPlayerId, homeLineUpSelectedPlayerId],([newField1, newFi
                   <div class="card col-9 no-overflow custom-btn-light">
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                   </div>
-                  <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light">
-                    <i class="fa-solid fa-rotate"></i>
+                  <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : awayLineUpSelectedPlayer === player}">
+                    <i class="fa-solid fa-rotate" @click="clickSwapPlayerIcon(player,'away')"></i>
                   </div>
+                </div>
+              </div>
+
+              <div v-if="awayLineUpSelectedPlayer !== null" class="card p-2 text-center" style="position: absolute;top: 22.6%;left: 57%;width: 16%;z-index: 1000; background-color: #fafafa" >
+                <div class="d-flex" v-for="player in awayBench">
+                  <div class="card col-2 no-overflow">
+                    #{{player.shirtNumber}}
+                  </div>
+                  <div class="card col-9 no-overflow custom-btn-light">
+                    {{player.firstName.substring(0,1)}}. {{player.lastName}}
+                  </div>
+                  <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : awayBenchSelectedPlayer === player}">
+                    <i class="fa-solid fa-rotate" @click="awayBenchSelectedPlayer=player"></i>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-center mt-2">
+                  <button @click="awayLineUpSelectedPlayer = null ; awayBenchSelectedPlayer = null" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
+                    <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
+                  </button>
                 </div>
               </div>
             </div>
