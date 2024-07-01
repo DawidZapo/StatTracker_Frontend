@@ -126,6 +126,7 @@ class Player {
         this.startingFive = data.startingFive;
         this.stats = new Stats(data.stats);
         this.plays = data.plays.map(playData => createPlay(playData));
+        this.positionOnCourt = 0;
     }
 }
 

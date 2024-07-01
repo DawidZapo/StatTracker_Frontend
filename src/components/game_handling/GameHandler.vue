@@ -22,8 +22,8 @@ const awayLineUp = ref([]);
 const homeBench = ref([]);
 const awayBench = ref([]);
 const isSwapSelected = ref(false);
-const homeLineUpSelectedPlayer = ref(null);
-const homeBenchSelectedPlayer = ref(null);
+const homeLineUpSelectedPlayerId = ref(null);
+const homeBenchSelectedPlayerId = ref(null);
 
 const fetchGameToHandle = async (id) => {
   try{
@@ -72,6 +72,30 @@ const handleMouseLeave = () => {
 };
 
 const activeTab = ref('panel');
+
+const swapPlayer = (playerOnId, playerOffId, bench, lineup) => {
+  const playerOffIndex = lineup.findIndex(player => player.playerId === playerOffId);
+  const playerOnIndex = bench.findIndex(player => player.playerId === playerOnId);
+
+  if (playerOffIndex !== -1 && playerOnIndex !== -1) {
+    const [playerOff] = lineup.splice(playerOffIndex, 1);
+    bench.push(playerOff);
+
+    const [playerOn] = bench.splice(playerOnIndex, 1);
+    lineup.push(playerOn);
+
+  } else {
+    console.log(`Nie udało się znaleźć zawodników o podanych ID w odpowiednich listach.`);
+  }
+};
+
+watch([homeBenchSelectedPlayerId, homeLineUpSelectedPlayerId],([newField1, newField2], [oldField1, oldField2])=>{
+  if(homeBenchSelectedPlayerId.value !== null && homeLineUpSelectedPlayerId.value !== null){
+    swapPlayer(newField1, newField2, homeBench.value, homeLineUp.value);
+    homeBenchSelectedPlayerId.value = null;
+    homeLineUpSelectedPlayerId.value = null;
+  }
+});
 
 
 </script>
@@ -143,10 +167,8 @@ const activeTab = ref('panel');
       </nav>
 
       <div v-show="activeTab === 'panel'">
-<!--        {{game.home}}-->
-<!--        {{homeBenchSelectedPlayer}}-->
         <div class="container shadow-lg small-text">
-          <div class="card p-2 text-center" style="position: absolute;top: 23.5%;left: 23.5%;width: 16%;z-index: 1000;">
+          <div v-if="homeLineUpSelectedPlayerId !== null" class="card p-2 text-center" style="position: absolute;top: 23.5%;left: 23.5%;width: 16%;z-index: 1000;">
             <div class="d-flex" v-for="player in homeBench">
               <div class="card col-2 no-overflow">
                 #{{player.shirtNumber}}
@@ -154,9 +176,14 @@ const activeTab = ref('panel');
               <div class="card col-9 no-overflow custom-btn-light">
                 {{player.firstName.substring(0,1)}}. {{player.lastName}}
               </div>
-              <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light">
-                <i class="fa-solid fa-rotate" @click="homeLineUpSelectedPlayer=player"></i>
+              <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : homeBenchSelectedPlayerId === player.playerId}">
+                <i class="fa-solid fa-rotate" @click="homeBenchSelectedPlayerId=player.playerId"></i>
               </div>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+              <button @click="homeLineUpSelectedPlayerId = null ; homeBenchSelectedPlayerId = null" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
+                <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
+              </button>
             </div>
           </div>
           <div class="row mb-1">
@@ -170,8 +197,8 @@ const activeTab = ref('panel');
                   <div class="card col-9 no-overflow custom-btn-light">
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                   </div>
-                  <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light">
-                    <i class="fa-solid fa-rotate" @click="homeLineUpSelectedPlayer=player"></i>
+                  <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : homeLineUpSelectedPlayerId === player.playerId}">
+                    <i class="fa-solid fa-rotate" @click="homeLineUpSelectedPlayerId=player.playerId"></i>
                   </div>
                 </div>
               </div>
