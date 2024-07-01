@@ -62,4 +62,15 @@ export const getStartingFive = (players) => {
     });
 
     return startingFivePlayers;
-}
+};
+
+export const getBenchPlayers = (players) => {
+  const benchPlayers = [];
+  players.forEach(player => {
+     if(player.startingFive === false){
+         benchPlayers.push(player);
+     }
+  });
+
+  return benchPlayers;
+};

@@ -125,7 +125,7 @@ class Player {
         this.shirtNumber = data.shirtNumber;
         this.startingFive = data.startingFive;
         this.stats = new Stats(data.stats);
-        this.plays = data.plays.map(playData => {createPlay(playData)});
+        this.plays = data.plays.map(playData => createPlay(playData));
     }
 }
 
@@ -149,7 +149,7 @@ class GameToHandle {
         this.timeRemainingMs = data.timeRemainingMs;
         this.home = new Team(data.home);
         this.away = new Team(data.away);
-        this.plays = data.plays.map(playData => {createPlay(playData)});
+        this.plays = data.plays.map(playData => createPlay(playData));
     }
 }
 

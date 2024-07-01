@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from 'vue';
+import {ref, watch} from 'vue';
 import {useStore} from "vuex";
 import GameService from "@/services/game/game.service.js";
 import Loading from "@/components/error/Loading.vue";
@@ -10,23 +10,32 @@ import FoulSelector from "@/components/play_selectors/FoulSelector.vue";
 import BlockSelector from "@/components/play_selectors/BlockSelector.vue";
 import TurnoverSelector from "@/components/play_selectors/TurnoverSelector.vue";
 import StealSelector from "@/components/play_selectors/StealSelector.vue";
-import {getStartingFive} from "@/assets/scripts/stats.js";
+import {getBenchPlayers, getStartingFive} from "@/assets/scripts/stats.js";
 
 const store = useStore();
-const selectedGameId = store.getters.selectedGameId;
+const selectedGameId = ref(localStorage.getItem('selectedGameId'));
 const highlightedZone = ref(null);
 const game = ref(null);
 const selectedAction = ref(null);
 const homeLineUp = ref([]);
 const awayLineUp = ref([]);
+const homeBench = ref([]);
+const awayBench = ref([]);
 const isSwapSelected = ref(false);
+const homeLineUpSelectedPlayer = ref(null);
+const homeBenchSelectedPlayer = ref(null);
 
 const fetchGameToHandle = async (id) => {
   try{
     if(id){
       game.value = await GameService.fetchGameToHandle(id);
+
       homeLineUp.value = getStartingFive(game.value.home.players);
+      homeBench.value = getBenchPlayers(game.value.home.players);
+
       awayLineUp.value = getStartingFive(game.value.away.players);
+      awayBench.value = getBenchPlayers(game.value.away.players);
+
     }
   }catch (error) {
     console.error("Error while fetching game to handle: " + error);
@@ -34,7 +43,7 @@ const fetchGameToHandle = async (id) => {
   }
 };
 
-fetchGameToHandle(selectedGameId);
+fetchGameToHandle(selectedGameId.value);
 
 const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
   const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -63,6 +72,8 @@ const handleMouseLeave = () => {
 };
 
 const activeTab = ref('panel');
+
+
 </script>
 
 <template>
@@ -132,8 +143,22 @@ const activeTab = ref('panel');
       </nav>
 
       <div v-show="activeTab === 'panel'">
+<!--        {{game.home}}-->
+<!--        {{homeBenchSelectedPlayer}}-->
         <div class="container shadow-lg small-text">
-<!--          <div class="card" style="position: absolute;top: 22%;left: 6%;width: 55%;z-index: 1000;">hello</div>-->
+          <div class="card p-2 text-center" style="position: absolute;top: 23.5%;left: 23.5%;width: 16%;z-index: 1000;">
+            <div class="d-flex" v-for="player in homeBench">
+              <div class="card col-2 no-overflow">
+                #{{player.shirtNumber}}
+              </div>
+              <div class="card col-9 no-overflow custom-btn-light">
+                {{player.firstName.substring(0,1)}}. {{player.lastName}}
+              </div>
+              <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light">
+                <i class="fa-solid fa-rotate" @click="homeLineUpSelectedPlayer=player"></i>
+              </div>
+            </div>
+          </div>
           <div class="row mb-1">
             <div class="col-7 d-flex">
 
@@ -146,7 +171,7 @@ const activeTab = ref('panel');
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                   </div>
                   <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light">
-                    <i class="fa-solid fa-rotate"></i>
+                    <i class="fa-solid fa-rotate" @click="homeLineUpSelectedPlayer=player"></i>
                   </div>
                 </div>
               </div>
