@@ -504,13 +504,13 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
             <div class="col">
               <div class="card">
                 <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
-                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Shot</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Assist</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Rebound</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Foul</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Steal</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Turnover</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Block</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Shot'}" @click="selectedPlay=$event.target.innerText">Shot</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Assist'}" @click="selectedPlay=$event.target.innerText">Assist</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Rebound'}" @click="selectedPlay=$event.target.innerText">Rebound</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Foul'}" @click="selectedPlay=$event.target.innerText">Foul</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Steal'}" @click="selectedPlay=$event.target.innerText">Steal</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Turnover'}" @click="selectedPlay=$event.target.innerText">Turnover</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Block'}" @click="selectedPlay=$event.target.innerText">Block</button>
                 </div>
                 <div class="row">
 
