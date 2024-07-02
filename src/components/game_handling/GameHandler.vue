@@ -61,6 +61,7 @@ const fetchTypes = async () => {
     handTypes.value = await EnumService.fetchEnumTypes('hand');
     shotTypes.value = await EnumService.fetchEnumTypes('shot');
     turnoverTypes.value = await EnumService.fetchEnumTypes('turnover');
+    zoneTypes.value = await EnumService.fetchEnumTypes('zone');
   }
   catch (error) {
     console.error('Error while fetching types of:' + error);
@@ -131,6 +132,7 @@ const swapPlayer = (playerOn, playerOff, positionSwapped, bench, lineup) => {
   const playerOffIndex = lineup.findIndex(player => player.playerId === playerOff.playerId);
   const playerOnIndex = bench.findIndex(player => player.playerId === playerOn.playerId);
   selectedPlayer.value = null;
+  selectedPlay.value = null;
 
   if (playerOffIndex !== -1 && playerOnIndex !== -1) {
     const [playerOn] = bench.splice(playerOnIndex, 1);
@@ -431,7 +433,7 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
                   <div class="card col-2 no-overflow">
                     #{{player.shirtNumber}}
                   </div>
-                  <div class="card col-9 no-overflow custom-btn-light">
+                  <div class="card col-9 no-overflow custom-btn-light" :class="{'custom-btn-light-selected' : selectedPlayer === player}" @click="clickPlayerSelected(player)">
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                   </div>
                   <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : awayLineUpSelectedPlayer === player}">
@@ -448,6 +450,7 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
                   <div class="card col-9 no-overflow custom-btn-light">
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                   </div>
+
                   <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : awayBenchSelectedPlayer === player}">
                     <i class="fa-solid fa-rotate" @click="awayBenchSelectedPlayer=player"></i>
                   </div>
