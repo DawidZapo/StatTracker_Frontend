@@ -2,6 +2,7 @@
 import {ref, watch} from 'vue';
 import {useStore} from "vuex";
 import GameService from "@/services/game/game.service.js";
+import EnumService from "@/services/enum/enum.service.js";
 import Loading from "@/components/error/Loading.vue";
 import ShotPlaySelector from "@/components/play_selectors/ShotPlaySelector.vue";
 import AssistSelector from "@/components/play_selectors/AssistSelector.vue";
@@ -16,7 +17,8 @@ const store = useStore();
 const selectedGameId = ref(localStorage.getItem('selectedGameId'));
 const highlightedZone = ref(null);
 const game = ref(null);
-const selectedAction = ref(null);
+const selectedPlay = ref(null);
+const selectedPlayer = ref(null);
 const homeLineUp = ref([]);
 const awayLineUp = ref([]);
 const homeBench = ref([]);
@@ -25,6 +27,13 @@ const homeLineUpSelectedPlayer = ref(null);
 const homeBenchSelectedPlayer = ref(null);
 const awayLineUpSelectedPlayer = ref(null);
 const awayBenchSelectedPlayer = ref(null);
+const assistTypes = ref([]);
+const contestedTypes = ref([]);
+const foulTypes = ref([]);
+const handTypes = ref([]);
+const shotTypes = ref([]);
+const turnoverTypes = ref([]);
+const zoneTypes = ref([]);
 
 const fetchGameToHandle = async (id) => {
   try{
@@ -44,7 +53,22 @@ const fetchGameToHandle = async (id) => {
   }
 };
 
+const fetchTypes = async () => {
+  try{
+    assistTypes.value = await EnumService.fetchEnumTypes('assist');
+    contestedTypes.value = await EnumService.fetchEnumTypes('contested');
+    foulTypes.value = await EnumService.fetchEnumTypes('foul');
+    handTypes.value = await EnumService.fetchEnumTypes('hand');
+    shotTypes.value = await EnumService.fetchEnumTypes('shot');
+    turnoverTypes.value = await EnumService.fetchEnumTypes('turnover');
+  }
+  catch (error) {
+    console.error('Error while fetching types of:' + error);
+  }
+};
+
 fetchGameToHandle(selectedGameId.value);
+fetchTypes();
 
 const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
   const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -74,6 +98,15 @@ const handleMouseLeave = () => {
 
 const activeTab = ref('panel');
 
+const clickPlayerSelected = (player) => {
+  if(selectedPlayer.value === player){
+    selectedPlayer.value = null;
+    selectedPlay.value = null;
+    return;
+  }
+  selectedPlayer.value = player;
+}
+
 const clickSwapPlayerIcon = (player, team) => {
   if(team === 'home'){
     if(homeLineUpSelectedPlayer.value === player){
@@ -97,14 +130,17 @@ const clickSwapPlayerIcon = (player, team) => {
 const swapPlayer = (playerOn, playerOff, positionSwapped, bench, lineup) => {
   const playerOffIndex = lineup.findIndex(player => player.playerId === playerOff.playerId);
   const playerOnIndex = bench.findIndex(player => player.playerId === playerOn.playerId);
+  selectedPlayer.value = null;
 
   if (playerOffIndex !== -1 && playerOnIndex !== -1) {
     const [playerOn] = bench.splice(playerOnIndex, 1);
     playerOn.positionOnCourt = positionSwapped;
+    playerOn.onCourt = true;
     lineup.push(playerOn);
 
     const [playerOff] = lineup.splice(playerOffIndex, 1);
     playerOff.positionOnCourt = 0;
+    playerOff.onCourt = false;
     bench.push(playerOff);
 
   } else {
@@ -229,7 +265,7 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
                   <div class="card col-2 no-overflow">
                     #{{player.shirtNumber}}
                   </div>
-                  <div class="card col-9 no-overflow custom-btn-light">
+                  <div class="card col-9 no-overflow custom-btn-light" :class="{'custom-btn-light-selected' : selectedPlayer === player}" @click="clickPlayerSelected(player)">
                     {{player.firstName.substring(0,1)}}. {{player.lastName}}
                   </div>
                   <div class="card col-1 no-overflow d-flex justify-content-center custom-btn-light" :class="{'custom-btn-light-selected' : homeLineUpSelectedPlayer === player}">
@@ -467,14 +503,14 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
           <div class="row">
             <div class="col">
               <div class="card">
-                <div class="d-flex justify-content-between">
-                  <button class="btn btn-light w-100 small-text" @click="selectedAction=$event.target.innerText">Shot</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedAction=$event.target.innerText">Assist</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedAction=$event.target.innerText">Rebound</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedAction=$event.target.innerText">Foul</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedAction=$event.target.innerText">Steal</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedAction=$event.target.innerText">Turnover</button>
-                  <button class="btn btn-light w-100 small-text" @click="selectedAction=$event.target.innerText">Block</button>
+                <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
+                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Shot</button>
+                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Assist</button>
+                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Rebound</button>
+                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Foul</button>
+                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Steal</button>
+                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Turnover</button>
+                  <button class="btn btn-light w-100 small-text" @click="selectedPlay=$event.target.innerText">Block</button>
                 </div>
                 <div class="row">
 
@@ -484,28 +520,30 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
             <div class="col-5">
               <div class="card">
                 <div class="card-header d-flex justify-content-center" style="height: 45px">
-                  <input class="form-control small-text w-25 text-center" readonly :value="selectedAction">
+                  <div class="form-control small-text w-25 text-center" :class="{'reduced-opacity' : selectedPlay === null}" >{{ selectedPlay !== null ? selectedPlay : 'Select play' }}</div>
+                  <div class="form-control small-text w-50 text-center" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
                 </div>
+
                 <div class="card-body">
-                  <template v-if="selectedAction === 'Shot'">
-                    <ShotPlaySelector></ShotPlaySelector>
+                  <template v-if="selectedPlay === 'Shot'">
+                    <ShotPlaySelector :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
-                  <template v-if="selectedAction === 'Assist'">
-                    <AssistSelector></AssistSelector>
+                  <template v-if="selectedPlay === 'Assist'">
+                    <AssistSelector :types="assistTypes"></AssistSelector>
                   </template>
-                  <template v-if="selectedAction === 'Rebound'">
+                  <template v-if="selectedPlay === 'Rebound'">
                     <ReboundSelector></ReboundSelector>
                   </template>
-                  <template v-if="selectedAction === 'Foul'">
+                  <template v-if="selectedPlay === 'Foul'">
                     <FoulSelector></FoulSelector>
                   </template>
-                  <template v-if="selectedAction === 'Steal'">
+                  <template v-if="selectedPlay === 'Steal'">
                     <StealSelector></StealSelector>
                   </template>
-                  <template v-if="selectedAction === 'Turnover'">
+                  <template v-if="selectedPlay === 'Turnover'">
                     <TurnoverSelector></TurnoverSelector>
                   </template>
-                  <template v-if="selectedAction === 'Block'">
+                  <template v-if="selectedPlay === 'Block'">
                     <BlockSelector></BlockSelector>
                   </template>
                 </div>

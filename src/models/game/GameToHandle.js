@@ -124,6 +124,7 @@ class Player {
         this.lastName = data.lastName;
         this.shirtNumber = data.shirtNumber;
         this.startingFive = data.startingFive;
+        this.onCourt = data.onCourt;
         this.stats = new Stats(data.stats);
         this.plays = data.plays.map(playData => createPlay(playData));
         this.positionOnCourt = 0;
