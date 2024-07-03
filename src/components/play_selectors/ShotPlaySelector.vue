@@ -1,6 +1,7 @@
 <script setup>
 
 import {ref, watch} from "vue";
+import {formatTypeText} from "../../assets/scripts/utilts.js";
 
 const props = defineProps({
   types: {
@@ -46,10 +47,9 @@ watch(
     {{shotPlay}}
     <select v-model="shotPlay.type">
       <option v-for="type in types" :value="type">
-        {{type}}
+        {{formatTypeText(type)}}
       </option>
     </select>
-    <input v-model="shotPlay.statPlayerId">
   </div>
 </template>
 

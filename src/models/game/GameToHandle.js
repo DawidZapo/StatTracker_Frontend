@@ -148,6 +148,8 @@ class GameToHandle {
         this.localDateTime = data.localDateTime;
         this.season = data.season;
         this.quarterLengthMin = data.quarterLengthMin;
+        this.currentQuarterTimeMs = data.currentQuarterTimeMs;
+        this.currentQuarter = data.currentQuarter;
         this.timeRemainingMs = data.timeRemainingMs;
         this.home = new Team(data.home);
         this.away = new Team(data.away);

@@ -200,7 +200,7 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
           </div>
           <div class="col-1">
             <div class="card card-white-background">
-              <div class="digital-text">9</div>
+              <div class="digital-text">4</div>
             </div>
           </div>
           <div class="col-3"></div>
