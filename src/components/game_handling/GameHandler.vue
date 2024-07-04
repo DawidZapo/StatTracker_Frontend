@@ -533,9 +533,9 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
                   <div class="form-control small-text w-50 text-center" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body p-1">
                   <template v-if="selectedPlay === 'Shot'">
-                    <ShotPlaySelector :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
+                    <ShotPlaySelector :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'Assist'">
                     <AssistSelector :types="assistTypes"></AssistSelector>

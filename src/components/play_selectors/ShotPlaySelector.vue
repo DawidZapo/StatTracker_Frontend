@@ -8,11 +8,27 @@ const props = defineProps({
     type: Array,
     required: true
   },
+  hands: {
+    type: Array,
+    required: true
+  },
+  contested: {
+    type: Array,
+    required: true
+  },
   player: {
     type: Object,
     required: true
   },
   timeStamp: {
+    type: Number,
+    required: true
+  },
+  zones: {
+    type: Array,
+    required: true
+  },
+  gameId: {
     type: Number,
     required: true
   }
@@ -24,11 +40,11 @@ const shotPlay = ref({
   comments: null,
   contested: null,
   duration: props.timeStamp,
-  gameId: null,
+  gameId: props.gameId,
   hand: null,
   made: null,
   offTheDribble: null,
-  playType: null,
+  playType: 'shot',
   statPlayerId: props.player.statPlayerId,
   type: null,
   worth: null,
@@ -44,16 +60,100 @@ watch(
     { immediate: true }
 );
 
+watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
+  if(shotPlay.value.worth === 1){
+    shotPlay.value.contested = 'NONE';
+    shotPlay.value.type = 'FREE_THROW';
+    shotPlay.value.offTheDribble = false;
+  }
+  else{
+    shotPlay.value.contested = null;
+    shotPlay.value.type = null;
+    shotPlay.value.offTheDribble = null;
+  }
+});
+
 </script>
 
 <template>
   <div class="container">
+    <div class="row text-center d-flex align-items-center">
+      <div class="col">
+        <div class="row">
+          <div class="col">
+            <input class="form-check-input mx-1" type="radio" v-model="shotPlay.worth" id="3PT" :value="3">
+            <label class="form-check-label" for="3PT">3PT</label>
+          </div>
+          <div class="col">
+            <input class="form-check-input mx-1" type="radio" v-model="shotPlay.worth" id="2PT" :value="2">
+            <label class="form-check-label" for="2PT">2PT</label>
+          </div>
+          <div class="col">
+            <input class="form-check-input mx-1" type="radio" v-model="shotPlay.worth" id="FT" :value="1">
+            <label class="form-check-label" for="FT">FT</label>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="row">
+          <div class="col-6">
+            <select class="form-select small-text" v-model="shotPlay.hand" id="hand">
+              <option disabled selected>Select hand</option>
+              <option v-for="hand in hands">{{hand}}</option>
+            </select>
+<!--            <label class="form-check-label" for="hand">Hand</label>-->
+          </div>
+          <div class="col d-flex align-items-center justify-content-center">
+            <input type="checkbox" class="form-check-input mx-1" v-model="shotPlay.made" id="made">
+            <label class="form-check-label" for="made">Made</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="shotPlay.worth === 1" class="row mt-1">
+      <div class="p-1">
+        <input placeholder="Add comments" type="text" class="form-control small small-text" v-model="shotPlay.comments">
+      </div>
+    </div>
+    <div v-else-if="shotPlay.worth === 2" class="row">
+      <div class="p-1">
+        <div class="row">
+          <div class="col">
+            <select class="form-select small small-text" v-model="shotPlay.type">
+              <option selected disabled :value="null">Type</option>
+              <option v-for="type in types" :value="type">{{formatTypeText(type)}}</option>
+            </select>
+          </div>
+          <div class="col">
+            <select class="form-select small small-text" v-model="shotPlay.contested">
+              <option selected disabled :value="null">Contested</option>
+              <option v-for="type in contested" :value="type">{{formatTypeText(type)}}</option>
+            </select>
+          </div>
+          <div class="col d-flex justify-content-center align-items-center">
+            <input type="checkbox" class="form-check-input mx-1" v-model="shotPlay.offTheDribble" id="made">
+            <label class="form-check-label" for="made">Off the dribble</label>
+          </div>
+          <div class="col">
+            <select class="form-select small small-text" v-model="shotPlay.zone">
+              <option selected disabled :value="null">Zone</option>
+              <option v-for="type in zones" :value="type">{{formatTypeText(type)}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <input placeholder="Add comments" type="text" class="form-control small small-text" v-model="shotPlay.comments">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else class="row">
+      <div class="card">
+        3
+      </div>
+    </div>
     {{shotPlay}}
-    <select v-model="shotPlay.type">
-      <option v-for="type in types" :value="type">
-        {{formatTypeText(type)}}
-      </option>
-    </select>
   </div>
 </template>
 
