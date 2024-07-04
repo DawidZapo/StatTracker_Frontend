@@ -98,6 +98,7 @@ const gameData = ref({
   season: seasons.value[0],
   official: true,
   quarterLengthMin: 10,
+  overtimeLengthMin: 5,
   home: computed(() => ({
     id: selectedHome.value.id,
     name: selectedHome.value.name,
@@ -131,15 +132,29 @@ const validateShirtNumbers = (players) => {
 };
 const validateInput = (player) => {
   let value = parseInt(player.shirtNumber, 10);
-
   if (isNaN(value)) {
     player.shirtNumber = null;
   } else if (value < 0 || value > 99) {
     player.shirtNumber = Math.max(0, Math.min(value, 99));
   }
-
 };
 
+const validateQuarterInput = (game) => {
+  let value = parseInt(game.quarterLengthMin, 10);
+  if (isNaN(value)) {
+    game.quarterLengthMin = null;
+  } else if (value < 1 || value > 99) {
+    game.quarterLengthMin = Math.max(1, Math.min(value, 99));
+  }
+};
+const validateOvertimeInput = (game) => {
+  let value = parseInt(game.overtimeLengthMin, 10);
+  if (isNaN(value)) {
+    game.overtimeLengthMin = null;
+  } else if (value < 1 || value > game.quarterLengthMin) {
+    game.overtimeLengthMin = Math.max(1, Math.min(value, game.quarterLengthMin));
+  }
+};
 
 watch(selectedHomePlayersForGame, (newPlayers, oldPlayers) => {
   isHomeValid.value = validatePlayerList(newPlayers) && validateShirtNumbers(newPlayers);
@@ -208,6 +223,7 @@ const handleSubmit = async () => {
   const gameCreated = new GameCreated(gameData.value);
   try{
     // createGameId.value = await GameService.createGame(gameCreated);
+    // await store.dispatch('selectGame', createGameId.value);
     await store.dispatch('selectGame', 1);
      await router.push('/game_handler');
     localStorage.setItem('selectedGameId', JSON.stringify(1));
@@ -257,7 +273,13 @@ const handleSubmit = async () => {
           <div class="col">
             <div class="row d-flex align-items-center justify-content-center mx-4">
               <h6 class="mx-1">Quarter</h6>
-              <input type="number" class="small-text custom-input text-center" v-model="gameData.quarterLengthMin">
+              <input type="number" class="small-text custom-input text-center" @input="()=> validateQuarterInput(gameData)" v-model="gameData.quarterLengthMin">
+            </div>
+          </div>
+          <div class="col">
+            <div class="row d-flex align-items-center justify-content-center mx-4">
+              <h6 class="mx-1">Overtime</h6>
+              <input type="number" class="small-text custom-input text-center" @input="()=>validateOvertimeInput(gameData)" v-model="gameData.overtimeLengthMin">
             </div>
           </div>
         </div>
@@ -353,7 +375,7 @@ const handleSubmit = async () => {
           </div>
         </div>
 <!--        :disabled="!isSubmissionValid || isTheSameTeamSelected"-->
-        <button  type="submit" class="btn btn-success w-100">Create</button>
+        <button type="submit" class="btn btn-success w-100">Create</button>
       </div>
     </form>
   </div>

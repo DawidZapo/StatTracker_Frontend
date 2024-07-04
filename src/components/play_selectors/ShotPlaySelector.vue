@@ -11,6 +11,10 @@ const props = defineProps({
   player: {
     type: Object,
     required: true
+  },
+  timeStamp: {
+    type: Number,
+    required: true
   }
 });
 
@@ -19,7 +23,7 @@ const shotPlay = ref({
   id: null,
   comments: null,
   contested: null,
-  duration: null,
+  duration: props.timeStamp,
   gameId: null,
   hand: null,
   made: null,

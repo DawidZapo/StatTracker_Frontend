@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 import {useStore} from "vuex";
 import GameService from "@/services/game/game.service.js";
 import EnumService from "@/services/enum/enum.service.js";
@@ -34,6 +34,12 @@ const handTypes = ref([]);
 const shotTypes = ref([]);
 const turnoverTypes = ref([]);
 const zoneTypes = ref([]);
+const currentTimeStampInMs = computed(()=>{
+  if(game.value.currentQuarter === 1){
+    return game.value.currentQuarterTimeMs;
+  }
+  return ((game.value.currentQuarter - 1) * (game.value.quarterLengthMin * 60000)) + game.value.currentQuarterTimeMs;
+});
 
 const fetchGameToHandle = async (id) => {
   try{
@@ -529,7 +535,7 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
 
                 <div class="card-body">
                   <template v-if="selectedPlay === 'Shot'">
-                    <ShotPlaySelector :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
+                    <ShotPlaySelector :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'Assist'">
                     <AssistSelector :types="assistTypes"></AssistSelector>

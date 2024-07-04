@@ -1,5 +1,3 @@
-import {createPercentageComputed} from "@/assets/scripts/stats.js";
-
 class Player {
     constructor(data) {
         this.id = data.id;
@@ -26,6 +24,7 @@ class GameCreated {
         this.season = data.season;
         this.official = data.official;
         this.quarterLengthMin = data.quarterLengthMin;
+        this.overtimeLengthMin = data.overtimeLengthMin;
         this.home = new Team(data.home);
         this.away = new Team(data.away);
     }
