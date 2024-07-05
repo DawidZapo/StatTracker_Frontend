@@ -16,6 +16,7 @@ import {getBenchPlayers, getStartingFive} from "@/assets/scripts/stats.js";
 const store = useStore();
 const selectedGameId = ref(localStorage.getItem('selectedGameId'));
 const highlightedZone = ref(null);
+const selectedZone = ref(null);
 const game = ref(null);
 const selectedPlay = ref(null);
 const selectedPlayer = ref(null);
@@ -99,6 +100,10 @@ const highlightZone = (zone) => {
   highlightedZone.value = zone;
 };
 
+const handleZoneClick = (zone) => {
+  selectedZone.value = zone;
+  console.log(zone);
+}
 const handleMouseLeave = () => {
   highlightedZone.value = null;
 };
@@ -281,41 +286,41 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
                   </div>
                 </div>
               </div>
-              <div class="col-4 d-flex justify-content-center">
+              <div class="col-4 d-flex justify-content-center" :class="{'disabled' : selectedPlay !== 'Shot'}">
                 <svg
                     viewBox="0 0 47 50"
                     xmlns="http://www.w3.org/2000/svg"
                     width="200"
                     height="200"
+                    style="cursor: pointer"
                     transform="rotate(90)">
-
 
                   <!-- background -->
                   <rect width="100%" height="100%" fill="tan"/>
 
 
                   <!--    zones-->
-                  <path @mouseover="highlightZone('back-court')" d="M38 0 L 47 0 L 47 25.5 L41 25.5 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-                  <path @mouseover="highlightZone('back-court')" transform="scale(1, -1) translate(0, -50)" d="M38 0 L 47 0 L 47 25 L41 25 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+                  <path @click="handleZoneClick('back-court')" @mouseover="highlightZone('back-court')" d="M38 0 L 47 0 L 47 25.5 L41 25.5 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' || selectedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+                  <path @click="handleZoneClick('back-court')" @mouseover="highlightZone('back-court')" transform="scale(1, -1) translate(0, -50)" d="M38 0 L 47 0 L 47 25 L41 25 Q 41 18 39 13 Q36 5 31 0" :fill="highlightedZone === 'back-court' || selectedZone === 'back-court' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
 
-                  <path @mouseover="highlightZone('right-corner-3pt')" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'right-corner-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-                  <path @mouseover="highlightZone('right-wing-3pt')" d="M13 0 L31 0 Q 36 5 39 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'right-wing-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-                  <path @mouseover="highlightZone('top-3pt')" d="M24.5 13 L 39 13 Q 43 25  39 37 L 24.5 37 Q 30.9 25 24.5 13" :fill="highlightedZone === 'top-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-                  <path @mouseover="highlightZone('left-wing-3pt')" transform="scale(1, -1) translate(0, -50)" d="M13 0 L31 0 Q 36 5 39 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'left-wing-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-                  <path @mouseover="highlightZone('left-corner-3pt')" transform="scale(1, -1) translate(0, -50)" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'left-corner-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+                  <path @click="handleZoneClick('right-corner-3pt')" @mouseover="highlightZone('right-corner-3pt')" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'right-corner-3pt' || selectedZone === 'right-corner-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+                  <path @click="handleZoneClick('right-wing-3pt')" @mouseover="highlightZone('right-wing-3pt')" d="M13 0 L31 0 Q 36 5 39 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'right-wing-3pt' || selectedZone === 'right-wing-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+                  <path @click="handleZoneClick('top-3pt')" @mouseover="highlightZone('top-3pt')" d="M24.5 13 L 39 13 Q 43 25  39 37 L 24.5 37 Q 30.9 25 24.5 13" :fill="highlightedZone === 'top-3pt' || selectedZone === 'top-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+                  <path @click="handleZoneClick('left-wing-3pt')" @mouseover="highlightZone('left-wing-3pt')" transform="scale(1, -1) translate(0, -50)" d="M13 0 L31 0 Q 36 5 39 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'left-wing-3pt' || selectedZone === 'left-wing-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+                  <path @click="handleZoneClick('left-corner-3pt')" @mouseover="highlightZone('left-corner-3pt')" transform="scale(1, -1) translate(0, -50)" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'left-corner-3pt' || selectedZone === 'left-corner-3pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
 
-                  <path @mouseover="highlightZone('right-corner-2pt')" :fill="highlightedZone === 'right-corner-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 3 L 13 3 L 8.6 15 L0 15" fill="none"></path>
-                  <path @mouseover="highlightZone('right-wing-2pt')" :fill="highlightedZone === 'right-wing-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M8.6 15 L 13 3 Q 20.5 6.5  24.5 13 L 16.2 18.1 Q 14 15.9  11 15.1 L8.6 15 " fill="none"></path>
-                  <path @mouseover="highlightZone('top-2pt')" :fill="highlightedZone === 'top-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M24.5 13 Q31 25  24.5 37 L 16.3 31.9 Q 21.7 25 16.3 18.1" fill="none"></path>
-                  <path @mouseover="highlightZone('left-wing-2pt')" :fill="highlightedZone === 'left-wing-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M0 3 L 13 3 L 8.6 15 L0 15" fill="none"></path>
-                  <path @mouseover="highlightZone('left-corner-2pt')" :fill="highlightedZone === 'left-corner-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M8.6 15 L 13 3 Q 20.5 6.5  24.5 13 L 16.2 18.1 Q 14 15.9  11 15.1 L8.6 15 " fill="none"></path>
+                  <path @click="handleZoneClick('right-corner-2pt')" @mouseover="highlightZone('right-corner-2pt')" :fill="highlightedZone === 'right-corner-2pt' || selectedZone === 'right-corner-2pt' ?  'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 3 L 13 3 L 8.6 15 L0 15" fill="none"></path>
+                  <path @click="handleZoneClick('right-wing-2pt')" @mouseover="highlightZone('right-wing-2pt')" :fill="highlightedZone === 'right-wing-2pt' || selectedZone === 'right-wing-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M8.6 15 L 13 3 Q 20.5 6.5  24.5 13 L 16.2 18.1 Q 14 15.9  11 15.1 L8.6 15 " fill="none"></path>
+                  <path @click="handleZoneClick('top-2pt')" @mouseover="highlightZone('top-2pt')" :fill="highlightedZone === 'top-2pt' || selectedZone === 'top-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M24.5 13 Q31 25  24.5 37 L 16.3 31.9 Q 21.7 25 16.3 18.1" fill="none"></path>
+                  <path @click="handleZoneClick('left-wing-2pt')" @mouseover="highlightZone('left-wing-2pt')" :fill="highlightedZone === 'left-wing-2pt' || selectedZone === 'left-wing-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M0 3 L 13 3 L 8.6 15 L0 15" fill="none"></path>
+                  <path @click="handleZoneClick('left-corner-2pt')" @mouseover="highlightZone('left-corner-2pt')" :fill="highlightedZone === 'left-corner-2pt' || selectedZone === 'left-corner-2pt' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M8.6 15 L 13 3 Q 20.5 6.5  24.5 13 L 16.2 18.1 Q 14 15.9  11 15.1 L8.6 15 " fill="none"></path>
 
-                  <path @mouseover="highlightZone('right-low-post')" :fill="highlightedZone === 'right-low-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 15 L 8.7 15 L 11 15.2 L 12.87 15.73 L8.24 21.2 L 6.5 21 L 0 21" fill="none"></path>
-                  <path @mouseover="highlightZone('high-post')" :fill="highlightedZone === 'high-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M8.24 21.2 L 12.87 15.73 Q 18.5 18.3  19 25.1 L 11  25.1 Q 11 22  8.24 21.2" fill="none"></path>
-                  <path @mouseover="highlightZone('high-post')" :fill="highlightedZone === 'high-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M8.24 21.2 L 12.87 15.73 Q 18.5 18.3  19 25.1 L 11  25.1 Q 11 22  8.24 21.2" fill="none"></path>
-                  <path @mouseover="highlightZone('left-low-post')" :fill="highlightedZone === 'left-low-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M0 15 L 8.7 15 L 11 15.2 L 12.87 15.73 L8.24 21.2 L 6.5 21 L 0 21" fill="none"></path>
+                  <path @click="handleZoneClick('right-low-post')" @mouseover="highlightZone('right-low-post')" :fill="highlightedZone === 'right-low-post' || selectedZone === 'right-low-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 15 L 8.7 15 L 11 15.2 L 12.87 15.73 L8.24 21.2 L 6.5 21 L 0 21" fill="none"></path>
+                  <path @click="handleZoneClick('high-post')" @mouseover="highlightZone('high-post')" :fill="highlightedZone === 'high-post' || selectedZone === 'high-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M8.24 21.2 L 12.87 15.73 Q 18.5 18.3  19 25.1 L 11  25.1 Q 11 22  8.24 21.2" fill="none"></path>
+                  <path @click="handleZoneClick('high-post')" @mouseover="highlightZone('high-post')" :fill="highlightedZone === 'high-post' || selectedZone === 'high-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M8.24 21.2 L 12.87 15.73 Q 18.5 18.3  19 25.1 L 11  25.1 Q 11 22  8.24 21.2" fill="none"></path>
+                  <path @click="handleZoneClick('left-low-post')" @mouseover="highlightZone('left-low-post')" :fill="highlightedZone === 'left-low-post' || selectedZone === 'left-low-post' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" transform="scale(1, -1) translate(0, -50)" d="M0 15 L 8.7 15 L 11 15.2 L 12.87 15.73 L8.24 21.2 L 6.5 21 L 0 21" fill="none"></path>
 
-                  <path @mouseover="highlightZone('under-basket')" :fill="highlightedZone === 'under-basket' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 21 L 7 21 Q 11 21.5  11 25 Q 11 28.5  7 29 L 0 29" fill="none"></path>
+                  <path @click="handleZoneClick('under-basket')" @mouseover="highlightZone('under-basket')" :fill="highlightedZone === 'under-basket' || selectedZone === 'under-basket' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave" d="M0 21 L 7 21 Q 11 21.5  11 25 Q 11 28.5  7 29 L 0 29" fill="none"></path>
 
 
                   <!-- center Circle -->
@@ -599,30 +604,24 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
   font-family: Digital,serif;
   font-size: 35px;
 
-
 }
 .no-overflow{
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-/*.custom-nav-tabs .nav-item .nav-link {*/
-/*  background-color: white; !* kolor tła *!*/
-/*  color: grey; !* kolor tekstu *!*/
-/*  border-color: #dee2e6; !* kolor obramowania *!*/
-/*}*/
-
-/*.custom-nav-tabs .nav-item .nav-link.active {*/
-/*  background-color: #f8f8f8; !* kolor tła dla aktywnej zakładki *!*/
-/*  color: black; !* kolor tekstu dla aktywnej zakładki *!*/
-/*  !*border-color: #007bff; !* kolor obramowania dla aktywnej zakładki *!*!*/
-/*}*/
 .scrollable {
   max-height: 155px;
   overflow-y: auto;
 }
 
+.cursor-pointer{
+  cursor: pointer;
+}
 
+.zone-color-select{
+  color: red;
+  background-color: red;
+}
 
 </style>

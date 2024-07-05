@@ -1,6 +1,6 @@
 <script setup>
 
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {formatTypeText} from "../../assets/scripts/utilts.js";
 
 const props = defineProps({
@@ -31,9 +31,22 @@ const props = defineProps({
   gameId: {
     type: Number,
     required: true
+  },
+  selectedZone: {
+    type: String,
+    required: false
   }
 });
 
+const handleCommentsInput = (text) => {
+  if(text.trim() === ''){
+    shotPlay.value.comments = null;
+  }
+};
+
+const twoPointZones = computed(()=> props.zones.filter(zone => zone.includes("2PT")));
+const threePointZones = computed(()=> props.zones.filter(zone => zone.includes("3PT")));
+const selectedZone = ref([]);
 
 const shotPlay = ref({
   id: null,
@@ -42,8 +55,8 @@ const shotPlay = ref({
   duration: props.timeStamp,
   gameId: props.gameId,
   hand: props.player.dominantHand,
-  made: null,
-  offTheDribble: null,
+  made: false,
+  offTheDribble: false,
   playType: 'shot',
   statPlayerId: props.player.statPlayerId,
   type: null,
@@ -68,11 +81,22 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
     shotPlay.value.offTheDribble = false;
     shotPlay.value.zone = 'FREE_THROW';
   }
+  else if (shotPlay.value.worth === 2){
+    shotPlay.value.contested = null;
+    shotPlay.value.type = null;
+    shotPlay.value.offTheDribble = null;
+    shotPlay.value.zone = null;
+    shotPlay.value.type = 'LAYUP_UNDERHAND';
+    selectedZone.value = twoPointZones.value;
+
+  }
   else{
     shotPlay.value.contested = null;
     shotPlay.value.type = null;
     shotPlay.value.offTheDribble = null;
     shotPlay.value.zone = null;
+    shotPlay.value.type = 'JUMP_SHOT';
+    selectedZone.value = threePointZones.value;
   }
 });
 
@@ -113,12 +137,13 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
         </div>
       </div>
     </div>
+    <hr class="my-2">
     <div v-if="shotPlay.worth === 1" class="row mt-1">
       <div class="p-1">
-        <input placeholder="Add comments" type="text" class="form-control small small-text" v-model="shotPlay.comments">
+        <input @input="handleCommentsInput(shotPlay.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="shotPlay.comments">
       </div>
     </div>
-    <div v-else-if="shotPlay.worth === 2" class="row">
+    <div v-else class="row">
       <div class="p-1">
         <div class="row">
           <div class="col">
@@ -140,20 +165,15 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
           <div class="col">
             <select class="form-select small small-text" v-model="shotPlay.zone">
               <option selected disabled :value="null">Zone</option>
-              <option v-for="type in zones" :value="type">{{formatTypeText(type)}}</option>
+              <option v-for="type in selectedZone" :value="type">{{formatTypeText(type)}}</option>
             </select>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <input placeholder="Add comments" type="text" class="form-control small small-text" v-model="shotPlay.comments">
+            <input @input="handleCommentsInput(shotPlay.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="shotPlay.comments">
           </div>
         </div>
-      </div>
-    </div>
-    <div v-else class="row">
-      <div class="card">
-        3
       </div>
     </div>
     {{shotPlay}}
