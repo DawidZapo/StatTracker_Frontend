@@ -127,6 +127,7 @@ class Player {
         this.onCourt = data.onCourt;
         this.stats = new Stats(data.stats);
         this.plays = data.plays.map(playData => createPlay(playData));
+        this.dominantHand = data.dominantHand;
         this.positionOnCourt = 0;
     }
 }

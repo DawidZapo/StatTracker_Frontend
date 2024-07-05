@@ -522,7 +522,9 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
                   <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Block'}" @click="selectedPlay=$event.target.innerText">Block</button>
                 </div>
                 <div class="row">
+                    <div class="col">
 
+                    </div>
                 </div>
               </div>
             </div>

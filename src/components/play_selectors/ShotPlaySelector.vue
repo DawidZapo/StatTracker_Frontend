@@ -41,7 +41,7 @@ const shotPlay = ref({
   contested: null,
   duration: props.timeStamp,
   gameId: props.gameId,
-  hand: null,
+  hand: props.player.dominantHand,
   made: null,
   offTheDribble: null,
   playType: 'shot',
@@ -56,6 +56,7 @@ watch(
     () => props.player,
     (newPlayer) => {
       shotPlay.value.statPlayerId = newPlayer.statPlayerId;
+      shotPlay.value.hand = newPlayer.dominantHand;
     },
     { immediate: true }
 );
@@ -65,11 +66,13 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
     shotPlay.value.contested = 'NONE';
     shotPlay.value.type = 'FREE_THROW';
     shotPlay.value.offTheDribble = false;
+    shotPlay.value.zone = 'FREE_THROW';
   }
   else{
     shotPlay.value.contested = null;
     shotPlay.value.type = null;
     shotPlay.value.offTheDribble = null;
+    shotPlay.value.zone = null;
   }
 });
 
