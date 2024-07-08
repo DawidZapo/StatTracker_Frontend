@@ -34,10 +34,11 @@ const props = defineProps({
   },
   selectedZone: {
     type: String,
-    required: false
+    required: true
   }
 });
 
+const emit = defineEmits(['update:selectedZone', 'update:isFreeThrowSelected']);
 const handleCommentsInput = (text) => {
   if(text.trim() === ''){
     shotPlay.value.comments = null;
@@ -46,7 +47,7 @@ const handleCommentsInput = (text) => {
 
 const twoPointZones = computed(()=> props.zones.filter(zone => zone.includes("2PT")));
 const threePointZones = computed(()=> props.zones.filter(zone => zone.includes("3PT")));
-const selectedZone = ref([]);
+const selectedZones = ref([]);
 
 const shotPlay = ref({
   id: null,
@@ -61,9 +62,16 @@ const shotPlay = ref({
   statPlayerId: props.player.statPlayerId,
   type: null,
   worth: null,
-  zone: null
+  zone: props.selectedZone
 
 });
+
+watch(()=> props.selectedZone,
+    (newField)=>{
+      shotPlay.value.zone = newField;
+    }
+
+);
 
 watch(
     () => props.player,
@@ -80,6 +88,8 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
     shotPlay.value.type = 'FREE_THROW';
     shotPlay.value.offTheDribble = false;
     shotPlay.value.zone = 'FREE_THROW';
+    emit('update:selectedZone', 'FREE_THROW');
+    emit('update:isFreeThrowSelected', true);
   }
   else if (shotPlay.value.worth === 2){
     shotPlay.value.contested = null;
@@ -87,7 +97,9 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
     shotPlay.value.offTheDribble = null;
     shotPlay.value.zone = null;
     shotPlay.value.type = 'LAYUP_UNDERHAND';
-    selectedZone.value = twoPointZones.value;
+    selectedZones.value = twoPointZones.value;
+    emit('update:selectedZone', null);
+    emit('update:isFreeThrowSelected', false);
 
   }
   else{
@@ -96,7 +108,9 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
     shotPlay.value.offTheDribble = null;
     shotPlay.value.zone = null;
     shotPlay.value.type = 'JUMP_SHOT';
-    selectedZone.value = threePointZones.value;
+    selectedZones.value = threePointZones.value;
+    emit('update:selectedZone', null);
+    emit('update:isFreeThrowSelected', false);
   }
 });
 
@@ -162,12 +176,12 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
             <input type="checkbox" class="form-check-input mx-1" v-model="shotPlay.offTheDribble" id="made">
             <label class="form-check-label" for="made">Off the dribble</label>
           </div>
-          <div class="col">
-            <select class="form-select small small-text" v-model="shotPlay.zone">
-              <option selected disabled :value="null">Zone</option>
-              <option v-for="type in selectedZone" :value="type">{{formatTypeText(type)}}</option>
-            </select>
-          </div>
+<!--          <div class="col">-->
+<!--            <select class="form-select small small-text" v-model="shotPlay.zone">-->
+<!--              <option selected disabled :value="null">Zone</option>-->
+<!--              <option v-for="type in selectedZones" :value="type">{{formatTypeText(type)}}</option>-->
+<!--            </select>-->
+<!--          </div>-->
         </div>
         <div class="row">
           <div class="col">
