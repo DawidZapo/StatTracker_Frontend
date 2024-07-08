@@ -12,6 +12,8 @@ import BlockSelector from "@/components/play_selectors/BlockSelector.vue";
 import TurnoverSelector from "@/components/play_selectors/TurnoverSelector.vue";
 import StealSelector from "@/components/play_selectors/StealSelector.vue";
 import {getBenchPlayers, getStartingFive} from "@/assets/scripts/stats.js";
+import {ShotPlay} from "@/models/game/GameToHandle.js";
+import PlayService from "@/services/play/play.serivce.js";
 
 const store = useStore();
 const selectedGameId = ref(localStorage.getItem('selectedGameId'));
@@ -42,6 +44,9 @@ const currentTimeStampInMs = computed(()=>{
   }
   return ((game.value.currentQuarter - 1) * (game.value.quarterLengthMin * 60000)) + game.value.currentQuarterTimeMs;
 });
+
+
+const shotPlay = ref(null);
 
 const fetchGameToHandle = async (id) => {
   try{
@@ -180,6 +185,32 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
     awayLineUp.value.sort((a,b) => a.positionOnCourt - b.positionOnCourt);
   }
 });
+
+const handleShotPlayEmit = (shotPlayData) => {
+  shotPlay.value = shotPlayData;
+  console.log(shotPlay.value);
+};
+
+const handlePlaySelect = (play) => {
+  selectedPlay.value = play;
+  selectedZone.value = null;
+}
+
+
+const clickShotPlayAdd = async () => {
+  const shotPlayCreated = new ShotPlay(shotPlay.value);
+  console.log(shotPlayCreated);
+
+  try{
+    // const response = await PlayService.saveShotPlay(shotPlayCreated);
+    selectedPlay.value = null;
+    selectedZone.value = null;
+    selectedPlayer.value = null;
+  }
+  catch (error) {
+    console.error("Error while saving shotPlay: " + error);
+  }
+};
 
 
 </script>
@@ -518,13 +549,13 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
             <div class="col">
               <div class="card">
                 <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Shot'}" @click="selectedPlay=$event.target.innerText">Shot</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Assist'}" @click="selectedPlay=$event.target.innerText">Assist</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Rebound'}" @click="selectedPlay=$event.target.innerText">Rebound</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Foul'}" @click="selectedPlay=$event.target.innerText">Foul</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Steal'}" @click="selectedPlay=$event.target.innerText">Steal</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Turnover'}" @click="selectedPlay=$event.target.innerText">Turnover</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Block'}" @click="selectedPlay=$event.target.innerText">Block</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Shot'}" @click=handlePlaySelect($event.target.innerText)>Shot</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Assist'}" @click=handlePlaySelect($event.target.innerText)>Assist</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Rebound'}" @click=handlePlaySelect($event.target.innerText)>Rebound</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Foul'}" @click=handlePlaySelect($event.target.innerText)>Foul</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Steal'}" @click=handlePlaySelect($event.target.innerText)>Steal</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Turnover'}" @click=handlePlaySelect($event.target.innerText)>Turnover</button>
+                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Block'}" @click=handlePlaySelect($event.target.innerText)>Block</button>
                 </div>
                 <div class="row">
                     <div class="col">
@@ -538,12 +569,32 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
                 <div class="card-header d-flex justify-content-center" style="height: 45px">
                   <div class="form-control small-text w-25 text-center" :class="{'reduced-opacity' : selectedPlay === null}" >{{ selectedPlay !== null ? selectedPlay : 'Select play' }}</div>
                   <div class="form-control small-text w-50 text-center" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
-                  <button class="btn btn-outline-success small small-text">Add</button>
+                  <template v-if="selectedPlay === 'Shot'">
+                    <button @click="clickShotPlayAdd" class="btn btn-outline-success small small-text">Add shot</button>
+                  </template>
+                  <template v-if="selectedPlay === 'Assist'">
+                    <button class="btn btn-outline-success small small-text">Add assist</button>
+                  </template>
+                  <template v-if="selectedPlay === 'Rebound'">
+                    <button class="btn btn-outline-success small small-text">Add rebound</button>
+                  </template>
+                  <template v-if="selectedPlay === 'Foul'">
+                    <button class="btn btn-outline-success small small-text">Add foul</button>
+                  </template>
+                  <template v-if="selectedPlay === 'Steal'">
+                    <button class="btn btn-outline-success small small-text">Add steal</button>
+                  </template>
+                  <template v-if="selectedPlay === 'Turnover'">
+                    <button class="btn btn-outline-success small small-text">Add turnover</button>
+                  </template>
+                  <template v-if="selectedPlay === 'Block'">
+                    <button class="btn btn-outline-success small small-text">Add block</button>
+                  </template>
                 </div>
 
                 <div class="card-body p-1">
                   <template v-if="selectedPlay === 'Shot'">
-                    <ShotPlaySelector @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
+                    <ShotPlaySelector @update:shotPlay="handleShotPlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'Assist'">
                     <AssistSelector :types="assistTypes"></AssistSelector>

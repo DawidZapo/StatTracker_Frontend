@@ -87,6 +87,7 @@ export class Turnover extends Play {
     constructor(data) {
         super(data);
         this.stealForStatPlayerId = data.stealForStatPlayerId;
+        this.type = data.type;
     }
 }
 

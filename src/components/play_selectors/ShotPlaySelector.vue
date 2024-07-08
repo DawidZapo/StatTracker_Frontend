@@ -1,9 +1,9 @@
 <script setup>
 
-import {computed, ref, watch} from "vue";
-import {formatTypeText} from "../../assets/scripts/utilts.js";
+import {computed, onMounted, ref, watch} from "vue";
+import {formatTypeText} from "@/assets/scripts/utilts.js";
 import {ShotPlay} from "@/models/game/GameToHandle.js";
-import PlaySerivce from "@/services/Play/play.serivce.js";
+import PlayService from "@/services/play/play.serivce";
 
 const props = defineProps({
   types: {
@@ -40,7 +40,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update:selectedZone', 'update:isFreeThrowSelected']);
+const emit = defineEmits(['update:selectedZone', 'update:isFreeThrowSelected', 'update:shotPlay']);
 const handleCommentsInput = (text) => {
   if(text.trim() === ''){
     shotPlay.value.comments = null;
@@ -66,6 +66,10 @@ const shotPlay = ref({
   worth: null,
   zone: props.selectedZone
 
+});
+
+onMounted(()=>{
+  emit('update:shotPlay', shotPlay.value);
 });
 
 watch(()=> props.selectedZone,
@@ -116,18 +120,10 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
   }
 });
 
-const handleSubmit = async () => {
-  const shotPlayCreated = new ShotPlay(shotPlay.value);
-  console.log(shotPlayCreated);
+watch(shotPlay, (newValue) => {
+  emit('update:shotPlay', newValue);
+}, {deep: true});
 
-  try{
-    const response = await PlaySerivce.saveShotPlay(shotPlayCreated);
-    console.log(response);
-  }
-  catch (error) {
-    console.error("Error while saving shotPlay: " + error);
-  }
-}
 
 </script>
 
@@ -205,8 +201,6 @@ const handleSubmit = async () => {
         </div>
       </div>
     </div>
-    <button @click="handleSubmit" class="btn btn-success">save</button>
-
     {{shotPlay}}
   </div>
 </template>
