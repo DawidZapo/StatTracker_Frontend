@@ -538,6 +538,7 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
                 <div class="card-header d-flex justify-content-center" style="height: 45px">
                   <div class="form-control small-text w-25 text-center" :class="{'reduced-opacity' : selectedPlay === null}" >{{ selectedPlay !== null ? selectedPlay : 'Select play' }}</div>
                   <div class="form-control small-text w-50 text-center" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
+                  <button class="btn btn-outline-success small small-text">Add</button>
                 </div>
 
                 <div class="card-body p-1">

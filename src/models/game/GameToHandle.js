@@ -20,7 +20,7 @@ function createPlay(playData) {
 }
 
 
-class Play {
+export class Play {
     constructor(data) {
         if (this.constructor === Play) {
             throw new Error("Abstract classes can't be instantiated.");
@@ -36,7 +36,7 @@ class Play {
     }
 }
 
-class Assist extends Play {
+export class Assist extends Play {
     constructor(data) {
         super(data);
         this.toStatPlayerId = data.toStatPlayerId;
@@ -44,7 +44,7 @@ class Assist extends Play {
     }
 }
 
-class Block extends Play {
+export class Block extends Play {
     constructor(data) {
         super(data);
         this.blockedStatPlayerId = data.blockedStatPlayerId;
@@ -52,20 +52,20 @@ class Block extends Play {
     }
 }
 
-class Foul extends Play {
+export class Foul extends Play {
     constructor(data) {
         super(data);
         this.foulOnStatPlayerId = data.foulOnStatPlayerId;
         this.foulType = data.foulType;
     }
 }
-class Rebound extends Play {
+export class Rebound extends Play {
     constructor(data) {
         super(data);
         this.isOffensive = data.isOffensive;
     }
 }
-class ShotPlay extends Play {
+export class ShotPlay extends Play {
     constructor(data) {
         super(data);
         this.type = data.type;
@@ -76,14 +76,14 @@ class ShotPlay extends Play {
     }
 }
 
-class Steal extends Play {
+export class Steal extends Play {
     constructor(data) {
         super(data);
         this.turnoverForStatPlayerId = data.turnoverForStatPlayerId;
     }
 }
 
-class Turnover extends Play {
+export class Turnover extends Play {
     constructor(data) {
         super(data);
         this.stealForStatPlayerId = data.stealForStatPlayerId;

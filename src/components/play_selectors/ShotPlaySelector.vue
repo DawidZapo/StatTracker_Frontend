@@ -2,6 +2,8 @@
 
 import {computed, ref, watch} from "vue";
 import {formatTypeText} from "../../assets/scripts/utilts.js";
+import {ShotPlay} from "@/models/game/GameToHandle.js";
+import PlaySerivce from "@/services/Play/play.serivce.js";
 
 const props = defineProps({
   types: {
@@ -94,7 +96,7 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
   else if (shotPlay.value.worth === 2){
     shotPlay.value.contested = null;
     shotPlay.value.type = null;
-    shotPlay.value.offTheDribble = null;
+    shotPlay.value.offTheDribble = false;
     shotPlay.value.zone = null;
     shotPlay.value.type = 'LAYUP_UNDERHAND';
     selectedZones.value = twoPointZones.value;
@@ -105,7 +107,7 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
   else{
     shotPlay.value.contested = null;
     shotPlay.value.type = null;
-    shotPlay.value.offTheDribble = null;
+    shotPlay.value.offTheDribble = false;
     shotPlay.value.zone = null;
     shotPlay.value.type = 'JUMP_SHOT';
     selectedZones.value = threePointZones.value;
@@ -113,6 +115,19 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
     emit('update:isFreeThrowSelected', false);
   }
 });
+
+const handleSubmit = async () => {
+  const shotPlayCreated = new ShotPlay(shotPlay.value);
+  console.log(shotPlayCreated);
+
+  try{
+    const response = await PlaySerivce.saveShotPlay(shotPlayCreated);
+    console.log(response);
+  }
+  catch (error) {
+    console.error("Error while saving shotPlay: " + error);
+  }
+}
 
 </script>
 
@@ -190,6 +205,8 @@ watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
         </div>
       </div>
     </div>
+    <button @click="handleSubmit" class="btn btn-success">save</button>
+
     {{shotPlay}}
   </div>
 </template>
