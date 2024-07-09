@@ -4,4 +4,6 @@ export const formatTypeText = (string) => {
     formattedString = formattedString.charAt(0).toUpperCase() + formattedString.slice(1);
 
     return formattedString;
-}
+};
+
+

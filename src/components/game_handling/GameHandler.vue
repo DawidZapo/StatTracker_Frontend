@@ -12,7 +12,7 @@ import BlockSelector from "@/components/play_selectors/BlockSelector.vue";
 import TurnoverSelector from "@/components/play_selectors/TurnoverSelector.vue";
 import StealSelector from "@/components/play_selectors/StealSelector.vue";
 import {getBenchPlayers, getStartingFive} from "@/assets/scripts/stats.js";
-import {ShotPlay} from "@/models/game/GameToHandle.js";
+import {Assist, ShotPlay} from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 
 const store = useStore();
@@ -44,9 +44,33 @@ const currentTimeStampInMs = computed(()=>{
   }
   return ((game.value.currentQuarter - 1) * (game.value.quarterLengthMin * 60000)) + game.value.currentQuarterTimeMs;
 });
+const possibleAssistedPlayers = computed(()=>{
+  if(homeLineUp.value.includes(selectedPlayer.value)){
+    return homeLineUp.value;
+  }
+  else if(awayLineUp.value.includes(selectedPlayer.value)) {
+    return awayLineUp.value;
+  }
+  else{
+    return null;
+  }
+
+})
+
+watch(()=>selectedPlayer.value, ()=>{
+  if(homeLineUp.value.includes(selectedPlayer.value)){
+    console.log('HOMEEEE');
+  }
+  else if(awayLineUp.value.includes(selectedPlayer.value)) {
+    console.log('AAAWAAY');
+  }
+  else{
+    console.log('noi error');
+  }
+})
 
 
-const shotPlay = ref(null);
+const createdPlay = ref(null);
 
 const fetchGameToHandle = async (id) => {
   try{
@@ -186,9 +210,9 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
   }
 });
 
-const handleShotPlayEmit = (shotPlayData) => {
-  shotPlay.value = shotPlayData;
-  console.log(shotPlay.value);
+const handlePlayEmit = (playData) => {
+  createdPlay.value = playData;
+  console.log(createdPlay.value);
 };
 
 const handlePlaySelect = (play) => {
@@ -198,7 +222,7 @@ const handlePlaySelect = (play) => {
 
 
 const clickShotPlayAdd = async () => {
-  const shotPlayCreated = new ShotPlay(shotPlay.value);
+  const shotPlayCreated = new ShotPlay(createdPlay.value);
   console.log(shotPlayCreated);
 
   try{
@@ -210,6 +234,14 @@ const clickShotPlayAdd = async () => {
   catch (error) {
     console.error("Error while saving shotPlay: " + error);
   }
+};
+
+const clickAssistAdd = async () => {
+  const assistCreated = new Assist(createdPlay.value);
+  console.log(assistCreated);
+  selectedPlay.value = null;
+  selectedZone.value = null;
+  selectedPlayer.value = null;
 };
 
 
@@ -573,7 +605,7 @@ const clickShotPlayAdd = async () => {
                     <button @click="clickShotPlayAdd" class="btn btn-outline-success small small-text">Add shot</button>
                   </template>
                   <template v-if="selectedPlay === 'Assist'">
-                    <button class="btn btn-outline-success small small-text">Add assist</button>
+                    <button @click="clickAssistAdd" class="btn btn-outline-success small small-text">Add assist</button>
                   </template>
                   <template v-if="selectedPlay === 'Rebound'">
                     <button class="btn btn-outline-success small small-text">Add rebound</button>
@@ -594,10 +626,10 @@ const clickShotPlayAdd = async () => {
 
                 <div class="card-body p-1">
                   <template v-if="selectedPlay === 'Shot'">
-                    <ShotPlaySelector @update:shotPlay="handleShotPlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
+                    <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'Assist'">
-                    <AssistSelector :types="assistTypes"></AssistSelector>
+                    <AssistSelector @update:assist="handlePlayEmit($event)" :possible-assisted-players="possibleAssistedPlayers" :time-stamp="currentTimeStampInMs" :types="assistTypes" :game-id="game.id" :hands="handTypes" :player="selectedPlayer"></AssistSelector>
                   </template>
                   <template v-if="selectedPlay === 'Rebound'">
                     <ReboundSelector></ReboundSelector>
