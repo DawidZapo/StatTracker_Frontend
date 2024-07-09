@@ -219,7 +219,7 @@ watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2
 
 const handlePlayEmit = (playData) => {
   createdPlay.value = playData;
-  console.log(createdPlay.value);
+  // console.log(createdPlay.value);
 };
 
 const handlePlaySelect = (play) => {
@@ -238,48 +238,90 @@ const clickShotPlayAdd = async () => {
   console.log(shotPlayCreated);
 
   try{
-    // const response = await PlayService.saveShotPlay(shotPlayCreated);
+    const response = await PlayService.savePlay('shot_play', shotPlayCreated);
     resetPlayPlayerAndZone();
   }
   catch (error) {
-    console.error("Error while saving shotPlay: " + error);
+    console.error("Error while saving play: " + error);
   }
 };
 
 const clickAssistAdd = async () => {
   const assistCreated = new Assist(createdPlay.value);
   console.log(assistCreated);
-  resetPlayPlayerAndZone();
+
+  try{
+    const response = await PlayService.savePlay('assist', assistCreated);
+    resetPlayPlayerAndZone();
+  }
+  catch (error) {
+    console.error("Error while saving play: " + error);
+  }
 };
 
 const clickReboundAdd = async () => {
   const reboundCreated = new Rebound(createdPlay.value);
   console.log(reboundCreated);
-  resetPlayPlayerAndZone();
+
+  try{
+    const response = await PlayService.savePlay('rebound', reboundCreated);
+    resetPlayPlayerAndZone();
+  }
+  catch (error) {
+    console.error("Error while saving play: " + error);
+  }
 };
 
 const clickFoulAdd = async () => {
   const foulCreated = new Foul(createdPlay.value);
   console.log(foulCreated);
-  resetPlayPlayerAndZone();
+
+  try{
+    const response = await PlayService.savePlay('foul', foulCreated);
+    resetPlayPlayerAndZone();
+  }
+  catch (error) {
+    console.error("Error while saving play: " + error);
+  }
 };
 
 const clickStealAdd = async () => {
   const stealCreated = new Steal(createdPlay.value);
   console.log(stealCreated);
-  resetPlayPlayerAndZone();
+
+  try{
+    const response = await PlayService.savePlay('steal', stealCreated);
+    resetPlayPlayerAndZone();
+  }
+  catch (error) {
+    console.error("Error while saving play: " + error);
+  }
 };
 
 const clickTurnoverAdd = async () => {
   const turnoverCreated = new Turnover(createdPlay.value);
   console.log(turnoverCreated);
-  resetPlayPlayerAndZone();
+
+  try{
+    const response = await PlayService.savePlay('turnover', turnoverCreated);
+    resetPlayPlayerAndZone();
+  }
+  catch (error) {
+    console.error("Error while saving play: " + error);
+  }
 };
 
 const clickBlockAdd = async () => {
   const blockCreated = new Block(createdPlay.value);
   console.log(blockCreated);
-  resetPlayPlayerAndZone();
+
+  try{
+    const response = await PlayService.savePlay('block', blockCreated);
+    resetPlayPlayerAndZone();
+  }
+  catch (error) {
+    console.error("Error while saving play: " + error);
+  }
 };
 
 </script>

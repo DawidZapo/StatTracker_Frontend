@@ -32,7 +32,6 @@ export class Play {
         this.comments = data.comments;
         this.playType = data.playType;
         this.hand = data.hand;
-        this.offTheDribble = data.offTheDribble;
     }
 }
 
@@ -40,7 +39,7 @@ export class Assist extends Play {
     constructor(data) {
         super(data);
         this.toStatPlayerId = data.toStatPlayerId;
-        this.assistType = data.assistType;
+        this.type = data.type;
     }
 }
 
@@ -56,7 +55,7 @@ export class Foul extends Play {
     constructor(data) {
         super(data);
         this.foulOnStatPlayerId = data.foulOnStatPlayerId;
-        this.foulType = data.foulType;
+        this.type = data.type;
     }
 }
 export class Rebound extends Play {
@@ -73,6 +72,7 @@ export class ShotPlay extends Play {
         this.made = data.made;
         this.contested = data.contested;
         this.worth = data.worth;
+        this.offTheDribble = data.offTheDribble;
     }
 }
 
