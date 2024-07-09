@@ -62,10 +62,8 @@ onMounted(()=>{
   emit('update:foul', foul.value);
 });
 watch(foul, (newValue) => {
-  emit('update:foul', foul.value);
+  emit('update:foul', newValue);
 }, {deep: true});
-
-
 
 </script>
 
@@ -75,18 +73,18 @@ watch(foul, (newValue) => {
       <div class="col">
         <select class="form-select small small-text" v-model="foul.type" :class="{'reduced-opacity' : foul.type === null}">
           <option disabled selected :value="null">Type</option>
-          <option v-for="type in types" :value="type">{{formatTypeText(type)}}</option>
+          <option v-for="type in types" :value="type">{{type}}</option>
         </select>
       </div>
       <div class="col">
         <select class="form-select small small-text" :class="{'reduced-opacity' : foul.foulOnStatPlayerId === null}" v-model="foul.foulOnStatPlayerId">
-          <option disabled selected :value="null">on player</option>
-          <option v-for="player in possibleFoulOnPlayers" :value="player.statPlayerId">{{player.lastName}}</option>
+          <option disabled selected :value="null">Foul on</option>
+          <option v-for="player in possibleFoulOnPlayers" :value="player.statPlayerId">{{'#' + player.shirtNumber + ' ' + player.firstName + ' ' + player.lastName}}</option>
         </select>
       </div>
       <div class="col">
         <select class="form-select small small-text" v-model="foul.hand">
-          <option v-for="hand in hands" :value="hand">{{formatTypeText(hand)}}</option>
+          <option v-for="hand in hands" :value="hand">{{hand}}</option>
         </select>
       </div>
     </div>

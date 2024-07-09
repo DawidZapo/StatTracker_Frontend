@@ -73,7 +73,7 @@ watch(
       </div>
       <div class="col">
         <select class="form-select small small-text" v-model="rebound.hand">
-          <option v-for="hand in hands" :value="hand">{{formatTypeText(hand)}}</option>
+          <option v-for="hand in hands" :value="hand">{{hand}}</option>
         </select>
       </div>
     </div>

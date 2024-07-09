@@ -74,18 +74,18 @@ watch(assist, (newValue) => {
       <div class="col">
         <select class="form-select small small-text" v-model="assist.type" :class="{'reduced-opacity' : assist.type === null}">
           <option disabled selected :value="null">Type</option>
-          <option v-for="type in types" :value="type">{{formatTypeText(type)}}</option>
+          <option v-for="type in types" :value="type">{{type}}</option>
         </select>
       </div>
       <div class="col">
         <select class="form-select small small-text" :class="{'reduced-opacity' : assist.toStatPlayerId === null}" v-model="assist.toStatPlayerId">
           <option disabled selected :value="null">To player</option>
-          <option v-for="player in possibleAssistedPlayers" :value="player.statPlayerId">{{player.lastName}}</option>
+          <option v-for="player in possibleAssistedPlayers" :value="player.statPlayerId">{{'#' + player.shirtNumber + ' ' + player.firstName + ' ' + player.lastName}}</option>
         </select>
       </div>
       <div class="col">
         <select class="form-select small small-text" v-model="assist.hand">
-          <option v-for="hand in hands" :value="hand">{{formatTypeText(hand)}}</option>
+          <option v-for="hand in hands" :value="hand">{{hand}}</option>
         </select>
       </div>
     </div>

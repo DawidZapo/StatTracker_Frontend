@@ -223,8 +223,13 @@ const handlePlayEmit = (playData) => {
 };
 
 const handlePlaySelect = (play) => {
-  selectedPlay.value = play;
   selectedZone.value = null;
+
+  if(selectedPlay.value === play){
+    selectedPlay.value = null;
+    return;
+  }
+  selectedPlay.value = play;
 }
 
 
@@ -632,7 +637,7 @@ const clickBlockAdd = async () => {
               <div class="card">
                 <div class="card-header d-flex justify-content-center" style="height: 45px">
                   <div class="form-control small-text w-25 text-center" :class="{'reduced-opacity' : selectedPlay === null}" >{{ selectedPlay !== null ? selectedPlay : 'Select play' }}</div>
-                  <div class="form-control small-text w-50 text-center" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
+                  <div class="form-control small-text w-50 text-center no-overflow" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
                   <template v-if="selectedPlay === 'Shot'">
                     <button @click="clickShotPlayAdd" class="btn btn-outline-success small small-text">Add shot</button>
                   </template>
@@ -646,13 +651,13 @@ const clickBlockAdd = async () => {
                     <button @click="clickFoulAdd" class="btn btn-outline-success small small-text">Add foul</button>
                   </template>
                   <template v-if="selectedPlay === 'Steal'">
-                    <button class="btn btn-outline-success small small-text">Add steal</button>
+                    <button @click="clickStealAdd" class="btn btn-outline-success small small-text">Add steal</button>
                   </template>
                   <template v-if="selectedPlay === 'Turnover'">
-                    <button class="btn btn-outline-success small small-text">Add turnover</button>
+                    <button @click="clickTurnoverAdd" class="btn btn-outline-success small small-text">Add turnover</button>
                   </template>
                   <template v-if="selectedPlay === 'Block'">
-                    <button class="btn btn-outline-success small small-text">Add block</button>
+                    <button @click="clickBlockAdd" class="btn btn-outline-success small small-text">Add block</button>
                   </template>
                 </div>
 
@@ -670,13 +675,13 @@ const clickBlockAdd = async () => {
                     <FoulSelector @update:foul="handlePlayEmit($event)" :possible-foul-on-players="getOpposingTeamPlayers" :types="foulTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></FoulSelector>
                   </template>
                   <template v-if="selectedPlay === 'Steal'">
-                    <StealSelector></StealSelector>
+                    <StealSelector @update:steal="handlePlayEmit($event)" :possible-turnover-for-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></StealSelector>
                   </template>
                   <template v-if="selectedPlay === 'Turnover'">
-                    <TurnoverSelector></TurnoverSelector>
+                    <TurnoverSelector @update:turnover="handlePlayEmit($event)" :possible-steal-on-players="getOpposingTeamPlayers" :types="turnoverTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></TurnoverSelector>
                   </template>
                   <template v-if="selectedPlay === 'Block'">
-                    <BlockSelector></BlockSelector>
+                    <BlockSelector @update:block="handlePlayEmit($event)" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
                   </template>
                 </div>
               </div>

@@ -174,13 +174,13 @@ watch(shotPlay, (newValue) => {
           <div class="col">
             <select class="form-select small small-text" v-model="shotPlay.type">
               <option selected disabled :value="null">Type</option>
-              <option v-for="type in types" :value="type">{{formatTypeText(type)}}</option>
+              <option v-for="type in types" :value="type">{{type}}</option>
             </select>
           </div>
           <div class="col">
             <select class="form-select small small-text" v-model="shotPlay.contested">
               <option selected disabled :value="null">Contested</option>
-              <option v-for="type in contested" :value="type">{{formatTypeText(type)}}</option>
+              <option v-for="type in contested" :value="type">{{type}}</option>
             </select>
           </div>
           <div class="col d-flex justify-content-center align-items-center">
