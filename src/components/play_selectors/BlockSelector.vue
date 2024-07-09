@@ -1,6 +1,6 @@
 <script setup>
 
-import {onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {formatTypeText} from "../../assets/scripts/utilts.js";
 
 const props = defineProps({
@@ -35,16 +35,20 @@ const block = ref({
       playType : "block",
       statPlayerId : props.player.statPlayerId,
       blockedStatPlayerId : null,
-      withinPerimeter : true
+      inThePaint : true
 });
 
-const emit = defineEmits(['update:block']);
+const emit = defineEmits(['update:block', 'update:playSubmission']);
 
 const handleCommentsInput = (text) => {
   if(text.trim() === ''){
     block.value.comments = null;
   }
 };
+
+const isPlaySubmissionCorrect = computed(()=>{
+  return block.value.blockedStatPlayerId !== null;
+});
 
 watch(
     () => props.player,
@@ -60,6 +64,7 @@ onMounted(()=>{
 });
 watch(block, (newValue) => {
   emit('update:block', newValue);
+  emit('update:playSubmission', isPlaySubmissionCorrect.value);
 }, {deep: true});
 
 </script>
@@ -74,7 +79,7 @@ watch(block, (newValue) => {
         </select>
       </div>
       <div class="col d-flex align-items-center justify-content-center">
-        <input type="checkbox" class="form-check-input mx-1" v-model="block.withinPerimeter" id="within">
+        <input type="checkbox" class="form-check-input mx-1" v-model="block.inThePaint" id="within">
         <label class="form-check-label" for="within">Within perimeter</label>
       </div>
       <div class="col">

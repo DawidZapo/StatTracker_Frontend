@@ -47,7 +47,7 @@ export class Block extends Play {
     constructor(data) {
         super(data);
         this.blockedStatPlayerId = data.blockedStatPlayerId;
-        this.withinPerimeter = data.withinPerimeter;
+        this.inThePaint = data.inThePaint;
     }
 }
 
