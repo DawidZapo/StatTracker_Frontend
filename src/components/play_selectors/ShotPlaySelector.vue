@@ -148,16 +148,16 @@ watch(shotPlay, (newValue) => {
       </div>
       <div class="col">
         <div class="row">
+          <div class="col d-flex align-items-center justify-content-center">
+            <input type="checkbox" class="form-check-input mx-1" v-model="shotPlay.made" id="made">
+            <label class="form-check-label" for="made">Made</label>
+          </div>
           <div class="col-6">
             <select class="form-select small-text" v-model="shotPlay.hand" id="hand">
               <option disabled selected>Select hand</option>
               <option v-for="hand in hands">{{hand}}</option>
             </select>
-<!--            <label class="form-check-label" for="hand">Hand</label>-->
-          </div>
-          <div class="col d-flex align-items-center justify-content-center">
-            <input type="checkbox" class="form-check-input mx-1" v-model="shotPlay.made" id="made">
-            <label class="form-check-label" for="made">Made</label>
+            <!--            <label class="form-check-label" for="hand">Hand</label>-->
           </div>
         </div>
       </div>
@@ -194,7 +194,7 @@ watch(shotPlay, (newValue) => {
 <!--            </select>-->
 <!--          </div>-->
         </div>
-        <div class="row">
+        <div class="row mt-1">
           <div class="col">
             <input @input="handleCommentsInput(shotPlay.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="shotPlay.comments">
           </div>

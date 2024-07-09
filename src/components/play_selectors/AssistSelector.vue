@@ -78,13 +78,20 @@ watch(assist, (newValue) => {
         </select>
       </div>
       <div class="col">
-        <input @input="handleCommentsInput(assist.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="assist.comments">
-      </div>
-      <div class="col">
         <select class="form-select small small-text" :class="{'reduced-opacity' : assist.toStatPlayerId === null}" v-model="assist.toStatPlayerId">
           <option disabled selected :value="null">To player</option>
           <option v-for="player in possibleAssistedPlayers" :value="player.statPlayerId">{{player.lastName}}</option>
         </select>
+      </div>
+      <div class="col">
+        <select class="form-select small small-text" v-model="assist.hand">
+          <option v-for="hand in hands" :value="hand">{{formatTypeText(hand)}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row mt-1">
+      <div class="col">
+        <input @input="handleCommentsInput(assist.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="assist.comments">
       </div>
     </div>
     {{assist}}

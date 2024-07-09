@@ -12,7 +12,7 @@ import BlockSelector from "@/components/play_selectors/BlockSelector.vue";
 import TurnoverSelector from "@/components/play_selectors/TurnoverSelector.vue";
 import StealSelector from "@/components/play_selectors/StealSelector.vue";
 import {getBenchPlayers, getStartingFive} from "@/assets/scripts/stats.js";
-import {Assist, ShotPlay} from "@/models/game/GameToHandle.js";
+import {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 
 const store = useStore();
@@ -44,7 +44,8 @@ const currentTimeStampInMs = computed(()=>{
   }
   return ((game.value.currentQuarter - 1) * (game.value.quarterLengthMin * 60000)) + game.value.currentQuarterTimeMs;
 });
-const possibleAssistedPlayers = computed(()=>{
+
+const getCurrentTeamPlayers = computed(()=>{
   if(homeLineUp.value.includes(selectedPlayer.value)){
     return homeLineUp.value;
   }
@@ -55,19 +56,25 @@ const possibleAssistedPlayers = computed(()=>{
     return null;
   }
 
-})
+});
 
-watch(()=>selectedPlayer.value, ()=>{
+const getOpposingTeamPlayers = computed(()=>{
   if(homeLineUp.value.includes(selectedPlayer.value)){
-    console.log('HOMEEEE');
+    return awayLineUp.value;
   }
   else if(awayLineUp.value.includes(selectedPlayer.value)) {
-    console.log('AAAWAAY');
+    return homeLineUp.value;
   }
   else{
-    console.log('noi error');
+    return null;
   }
 })
+
+function resetPlayPlayerAndZone(){
+  selectedPlay.value = null;
+  selectedPlayer.value = null;
+  selectedZone.value = null;
+}
 
 
 const createdPlay = ref(null);
@@ -227,9 +234,7 @@ const clickShotPlayAdd = async () => {
 
   try{
     // const response = await PlayService.saveShotPlay(shotPlayCreated);
-    selectedPlay.value = null;
-    selectedZone.value = null;
-    selectedPlayer.value = null;
+    resetPlayPlayerAndZone();
   }
   catch (error) {
     console.error("Error while saving shotPlay: " + error);
@@ -239,11 +244,38 @@ const clickShotPlayAdd = async () => {
 const clickAssistAdd = async () => {
   const assistCreated = new Assist(createdPlay.value);
   console.log(assistCreated);
-  selectedPlay.value = null;
-  selectedZone.value = null;
-  selectedPlayer.value = null;
+  resetPlayPlayerAndZone();
 };
 
+const clickReboundAdd = async () => {
+  const reboundCreated = new Rebound(createdPlay.value);
+  console.log(reboundCreated);
+  resetPlayPlayerAndZone();
+};
+
+const clickFoulAdd = async () => {
+  const foulCreated = new Foul(createdPlay.value);
+  console.log(foulCreated);
+  resetPlayPlayerAndZone();
+};
+
+const clickStealAdd = async () => {
+  const stealCreated = new Steal(createdPlay.value);
+  console.log(stealCreated);
+  resetPlayPlayerAndZone();
+};
+
+const clickTurnoverAdd = async () => {
+  const turnoverCreated = new Turnover(createdPlay.value);
+  console.log(turnoverCreated);
+  resetPlayPlayerAndZone();
+};
+
+const clickBlockAdd = async () => {
+  const blockCreated = new Block(createdPlay.value);
+  console.log(blockCreated);
+  resetPlayPlayerAndZone();
+};
 
 </script>
 
@@ -608,10 +640,10 @@ const clickAssistAdd = async () => {
                     <button @click="clickAssistAdd" class="btn btn-outline-success small small-text">Add assist</button>
                   </template>
                   <template v-if="selectedPlay === 'Rebound'">
-                    <button class="btn btn-outline-success small small-text">Add rebound</button>
+                    <button @click="clickReboundAdd" class="btn btn-outline-success small small-text">Add rebound</button>
                   </template>
                   <template v-if="selectedPlay === 'Foul'">
-                    <button class="btn btn-outline-success small small-text">Add foul</button>
+                    <button @click="clickFoulAdd" class="btn btn-outline-success small small-text">Add foul</button>
                   </template>
                   <template v-if="selectedPlay === 'Steal'">
                     <button class="btn btn-outline-success small small-text">Add steal</button>
@@ -629,13 +661,13 @@ const clickAssistAdd = async () => {
                     <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'Assist'">
-                    <AssistSelector @update:assist="handlePlayEmit($event)" :possible-assisted-players="possibleAssistedPlayers" :time-stamp="currentTimeStampInMs" :types="assistTypes" :game-id="game.id" :hands="handTypes" :player="selectedPlayer"></AssistSelector>
+                    <AssistSelector @update:assist="handlePlayEmit($event)" :possible-assisted-players="getCurrentTeamPlayers" :time-stamp="currentTimeStampInMs" :types="assistTypes" :game-id="game.id" :hands="handTypes" :player="selectedPlayer"></AssistSelector>
                   </template>
                   <template v-if="selectedPlay === 'Rebound'">
-                    <ReboundSelector></ReboundSelector>
+                    <ReboundSelector @update:rebound="handlePlayEmit($event)" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></ReboundSelector>
                   </template>
                   <template v-if="selectedPlay === 'Foul'">
-                    <FoulSelector></FoulSelector>
+                    <FoulSelector @update:foul="handlePlayEmit($event)" :possible-foul-on-players="getOpposingTeamPlayers" :types="foulTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></FoulSelector>
                   </template>
                   <template v-if="selectedPlay === 'Steal'">
                     <StealSelector></StealSelector>
