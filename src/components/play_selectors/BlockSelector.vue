@@ -46,10 +46,6 @@ const handleCommentsInput = (text) => {
   }
 };
 
-const isPlaySubmissionCorrect = computed(()=>{
-  return block.value.blockedStatPlayerId !== null;
-});
-
 watch(
     () => props.player,
     (newPlayer) => {
@@ -59,13 +55,20 @@ watch(
     { immediate: true }
 );
 
+watch(()=>props.possibleBlockOnPlayers, (newPlayers)=>{
+  block.value.blockedStatPlayerId = null;
+},{ immediate: true });
+
 onMounted(()=>{
   emit('update:block', block.value);
 });
 watch(block, (newValue) => {
   emit('update:block', newValue);
-  emit('update:playSubmission', isPlaySubmissionCorrect.value);
 }, {deep: true});
+
+watch(()=>block.value.blockedStatPlayerId, (newValue)=>{
+  emit('update:playSubmission', newValue !== null);
+});
 
 </script>
 

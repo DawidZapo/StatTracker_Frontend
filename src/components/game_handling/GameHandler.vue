@@ -224,6 +224,10 @@ const handlePlayEmit = (playData) => {
   // console.log(createdPlay.value);
 };
 
+const handlePlaySubmissionEmit = (trueOrFalse) => {
+  isPlaySubmissionCorrect.value = trueOrFalse;
+}
+
 const handlePlaySelect = (play) => {
   selectedZone.value = null;
 
@@ -726,7 +730,7 @@ const clickBlockAdd = async () => {
                     <TurnoverSelector @update:turnover="handlePlayEmit($event)" :possible-steal-on-players="getOpposingTeamPlayers" :types="turnoverTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></TurnoverSelector>
                   </template>
                   <template v-if="selectedPlay === 'Block'">
-                    <BlockSelector @update:block="handlePlayEmit($event)" @update:play-submission="isPlaySubmissionCorrect=$event" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
+                    <BlockSelector @update:block="handlePlayEmit($event)" @update:play-submission="handlePlaySubmissionEmit($event)" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
                   </template>
                 </div>
               </div>
