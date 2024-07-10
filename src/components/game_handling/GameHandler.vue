@@ -38,7 +38,7 @@ const shotTypes = ref([]);
 const turnoverTypes = ref([]);
 const zoneTypes = ref([]);
 const isFreeThrowSelected = ref(false);
-const isPlaySubmissionCorrect = ref(false);
+// const isPlaySubmissionCorrect = ref(false);
 const currentTimeStampInMs = computed(()=>{
   if(game.value.currentQuarter === 1){
     return game.value.currentQuarterTimeMs;
@@ -224,9 +224,10 @@ const handlePlayEmit = (playData) => {
   // console.log(createdPlay.value);
 };
 
-const handlePlaySubmissionEmit = (trueOrFalse) => {
-  isPlaySubmissionCorrect.value = trueOrFalse;
-}
+// validation
+// const handlePlaySubmissionEmit = (trueOrFalse) => {
+//   isPlaySubmissionCorrect.value = trueOrFalse;
+// }
 
 const handlePlaySelect = (play) => {
   selectedZone.value = null;
@@ -706,7 +707,8 @@ const clickBlockAdd = async () => {
                     <button @click="clickTurnoverAdd" class="btn btn-outline-success small small-text">Add turnover</button>
                   </template>
                   <template v-if="selectedPlay === 'Block'">
-                    <button @click="clickBlockAdd" :class="{'disabled' : !isPlaySubmissionCorrect}" class="btn btn-outline-success small small-text">Add block</button>
+<!--                    :class="{'disabled' : !isPlaySubmissionCorrect}"-->
+                    <button @click="clickBlockAdd" class="btn btn-outline-success small small-text">Add block</button>
                   </template>
                 </div>
 
@@ -730,7 +732,8 @@ const clickBlockAdd = async () => {
                     <TurnoverSelector @update:turnover="handlePlayEmit($event)" :possible-steal-on-players="getOpposingTeamPlayers" :types="turnoverTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></TurnoverSelector>
                   </template>
                   <template v-if="selectedPlay === 'Block'">
-                    <BlockSelector @update:block="handlePlayEmit($event)" @update:play-submission="handlePlaySubmissionEmit($event)" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
+<!--                    @update:play-submission="handlePlaySubmissionEmit($event)"-->
+                    <BlockSelector @update:block="handlePlayEmit($event)" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
                   </template>
                 </div>
               </div>

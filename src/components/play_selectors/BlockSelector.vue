@@ -55,9 +55,6 @@ watch(
     { immediate: true }
 );
 
-watch(()=>props.possibleBlockOnPlayers, (newPlayers)=>{
-  block.value.blockedStatPlayerId = null;
-},{ immediate: true });
 
 onMounted(()=>{
   emit('update:block', block.value);
@@ -66,9 +63,15 @@ watch(block, (newValue) => {
   emit('update:block', newValue);
 }, {deep: true});
 
-watch(()=>block.value.blockedStatPlayerId, (newValue)=>{
-  emit('update:playSubmission', newValue !== null);
-});
+watch(()=>props.possibleBlockOnPlayers, (newPlayers)=>{
+  block.value.blockedStatPlayerId = null;
+},{ immediate: true });
+
+
+// validation
+// watch(()=>block.value.blockedStatPlayerId, (newValue)=>{
+//   emit('update:playSubmission', newValue !== null);
+// });
 
 </script>
 
