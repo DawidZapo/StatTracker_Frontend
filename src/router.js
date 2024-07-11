@@ -21,6 +21,7 @@ import GamePlayByPlay from "@/components/game_routes/GamePlayByPlay.vue";
 import GameCreation from "@/components/game_routes/GameCreation.vue";
 import GameHandler from "@/components/game_handling/GameHandler.vue";
 import Temp from "@/components/game_routes/Temp.vue";
+import {jwtDecode} from "jwt-decode";
 
 const routes = [
     {
@@ -144,18 +145,45 @@ const router = createRouter({
     routes
 });
 
-router.beforeEach((to, from, next) => {
-  const publicPages = ['/login', '/register', '/home', '/court'];
-  const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem('user');
+// router.beforeEach((to, from, next) => {
+//   const publicPages = ['/login', '/register', '/home', '/court'];
+//   const authRequired = !publicPages.includes(to.path);
+//   const loggedIn = localStorage.getItem('user');
+//
+//   // trying to access a restricted page + not logged in
+//   // redirect to login page
+//   if (authRequired && !loggedIn) {
+//     next('/login');
+//   } else {
+//     next();
+//   }
+// });
 
-  // trying to access a restricted page + not logged in
-  // redirect to login page
-  if (authRequired && !loggedIn) {
-    next('/login');
-  } else {
-    next();
-  }
+
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/login', '/register', '/home', '/court'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = localStorage.getItem('user');
+    let tokenExpired = false;
+
+    if (loggedIn) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            const decodedToken = jwtDecode(user.accessToken);
+            const currentTime = Date.now() / 1000;
+
+            if (decodedToken.exp < currentTime) {
+                tokenExpired = true;
+                localStorage.removeItem('user');
+            }
+        }
+    }
+
+    if (authRequired && (!loggedIn || tokenExpired)) {
+        next('/login');
+    } else {
+        next();
+    }
 });
 
 export default router;

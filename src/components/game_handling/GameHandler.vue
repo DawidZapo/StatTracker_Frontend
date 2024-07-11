@@ -237,7 +237,7 @@ const handlePlaySelect = (play) => {
     return;
   }
   selectedPlay.value = play;
-  isPlaySubmissionCorrect.value = false;
+  // isPlaySubmissionCorrect.value = false;
 }
 
 
