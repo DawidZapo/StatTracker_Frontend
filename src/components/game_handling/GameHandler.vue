@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref, watch} from 'vue';
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
 import {useStore} from "vuex";
 import GameService from "@/services/game/game.service.js";
 import EnumService from "@/services/enum/enum.service.js";
@@ -39,11 +39,14 @@ const turnoverTypes = ref([]);
 const zoneTypes = ref([]);
 const isFreeThrowSelected = ref(false);
 // const isPlaySubmissionCorrect = ref(false);
+const currentQuarter = computed(()=>{
+  return game.value.currentQuarter;
+})
 const currentTimeStampInMs = computed(()=>{
   if(game.value.currentQuarter === 1){
-    return game.value.currentQuarterTimeMs;
+    return game.value.currentQuarterTimeRemainingMs;
   }
-  return ((game.value.currentQuarter - 1) * (game.value.quarterLengthMin * 60000)) + game.value.currentQuarterTimeMs;
+  return ((game.value.currentQuarter - 1) * (game.value.quarterLengthMin * 60000)) + game.value.currentQuarterTimeRemainingMs;
 });
 
 const getCurrentTeamPlayers = computed(()=>{
@@ -75,7 +78,7 @@ function resetPlayPlayerAndZone(){
   selectedPlay.value = null;
   selectedPlayer.value = null;
   selectedZone.value = null;
-  isPlaySubmissionCorrect.value = false;
+  // isPlaySubmissionCorrect.value = false;
 }
 
 
@@ -332,6 +335,70 @@ const clickBlockAdd = async () => {
   }
 };
 
+
+
+let intervalId = null;
+// Zmienna przechowująca czas zatrzymania
+let stopTime = 0;
+// Zmienna śledząca stan odliczania
+const isCounting = ref(false);
+
+// Funkcja obliczająca formatowany czas w formacie mm:ss:ms
+const formattedTime = computed(() => {
+  // Obliczamy czas na podstawie czy jesteśmy w trakcie odliczania czy nie
+  let remainingTime = isCounting.value ? game.value.currentQuarterTimeRemainingMs : stopTime;
+
+  let minutes = Math.floor(remainingTime / 60000);
+  let seconds = Math.floor((remainingTime % 60000) / 1000);
+  let milliseconds = Math.floor((remainingTime % 1000) / 10);
+
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}:${String(milliseconds).padStart(2, '0')}`;
+});
+
+// Funkcja uruchamiająca odliczanie
+const startCountdown = () => {
+  if (!isCounting.value) {
+    if (stopTime === 0) {
+      game.value.currentQuarterTimeRemainingMs = game.value.quarterLengthMin * 60000;
+    } else {
+      game.value.currentQuarterTimeRemainingMs = stopTime;
+      stopTime = 0;
+    }
+
+    intervalId = setInterval(() => {
+      if (game.value.currentQuarterTimeRemainingMs > 0) {
+        game.value.currentQuarterTimeRemainingMs -= 10; // Odliczanie w milisekundach
+      } else {
+        clearInterval(intervalId);
+        isCounting.value = false; // Zmiana isCounting na false gdy czas się skończy
+      }
+    }, 10); // Interwał 10 ms dla precyzyjności
+    isCounting.value = true;
+  }
+};
+
+// Funkcja zatrzymująca odliczanie
+const stopCountdown = () => {
+  if (isCounting.value) {
+    clearInterval(intervalId);
+    intervalId = null;
+    stopTime = game.value.currentQuarterTimeRemainingMs;
+    isCounting.value = false;
+  }
+};
+
+// Funkcja przełączająca stan odliczania
+const toggleCountdown = () => {
+  if (isCounting.value) {
+    stopCountdown();
+  } else {
+    startCountdown();
+  }
+};
+
+// Funkcja uruchamiająca się przy montowaniu komponentu
+
+
 </script>
 
 <template>
@@ -356,12 +423,12 @@ const clickBlockAdd = async () => {
           <div class="col-3"></div>
           <div class="col-5">
             <div class="card card-white-background">
-              <div class="digital-text">10:00:00</div>
+              <div class="digital-text">{{formattedTime}}</div>
             </div>
           </div>
           <div class="col-1">
             <div class="card card-white-background">
-              <div class="digital-text">4</div>
+              <div class="digital-text">{{game.currentQuarter}}</div>
             </div>
           </div>
           <div class="col-3"></div>
@@ -645,15 +712,15 @@ const clickBlockAdd = async () => {
 
                 </div>
                 <div class="card-body scrollable">
-                  <div class="row" v-for="play in 20">
+                  <div class="row" v-for="play in game.plays">
                     <div class="col-3">
-                      06:00:23
+                      {{play.formattedTime}}
                     </div>
                     <div class="col-3 no-overflow">
-                        D. Zapotoczny
+                      {{play.firstName.substring(0,1) + '. ' + play.lastName}}
                     </div>
                     <div class="col-3 no-overflow">
-                      Made 3pt
+                      {{play.playType}}
                     </div>
                     <div class="col-3 no-overflow">
                       action
@@ -666,22 +733,27 @@ const clickBlockAdd = async () => {
 
           <div class="row">
             <div class="col">
-              <div class="card">
-                <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Shot'}" @click=handlePlaySelect($event.target.innerText)>Shot</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Assist'}" @click=handlePlaySelect($event.target.innerText)>Assist</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Rebound'}" @click=handlePlaySelect($event.target.innerText)>Rebound</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Foul'}" @click=handlePlaySelect($event.target.innerText)>Foul</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Steal'}" @click=handlePlaySelect($event.target.innerText)>Steal</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Turnover'}" @click=handlePlaySelect($event.target.innerText)>Turnover</button>
-                  <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Block'}" @click=handlePlaySelect($event.target.innerText)>Block</button>
-                </div>
-                <div class="row">
-                    <div class="col">
-
+              <div class="row">
+                <div class="col">
+                  <div class="card">
+                    <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Shot'}" @click=handlePlaySelect($event.target.innerText)>Shot</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Assist'}" @click=handlePlaySelect($event.target.innerText)>Assist</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Rebound'}" @click=handlePlaySelect($event.target.innerText)>Rebound</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Foul'}" @click=handlePlaySelect($event.target.innerText)>Foul</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Steal'}" @click=handlePlaySelect($event.target.innerText)>Steal</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Turnover'}" @click=handlePlaySelect($event.target.innerText)>Turnover</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Block'}" @click=handlePlaySelect($event.target.innerText)>Block</button>
                     </div>
+                  </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col">
+                  <button @click="toggleCountdown">Start Countdown</button>
+                </div>
+              </div>
+
             </div>
             <div class="col-5">
               <div class="card">
@@ -717,7 +789,7 @@ const clickBlockAdd = async () => {
                     <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'Assist'">
-                    <AssistSelector @update:assist="handlePlayEmit($event)" :possible-assisted-players="getCurrentTeamPlayers" :time-stamp="currentTimeStampInMs" :types="assistTypes" :game-id="game.id" :hands="handTypes" :player="selectedPlayer"></AssistSelector>
+                    <AssistSelector @update:assist="handlePlayEmit($event)" :quarter="currentQuarter" :possible-assisted-players="getCurrentTeamPlayers" :time-stamp="currentTimeStampInMs" :types="assistTypes" :game-id="game.id" :hands="handTypes" :player="selectedPlayer"></AssistSelector>
                   </template>
                   <template v-if="selectedPlay === 'Rebound'">
                     <ReboundSelector @update:rebound="handlePlayEmit($event)" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></ReboundSelector>

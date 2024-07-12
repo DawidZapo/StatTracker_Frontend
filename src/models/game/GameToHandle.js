@@ -19,6 +19,20 @@ function createPlay(playData) {
     }
 }
 
+function formatMsToHH_MM_SS(ms) {
+    // Calculate minutes, seconds, and milliseconds
+    let minutes = Math.floor(ms / 60000);
+    ms %= 60000;
+    let seconds = Math.floor(ms / 1000);
+    let milliseconds = Math.floor((ms % 1000) / 10); // Convert to two-digit milliseconds
+
+    // Pad with leading zeros if necessary
+    minutes = String(minutes).padStart(2, '0');
+    seconds = String(seconds).padStart(2, '0');
+    milliseconds = String(milliseconds).padStart(2, '0');
+
+    return `${minutes}:${seconds}:${milliseconds}`;
+}
 
 export class Play {
     constructor(data) {
@@ -28,10 +42,14 @@ export class Play {
         this.id = data.id;
         this.gameId = data.gameId;
         this.statPlayerId = data.statPlayerId;
-        this.duration = data.duration;
+        this.firstName = data.firstName;
+        this.lastName = data.lastName;
+        this.timeRemaining = data.timeRemaining;
+        this.quarter = data.quarter;
         this.comments = data.comments;
         this.playType = data.playType;
         this.hand = data.hand;
+        this.formattedTime = formatMsToHH_MM_SS(data.timeRemaining);
     }
 }
 
@@ -151,7 +169,7 @@ class GameToHandle {
         this.season = data.season;
         this.quarterLengthMin = data.quarterLengthMin;
         this.overtimeLengthMin = data.overtimeLengthMin;
-        this.currentQuarterTimeMs = data.currentQuarterTimeMs;
+        this.currentQuarterTimeRemainingMs = data.currentQuarterTimeRemainingMs;
         this.currentQuarter = data.currentQuarter;
         this.home = new Team(data.home);
         this.away = new Team(data.away);
