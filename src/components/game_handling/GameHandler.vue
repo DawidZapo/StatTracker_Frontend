@@ -16,7 +16,8 @@ import {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} from "@/models/
 import PlayService from "@/services/play/play.serivce.js";
 
 const store = useStore();
-const selectedGameId = ref(localStorage.getItem('selectedGameId'));
+// const selectedGameId = ref(localStorage.getItem('selectedGameId'));
+const selectedGameId = ref(6);
 const highlightedZone = ref(null);
 const selectedZone = ref(null);
 const game = ref(null);
@@ -244,12 +245,51 @@ const handlePlaySelect = (play) => {
 }
 
 
+const addPlayToPlayerAndGame = (game, createdPlay) => {
+  game.plays.push(createdPlay);
+
+  let added = false;
+  const addPlayToPlayer = (player, createdPlay) => {
+    player.plays.push(createdPlay);
+    added = true;
+  };
+
+  if (createdPlay.statPlayerId) {
+    for (let i = 0; i < game.home.players.length; i++) {
+      const player = game.home.players[i];
+      if (player.statPlayerId === createdPlay.statPlayerId) {
+        addPlayToPlayer(player, createdPlay);
+        break;
+      }
+    }
+
+    if (!added) {
+      for (let i = 0; i < game.away.players.length; i++) {
+        const player = game.away.players[i];
+        if (player.statPlayerId === createdPlay.statPlayerId) {
+          addPlayToPlayer(player, createdPlay);
+          break;
+        }
+      }
+    }
+
+    if (!added) {
+      console.error(`Nie znaleziono gracza o statPlayerId: ${createdPlay.statPlayerId} w drużynie.`);
+    }
+  } else {
+    console.error('createdPlay.statPlayerId nie zostało zdefiniowane.');
+  }
+};
+
 const clickShotPlayAdd = async () => {
   const shotPlayCreated = new ShotPlay(createdPlay.value);
   console.log(shotPlayCreated);
 
   try{
     const response = await PlayService.savePlay('shot_play', shotPlayCreated);
+    const newShotPlay = new ShotPlay(response);
+
+    addPlayToPlayerAndGame(game.value, newShotPlay);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -263,6 +303,9 @@ const clickAssistAdd = async () => {
 
   try{
     const response = await PlayService.savePlay('assist', assistCreated);
+    const newAssist = new Assist(response);
+
+    addPlayToPlayerAndGame(newAssist);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -276,6 +319,9 @@ const clickReboundAdd = async () => {
 
   try{
     const response = await PlayService.savePlay('rebound', reboundCreated);
+    const newRebound = new Rebound(response);
+
+    addPlayToPlayerAndGame(game.value, newRebound);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -289,6 +335,9 @@ const clickFoulAdd = async () => {
 
   try{
     const response = await PlayService.savePlay('foul', foulCreated);
+    const newFoul = new Foul(response);
+
+    addPlayToPlayerAndGame(game.value, newFoul);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -302,6 +351,9 @@ const clickStealAdd = async () => {
 
   try{
     const response = await PlayService.savePlay('steal', stealCreated);
+    const newSteal = new Steal(response);
+
+    addPlayToPlayerAndGame(game.value, newSteal);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -315,6 +367,9 @@ const clickTurnoverAdd = async () => {
 
   try{
     const response = await PlayService.savePlay('turnover', turnoverCreated);
+    const newTurnover = new Turnover(response);
+
+    addPlayToPlayerAndGame(game.value, newTurnover);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -328,6 +383,9 @@ const clickBlockAdd = async () => {
 
   try{
     const response = await PlayService.savePlay('block', blockCreated);
+    const newBlock = new Block(response);
+
+    addPlayToPlayerAndGame(game.value, newBlock);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -371,6 +429,9 @@ const startCountdown = () => {
       } else {
         clearInterval(intervalId);
         isCounting.value = false; // Zmiana isCounting na false gdy czas się skończy
+        if(game.value.currentQuarter < 4){
+          game.value.currentQuarter++;
+        }
       }
     }, 10); // Interwał 10 ms dla precyzyjności
     isCounting.value = true;
@@ -408,12 +469,12 @@ const toggleCountdown = () => {
         <div class="d-flex">
           <div class="col-10">
             <div class="card card-white-background">
-              <div style="font-size: 35px;" class="no-overflow">Anwile</div>
+              <div style="font-size: 35px;" class="no-overflow">{{ game.home.name }}</div>
             </div>
           </div>
           <div class="col-2">
             <div class="card card-white-background">
-              <div class="digital-text">120</div>
+              <div class="digital-text">{{ game.home.stats.totalPoints }}</div>
             </div>
           </div>
         </div>
@@ -438,12 +499,12 @@ const toggleCountdown = () => {
         <div class="d-flex justify-content-end">
           <div class="col-2">
             <div class="card card-white-background">
-              <div class="digital-text">98</div>
+              <div class="digital-text">{{ game.away.stats.totalPoints }}</div>
             </div>
           </div>
           <div class="col-10">
             <div class="card card-white-background">
-              <div style="font-size: 35px;" class="no-overflow">KTK Knurow</div>
+              <div style="font-size: 35px;" class="no-overflow">{{game.away.name}}</div>
             </div>
           </div>
         </div>
@@ -786,26 +847,26 @@ const toggleCountdown = () => {
 
                 <div class="card-body p-1">
                   <template v-if="selectedPlay === 'Shot'">
-                    <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
+                    <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :quarter="currentQuarter" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'Assist'">
                     <AssistSelector @update:assist="handlePlayEmit($event)" :quarter="currentQuarter" :possible-assisted-players="getCurrentTeamPlayers" :time-stamp="currentTimeStampInMs" :types="assistTypes" :game-id="game.id" :hands="handTypes" :player="selectedPlayer"></AssistSelector>
                   </template>
                   <template v-if="selectedPlay === 'Rebound'">
-                    <ReboundSelector @update:rebound="handlePlayEmit($event)" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></ReboundSelector>
+                    <ReboundSelector @update:rebound="handlePlayEmit($event)" :quarter="currentQuarter" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></ReboundSelector>
                   </template>
                   <template v-if="selectedPlay === 'Foul'">
-                    <FoulSelector @update:foul="handlePlayEmit($event)" :possible-foul-on-players="getOpposingTeamPlayers" :types="foulTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></FoulSelector>
+                    <FoulSelector @update:foul="handlePlayEmit($event)" :quarter="currentQuarter" :possible-foul-on-players="getOpposingTeamPlayers" :types="foulTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></FoulSelector>
                   </template>
                   <template v-if="selectedPlay === 'Steal'">
-                    <StealSelector @update:steal="handlePlayEmit($event)" :possible-turnover-for-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></StealSelector>
+                    <StealSelector @update:steal="handlePlayEmit($event)" :quarter="currentQuarter" :possible-turnover-for-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></StealSelector>
                   </template>
                   <template v-if="selectedPlay === 'Turnover'">
-                    <TurnoverSelector @update:turnover="handlePlayEmit($event)" :possible-steal-on-players="getOpposingTeamPlayers" :types="turnoverTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></TurnoverSelector>
+                    <TurnoverSelector @update:turnover="handlePlayEmit($event)" :quarter="currentQuarter" :possible-steal-on-players="getOpposingTeamPlayers" :types="turnoverTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></TurnoverSelector>
                   </template>
                   <template v-if="selectedPlay === 'Block'">
 <!--                    @update:play-submission="handlePlaySubmissionEmit($event)"-->
-                    <BlockSelector @update:block="handlePlayEmit($event)" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
+                    <BlockSelector @update:block="handlePlayEmit($event)" :quarter="currentQuarter" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
                   </template>
                 </div>
               </div>

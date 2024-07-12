@@ -15,6 +15,10 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  quarter: {
+    type: Number,
+    required: true
+  },
   gameId: {
     type: Number,
     required: true
@@ -31,7 +35,8 @@ const props = defineProps({
 
 const foul = ref({
       comments: null,
-      duration: props.timeStamp,
+      timeRemaining: props.timeStamp,
+      quarter: props.quarter,
       gameId: props.gameId,
       hand: props.player.dominantHand,
       id: null,
