@@ -52,5 +52,16 @@ class GameService{
             });
     }
 
+    saveGameToHandle(gameToHandle){
+        return axios.post(API_URL + 'save', gameToHandle, {headers: authHeader()})
+            .then(response => {
+                return response.data;
+            })
+            .catch(error => {
+                console.error('Error while saving gameToHandle: ' + error);
+                throw error;
+            });
+    }
+
 }
 export default new GameService();

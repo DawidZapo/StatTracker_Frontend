@@ -224,9 +224,9 @@ const handleSubmit = async () => {
   try{
     createGameId.value = await GameService.createGame(gameCreated);
     await store.dispatch('selectGame', createGameId.value);
+    localStorage.setItem('selectedGameId', JSON.stringify(createGameId.value));
     // await store.dispatch('selectGame', 1);
      await router.push('/game_handler');
-    localStorage.setItem('selectedGameId', JSON.stringify(createGameId.value));
   }
   catch (error){
     console.error("Error while creating game: " + error);

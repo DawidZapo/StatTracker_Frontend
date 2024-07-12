@@ -14,10 +14,11 @@ import StealSelector from "@/components/play_selectors/StealSelector.vue";
 import {getBenchPlayers, getStartingFive} from "@/assets/scripts/stats.js";
 import {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
+import gameService from "@/services/game/game.service.js";
 
 const store = useStore();
-// const selectedGameId = ref(localStorage.getItem('selectedGameId'));
-const selectedGameId = ref(6);
+const selectedGameId = ref(localStorage.getItem('selectedGameId'));
+// const selectedGameId = ref(6);
 const highlightedZone = ref(null);
 const selectedZone = ref(null);
 const game = ref(null);
@@ -102,6 +103,17 @@ const fetchGameToHandle = async (id) => {
     game.value = null;
   }
 };
+
+const saveGame = async (gameToHandle) =>{
+  try{
+    if(gameToHandle){
+      game.value = GameService.saveGameToHandle(gameToHandle);
+    }
+  }
+  catch (error) {
+    console.error('Error while saving game: ' + error);
+  }
+}
 
 const fetchTypes = async () => {
   try{
@@ -211,6 +223,7 @@ watch([homeBenchSelectedPlayer, homeLineUpSelectedPlayer],([newField1, newField2
 
     homeLineUp.value.sort((a,b) => a.positionOnCourt - b.positionOnCourt);
   }
+
 });
 
 watch([awayBenchSelectedPlayer, awayLineUpSelectedPlayer],([newField1, newField2], [oldField1, oldField2])=>{
@@ -244,6 +257,10 @@ const handlePlaySelect = (play) => {
   // isPlaySubmissionCorrect.value = false;
 }
 
+
+const handleSaveGame = ()=>{
+  saveGame(game.value);
+}
 
 const addPlayToPlayerAndGame = (game, createdPlay) => {
   game.plays.push(createdPlay);
@@ -812,6 +829,7 @@ const toggleCountdown = () => {
               <div class="row">
                 <div class="col">
                   <button @click="toggleCountdown">Start Countdown</button>
+                  <button @click="handleSaveGame">Save</button>
                 </div>
               </div>
 
