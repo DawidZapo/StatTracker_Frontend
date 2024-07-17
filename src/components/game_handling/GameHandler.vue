@@ -107,7 +107,7 @@ const fetchGameToHandle = async (id) => {
 const saveGame = async (gameToHandle) =>{
   try{
     if(gameToHandle){
-      game.value = GameService.saveGameToHandle(gameToHandle);
+      game.value = await GameService.saveGameToHandle(gameToHandle);
     }
   }
   catch (error) {
@@ -413,15 +413,14 @@ const clickBlockAdd = async () => {
 
 
 let intervalId = null;
-// Zmienna przechowująca czas zatrzymania
 let stopTime = 0;
-// Zmienna śledząca stan odliczania
+
 const isCounting = ref(false);
 
-// Funkcja obliczająca formatowany czas w formacie mm:ss:ms
 const formattedTime = computed(() => {
-  // Obliczamy czas na podstawie czy jesteśmy w trakcie odliczania czy nie
-  let remainingTime = isCounting.value ? game.value.currentQuarterTimeRemainingMs : stopTime;
+
+  // let remainingTime = isCounting.value ? game.value.currentQuarterTimeRemainingMs : stopTime;
+  let remainingTime = game.value.currentQuarterTimeRemainingMs;
 
   let minutes = Math.floor(remainingTime / 60000);
   let seconds = Math.floor((remainingTime % 60000) / 1000);
@@ -430,12 +429,14 @@ const formattedTime = computed(() => {
   return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}:${String(milliseconds).padStart(2, '0')}`;
 });
 
-// Funkcja uruchamiająca odliczanie
+
 const startCountdown = () => {
   if (!isCounting.value) {
-    if (stopTime === 0) {
+    if (game.value.currentQuarterTimeRemainingMs === 0) {
+
       game.value.currentQuarterTimeRemainingMs = game.value.quarterLengthMin * 60000;
-    } else {
+    } else if (stopTime !== 0) {
+
       game.value.currentQuarterTimeRemainingMs = stopTime;
       stopTime = 0;
     }

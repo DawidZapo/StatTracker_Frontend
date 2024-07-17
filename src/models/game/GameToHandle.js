@@ -167,6 +167,7 @@ class GameToHandle {
         this.id = data.id;
         this.localDateTime = data.localDateTime;
         this.season = data.season;
+        this.official = data.official;
         this.quarterLengthMin = data.quarterLengthMin;
         this.overtimeLengthMin = data.overtimeLengthMin;
         this.currentQuarterTimeRemainingMs = data.currentQuarterTimeRemainingMs;
