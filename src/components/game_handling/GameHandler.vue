@@ -12,7 +12,7 @@ import BlockSelector from "@/components/play_selectors/BlockSelector.vue";
 import TurnoverSelector from "@/components/play_selectors/TurnoverSelector.vue";
 import StealSelector from "@/components/play_selectors/StealSelector.vue";
 import {getBenchPlayers, getOnCourtPlayers} from "@/assets/scripts/stats.js";
-import {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} from "@/models/game/GameToHandle.js";
+import GameToHandle, {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
 
@@ -105,6 +105,7 @@ const fetchGameToHandle = async (id) => {
 };
 
 const saveGame = async (gameToHandle) =>{
+  console.log(new GameToHandle(gameToHandle));
   try{
     if(gameToHandle){
       game.value = await GameService.saveGameToHandle(gameToHandle);

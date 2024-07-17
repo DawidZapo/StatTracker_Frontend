@@ -58,10 +58,12 @@ export const getOnCourtPlayers = (players) => {
     let i = 1;
     players.forEach(player => {
         if(player.onCourt === true){
-            player.positionOnCourt = i++;
+            // player.positionOnCourt = i++;
             startingFivePlayers.push(player);
         }
     });
+
+    startingFivePlayers.sort((a, b) => a.positionOnCourt - b.positionOnCourt);
 
     return startingFivePlayers;
 };
@@ -73,6 +75,8 @@ export const getBenchPlayers = (players) => {
          benchPlayers.push(player);
      }
   });
+
+    benchPlayers.sort((a, b) => a.positionOnCourt - b.positionOnCourt);
 
   return benchPlayers;
 };

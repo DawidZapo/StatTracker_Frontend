@@ -144,10 +144,10 @@ class Player {
         this.shirtNumber = data.shirtNumber;
         this.startingFive = data.startingFive;
         this.onCourt = data.onCourt;
+        this.positionOnCourt = data.positionOnCourt;
         this.stats = new Stats(data.stats);
         this.plays = data.plays.map(playData => createPlay(playData));
         this.dominantHand = data.dominantHand;
-        this.positionOnCourt = 0;
     }
 }
 
