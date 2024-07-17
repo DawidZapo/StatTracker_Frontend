@@ -53,11 +53,11 @@ export const createStatsComputed = (entity, includeTimeOnCourt = true) => {
 };
 
 
-export const getStartingFive = (players) => {
+export const getOnCourtPlayers = (players) => {
     const startingFivePlayers = [];
     let i = 1;
     players.forEach(player => {
-        if(player.startingFive === true){
+        if(player.onCourt === true){
             player.positionOnCourt = i++;
             startingFivePlayers.push(player);
         }
@@ -69,7 +69,7 @@ export const getStartingFive = (players) => {
 export const getBenchPlayers = (players) => {
   const benchPlayers = [];
   players.forEach(player => {
-     if(player.startingFive === false){
+     if(player.onCourt === false){
          benchPlayers.push(player);
      }
   });

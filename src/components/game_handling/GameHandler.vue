@@ -11,7 +11,7 @@ import FoulSelector from "@/components/play_selectors/FoulSelector.vue";
 import BlockSelector from "@/components/play_selectors/BlockSelector.vue";
 import TurnoverSelector from "@/components/play_selectors/TurnoverSelector.vue";
 import StealSelector from "@/components/play_selectors/StealSelector.vue";
-import {getBenchPlayers, getStartingFive} from "@/assets/scripts/stats.js";
+import {getBenchPlayers, getOnCourtPlayers} from "@/assets/scripts/stats.js";
 import {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
@@ -91,10 +91,10 @@ const fetchGameToHandle = async (id) => {
     if(id){
       game.value = await GameService.fetchGameToHandle(id);
 
-      homeLineUp.value = getStartingFive(game.value.home.players);
+      homeLineUp.value = getOnCourtPlayers(game.value.home.players);
       homeBench.value = getBenchPlayers(game.value.home.players);
 
-      awayLineUp.value = getStartingFive(game.value.away.players);
+      awayLineUp.value = getOnCourtPlayers(game.value.away.players);
       awayBench.value = getBenchPlayers(game.value.away.players);
 
     }
@@ -601,7 +601,7 @@ const toggleCountdown = () => {
 
                   <path @click="handleZoneClick('RIGHT_CORNER_3PT')" @mouseover="highlightZone('RIGHT_CORNER_3PT')" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'RIGHT_CORNER_3PT' || selectedZone === 'RIGHT_CORNER_3PT' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
                   <path @click="handleZoneClick('RIGHT_WING_3PT')" @mouseover="highlightZone('RIGHT_WING_3PT')" d="M13 0 L31 0 Q 36 5 39 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'RIGHT_WING_3PT' || selectedZone === 'RIGHT_WING_3PT' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
-                  <path @click="handleZoneClick('TOP-3PT')" @mouseover="highlightZone('TOP-3PT')" d="M24.5 13 L 39 13 Q 43 25  39 37 L 24.5 37 Q 30.9 25 24.5 13" :fill="highlightedZone === 'TOP-3PT' || selectedZone === 'TOP-3PT' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
+                  <path @click="handleZoneClick('TOP_3PT')" @mouseover="highlightZone('TOP_3PT')" d="M24.5 13 L 39 13 Q 43 25  39 37 L 24.5 37 Q 30.9 25 24.5 13" :fill="highlightedZone === 'TOP_3PT' || selectedZone === 'TOP_3PT' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
                   <path @click="handleZoneClick('LEFT_WING_3PT')" @mouseover="highlightZone('LEFT_WING_3PT')" transform="scale(1, -1) translate(0, -50)" d="M13 0 L31 0 Q 36 5 39 13 L24.5 13 Q 20.5 6.2 13 3" :fill="highlightedZone === 'LEFT_WING_3PT' || selectedZone === 'LEFT_WING_3PT' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
                   <path @click="handleZoneClick('LEFT_CORNER_3PT')" @mouseover="highlightZone('LEFT_CORNER_3PT')" transform="scale(1, -1) translate(0, -50)" d="M0 0 H13 V3 H0 L 0 0" :fill="highlightedZone === 'LEFT_CORNER_3PT' || selectedZone === 'LEFT_CORNER_3PT' ? 'green' : 'transparent'" @mouseleave="handleMouseLeave"></path>
 
