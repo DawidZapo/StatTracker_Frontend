@@ -105,7 +105,7 @@ const fetchGameToHandle = async (id) => {
 };
 
 const saveGame = async (gameToHandle) =>{
-  console.log(new GameToHandle(gameToHandle));
+  console.log('saving game');
   try{
     if(gameToHandle){
       game.value = await GameService.saveGameToHandle(gameToHandle);
@@ -444,20 +444,19 @@ const startCountdown = () => {
 
     intervalId = setInterval(() => {
       if (game.value.currentQuarterTimeRemainingMs > 0) {
-        game.value.currentQuarterTimeRemainingMs -= 10; // Odliczanie w milisekundach
+        game.value.currentQuarterTimeRemainingMs -= 10;
       } else {
         clearInterval(intervalId);
-        isCounting.value = false; // Zmiana isCounting na false gdy czas się skończy
+        isCounting.value = false;
         if(game.value.currentQuarter < 4){
           game.value.currentQuarter++;
         }
       }
-    }, 10); // Interwał 10 ms dla precyzyjności
+    }, 10);
     isCounting.value = true;
   }
 };
 
-// Funkcja zatrzymująca odliczanie
 const stopCountdown = () => {
   if (isCounting.value) {
     clearInterval(intervalId);
@@ -467,8 +466,8 @@ const stopCountdown = () => {
   }
 };
 
-// Funkcja przełączająca stan odliczania
 const toggleCountdown = () => {
+  saveGame(game.value);
   if (isCounting.value) {
     stopCountdown();
   } else {
@@ -476,8 +475,24 @@ const toggleCountdown = () => {
   }
 };
 
-// Funkcja uruchamiająca się przy montowaniu komponentu
 
+// for instance for editing purposes
+const shotPlay = ref({
+  id : 99,
+  comments: 'hlelelelele',
+  contested: 'OPEN',
+  timeRemaining: 34534,
+  quarter: 1,
+  gameId: 7,
+  hand: 'RIGHT',
+  made: true,
+  offTheDribble: false,
+  playType: 'shot',
+  statPlayerId: 4,
+  type: 'JUMP_SHOT',
+  worth: 3,
+  zone: 'TOP_3PT'
+});
 
 </script>
 
@@ -792,9 +807,9 @@ const toggleCountdown = () => {
 
                 </div>
                 <div class="card-body scrollable">
-                  <div class="row" v-for="play in game.plays">
+                  <div class="row highlight" v-for="play in game.plays">
                     <div class="col-3">
-                      {{play.formattedTime}}
+                      {{play.formattedTime}} id {{play.id}}
                     </div>
                     <div class="col-3 no-overflow">
                       {{play.firstName.substring(0,1) + '. ' + play.lastName}}
@@ -828,10 +843,14 @@ const toggleCountdown = () => {
                   </div>
                 </div>
               </div>
-              <div class="row">
+              <div class="row mt-3">
                 <div class="col">
-                  <button @click="toggleCountdown">Start Countdown</button>
-                  <button @click="handleSaveGame">Save</button>
+                  <div class="card">
+                    <div class="d-flex justify-content-between">
+                      <button @click="toggleCountdown" class="btn btn-light w-100 small-text">Start/Stop</button>
+                      <button @click="handleSaveGame" class="btn btn-light w-100 small-text">Save</button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -949,5 +968,10 @@ const toggleCountdown = () => {
   color: red;
   background-color: red;
 }
+.highlight:hover {
+  background-color: #f0f0f0; /* Kolor tła podczas najechania kursorem */
+  cursor: pointer; /* Zmiana kursora na wskazujący */
+}
+
 
 </style>

@@ -41,6 +41,10 @@ const props = defineProps({
   selectedZone: {
     type: String,
     required: true
+  },
+  data: {
+    type: Object,
+    required: false
   }
 });
 
@@ -56,21 +60,20 @@ const threePointZones = computed(()=> props.zones.filter(zone => zone.includes("
 const selectedZones = ref([]);
 
 const shotPlay = ref({
-  id: null,
-  comments: null,
-  contested: null,
-  timeRemaining: props.timeStamp,
-  quarter: props.quarter,
-  gameId: props.gameId,
-  hand: props.player.dominantHand,
-  made: false,
-  offTheDribble: false,
-  playType: 'shot',
-  statPlayerId: props.player.statPlayerId,
-  type: null,
-  worth: null,
-  zone: props.selectedZone
-
+  id: props.data ? props.data.id : null,
+  comments: props.data ? props.data.comments : null,
+  contested: props.data ? props.data.contested : null,
+  timeRemaining: props.data ? props.data.timeRemaining : props.timeStamp,
+  quarter: props.data ? props.data.quarter : props.quarter,
+  gameId: props.data ? props.data.gameId : props.gameId,
+  hand: props.data ? props.data.hand : props.player.dominantHand,
+  made: props.data ? props.data.made : false,
+  offTheDribble: props.data ? props.data.offTheDribble : false,
+  playType: props.data ? props.data.playType : 'shot',
+  statPlayerId: props.data ? props.data.statPlayerId : props.player.statPlayerId,
+  type: props.data ? props.data.type : null,
+  worth: props.data ? props.data.worth : null,
+  zone: props.data ? props.data.zone : props.selectedZone
 });
 
 onMounted(()=>{
