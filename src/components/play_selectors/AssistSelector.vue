@@ -41,7 +41,7 @@ const assist = ref({
   gameId: props.gameId,
   hand: props.player.dominatHand,
   id: null,
-  playType : "assist",
+  playType : "ASSIST",
   statPlayerId : props.player.statPlayerId,
   toStatPlayerId : null,
   type : null

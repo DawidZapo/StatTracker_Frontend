@@ -32,7 +32,7 @@ const rebound = ref({
       gameId: props.gameId,
       hand: props.player.dominantHand,
       id: null,
-      playType : "rebound",
+      playType : "REBOUND",
       statPlayerId : props.player.statPlayerId,
       isOffensive : false
 });

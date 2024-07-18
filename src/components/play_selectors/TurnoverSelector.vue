@@ -41,7 +41,7 @@ const turnover = ref({
       gameId : props.gameId,
       hand : props.player.dominantHand,
       id : null,
-      playType : "turnover",
+      playType : "TURNOVER",
       statPlayerId : props.player.statPlayerId,
       stealForStatPlayerId : null,
       type : null

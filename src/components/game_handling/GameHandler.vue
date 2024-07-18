@@ -323,7 +323,7 @@ const clickAssistAdd = async () => {
     const response = await PlayService.savePlay('assist', assistCreated);
     const newAssist = new Assist(response);
 
-    addPlayToPlayerAndGame(newAssist);
+    addPlayToPlayerAndGame(game.value, newAssist);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -598,7 +598,7 @@ const shotPlay = ref({
                   </div>
                 </div>
               </div>
-              <div class="col-4 d-flex justify-content-center" :class="{'disabled' : selectedPlay !== 'Shot' || isFreeThrowSelected === true}">
+              <div class="col-4 d-flex justify-content-center" :class="{'disabled' : selectedPlay !== 'SHOT' || isFreeThrowSelected === true}">
                 <svg
                     viewBox="0 0 47 50"
                     xmlns="http://www.w3.org/2000/svg"
@@ -832,13 +832,13 @@ const shotPlay = ref({
                 <div class="col">
                   <div class="card">
                     <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Shot'}" @click=handlePlaySelect($event.target.innerText)>Shot</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Assist'}" @click=handlePlaySelect($event.target.innerText)>Assist</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Rebound'}" @click=handlePlaySelect($event.target.innerText)>Rebound</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Foul'}" @click=handlePlaySelect($event.target.innerText)>Foul</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Steal'}" @click=handlePlaySelect($event.target.innerText)>Steal</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Turnover'}" @click=handlePlaySelect($event.target.innerText)>Turnover</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'Block'}" @click=handlePlaySelect($event.target.innerText)>Block</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'SHOT'}" @click=handlePlaySelect($event.target.innerText)>SHOT</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'ASSIST'}" @click=handlePlaySelect($event.target.innerText)>ASSIST</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'REBOUND'}" @click=handlePlaySelect($event.target.innerText)>REBOUND</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'FOUL'}" @click=handlePlaySelect($event.target.innerText)>FOUL</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'STEAL'}" @click=handlePlaySelect($event.target.innerText)>STEAL</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'TURNOVER'}" @click=handlePlaySelect($event.target.innerText)>TURNOVER</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'BLOCK'}" @click=handlePlaySelect($event.target.innerText)>BLOCK</button>
                     </div>
                   </div>
                 </div>
@@ -860,50 +860,50 @@ const shotPlay = ref({
                 <div class="card-header d-flex justify-content-center" style="height: 45px">
                   <div class="form-control small-text w-25 text-center" :class="{'reduced-opacity' : selectedPlay === null}" >{{ selectedPlay !== null ? selectedPlay : 'Select play' }}</div>
                   <div class="form-control small-text w-50 text-center no-overflow" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
-                  <template v-if="selectedPlay === 'Shot'">
+                  <template v-if="selectedPlay === 'SHOT'">
                     <button @click="clickShotPlayAdd" class="btn btn-outline-success small small-text">Add shot</button>
                   </template>
-                  <template v-if="selectedPlay === 'Assist'">
+                  <template v-if="selectedPlay === 'ASSIST'">
                     <button @click="clickAssistAdd" class="btn btn-outline-success small small-text">Add assist</button>
                   </template>
-                  <template v-if="selectedPlay === 'Rebound'">
+                  <template v-if="selectedPlay === 'REBOUND'">
                     <button @click="clickReboundAdd" class="btn btn-outline-success small small-text">Add rebound</button>
                   </template>
-                  <template v-if="selectedPlay === 'Foul'">
+                  <template v-if="selectedPlay === 'FOUL'">
                     <button @click="clickFoulAdd" class="btn btn-outline-success small small-text">Add foul</button>
                   </template>
-                  <template v-if="selectedPlay === 'Steal'">
+                  <template v-if="selectedPlay === 'STEAL'">
                     <button @click="clickStealAdd" class="btn btn-outline-success small small-text">Add steal</button>
                   </template>
-                  <template v-if="selectedPlay === 'Turnover'">
+                  <template v-if="selectedPlay === 'TURNOVER'">
                     <button @click="clickTurnoverAdd" class="btn btn-outline-success small small-text">Add turnover</button>
                   </template>
-                  <template v-if="selectedPlay === 'Block'">
+                  <template v-if="selectedPlay === 'BLOCK'">
 <!--                    :class="{'disabled' : !isPlaySubmissionCorrect}"-->
                     <button @click="clickBlockAdd" class="btn btn-outline-success small small-text">Add block</button>
                   </template>
                 </div>
 
                 <div class="card-body p-1">
-                  <template v-if="selectedPlay === 'Shot'">
+                  <template v-if="selectedPlay === 'SHOT'">
                     <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :quarter="currentQuarter" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
-                  <template v-if="selectedPlay === 'Assist'">
+                  <template v-if="selectedPlay === 'ASSIST'">
                     <AssistSelector @update:assist="handlePlayEmit($event)" :quarter="currentQuarter" :possible-assisted-players="getCurrentTeamPlayers" :time-stamp="currentTimeStampInMs" :types="assistTypes" :game-id="game.id" :hands="handTypes" :player="selectedPlayer"></AssistSelector>
                   </template>
-                  <template v-if="selectedPlay === 'Rebound'">
+                  <template v-if="selectedPlay === 'REBOUND'">
                     <ReboundSelector @update:rebound="handlePlayEmit($event)" :quarter="currentQuarter" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></ReboundSelector>
                   </template>
-                  <template v-if="selectedPlay === 'Foul'">
+                  <template v-if="selectedPlay === 'FOUL'">
                     <FoulSelector @update:foul="handlePlayEmit($event)" :quarter="currentQuarter" :possible-foul-on-players="getOpposingTeamPlayers" :types="foulTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></FoulSelector>
                   </template>
-                  <template v-if="selectedPlay === 'Steal'">
+                  <template v-if="selectedPlay === 'STEAL'">
                     <StealSelector @update:steal="handlePlayEmit($event)" :quarter="currentQuarter" :possible-turnover-for-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></StealSelector>
                   </template>
-                  <template v-if="selectedPlay === 'Turnover'">
+                  <template v-if="selectedPlay === 'TURNOVER'">
                     <TurnoverSelector @update:turnover="handlePlayEmit($event)" :quarter="currentQuarter" :possible-steal-on-players="getOpposingTeamPlayers" :types="turnoverTypes" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></TurnoverSelector>
                   </template>
-                  <template v-if="selectedPlay === 'Block'">
+                  <template v-if="selectedPlay === 'BLOCK'">
 <!--                    @update:play-submission="handlePlaySubmissionEmit($event)"-->
                     <BlockSelector @update:block="handlePlayEmit($event)" :quarter="currentQuarter" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
                   </template>

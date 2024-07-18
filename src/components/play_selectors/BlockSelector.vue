@@ -37,7 +37,7 @@ const block = ref({
       gameId: props.gameId,
       hand: props.player.dominantHand,
       id: null,
-      playType : "block",
+      playType : "BLOCK",
       statPlayerId : props.player.statPlayerId,
       blockedStatPlayerId : null,
       inThePaint : true

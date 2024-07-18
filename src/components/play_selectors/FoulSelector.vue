@@ -40,7 +40,7 @@ const foul = ref({
       gameId: props.gameId,
       hand: props.player.dominantHand,
       id: null,
-      playType : "foul",
+      playType : "FOUL",
       statPlayerId : props.player.statPlayerId,
       foulOnStatPlayerId : null,
       type : "REGULAR"

@@ -36,7 +36,7 @@ const steal = ref({
       gameId: props.gameId,
       hand: props.player.dominantHand,
       id: null,
-      playType : "steal",
+      playType : "STEAL",
       statPlayerId : props.player.statPlayerId,
       turnoverForStatPlayerId : null
 });

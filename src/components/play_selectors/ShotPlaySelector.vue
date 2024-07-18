@@ -69,7 +69,7 @@ const shotPlay = ref({
   hand: props.data ? props.data.hand : props.player.dominantHand,
   made: props.data ? props.data.made : false,
   offTheDribble: props.data ? props.data.offTheDribble : false,
-  playType: props.data ? props.data.playType : 'shot',
+  playType: props.data ? props.data.playType : 'SHOT',
   statPlayerId: props.data ? props.data.statPlayerId : props.player.statPlayerId,
   type: props.data ? props.data.type : null,
   worth: props.data ? props.data.worth : null,
