@@ -304,10 +304,14 @@ const clickShotPlayAdd = async () => {
   console.log(shotPlayCreated);
 
   try{
-    const response = await PlayService.savePlay('shot_play', shotPlayCreated);
-    const newShotPlay = new ShotPlay(response);
+    // const response = await PlayService.savePlay('shot_play', shotPlayCreated);
+    // const newShotPlay = new ShotPlay(response);
 
-    addPlayToPlayerAndGame(game.value, newShotPlay);
+    addPlayToPlayerAndGame(game.value, shotPlayCreated);
+    const gameToUpdate = new GameToHandle(game.value);
+    game.value = await GameService.saveGameToHandle(gameToUpdate);
+
+    // addPlayToPlayerAndGame(game.value, newShotPlay);
     resetPlayPlayerAndZone();
   }
   catch (error) {
@@ -317,7 +321,6 @@ const clickShotPlayAdd = async () => {
 
 const clickAssistAdd = async () => {
   const assistCreated = new Assist(createdPlay.value);
-  console.log(assistCreated);
 
   try{
     const response = await PlayService.savePlay('assist', assistCreated);
@@ -487,7 +490,7 @@ const shotPlay = ref({
   hand: 'RIGHT',
   made: true,
   offTheDribble: false,
-  playType: 'shot',
+  playType: 'SHOTPLAY',
   statPlayerId: 4,
   type: 'JUMP_SHOT',
   worth: 3,
@@ -598,7 +601,7 @@ const shotPlay = ref({
                   </div>
                 </div>
               </div>
-              <div class="col-4 d-flex justify-content-center" :class="{'disabled' : selectedPlay !== 'SHOT' || isFreeThrowSelected === true}">
+              <div class="col-4 d-flex justify-content-center" :class="{'disabled' : selectedPlay !== 'SHOTPLAY' || isFreeThrowSelected === true}">
                 <svg
                     viewBox="0 0 47 50"
                     xmlns="http://www.w3.org/2000/svg"
@@ -832,7 +835,7 @@ const shotPlay = ref({
                 <div class="col">
                   <div class="card">
                     <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'SHOT'}" @click=handlePlaySelect($event.target.innerText)>SHOT</button>
+                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'SHOTPLAY'}" @click=handlePlaySelect($event.target.innerText)>SHOTPLAY</button>
                       <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'ASSIST'}" @click=handlePlaySelect($event.target.innerText)>ASSIST</button>
                       <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'REBOUND'}" @click=handlePlaySelect($event.target.innerText)>REBOUND</button>
                       <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'FOUL'}" @click=handlePlaySelect($event.target.innerText)>FOUL</button>
@@ -860,7 +863,7 @@ const shotPlay = ref({
                 <div class="card-header d-flex justify-content-center" style="height: 45px">
                   <div class="form-control small-text w-25 text-center" :class="{'reduced-opacity' : selectedPlay === null}" >{{ selectedPlay !== null ? selectedPlay : 'Select play' }}</div>
                   <div class="form-control small-text w-50 text-center no-overflow" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
-                  <template v-if="selectedPlay === 'SHOT'">
+                  <template v-if="selectedPlay === 'SHOTPLAY'">
                     <button @click="clickShotPlayAdd" class="btn btn-outline-success small small-text">Add shot</button>
                   </template>
                   <template v-if="selectedPlay === 'ASSIST'">
@@ -885,7 +888,7 @@ const shotPlay = ref({
                 </div>
 
                 <div class="card-body p-1">
-                  <template v-if="selectedPlay === 'SHOT'">
+                  <template v-if="selectedPlay === 'SHOTPLAY'">
                     <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :quarter="currentQuarter" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'ASSIST'">
