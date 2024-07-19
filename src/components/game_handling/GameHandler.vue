@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
+import {computed, nextTick, onMounted, onUnmounted, ref, watch} from 'vue';
 import {useStore} from "vuex";
 import GameService from "@/services/game/game.service.js";
 import EnumService from "@/services/enum/enum.service.js";
@@ -15,6 +15,7 @@ import {getBenchPlayers, getOnCourtPlayers} from "@/assets/scripts/stats.js";
 import GameToHandle, {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
+import {smoothScrollToBottom} from "@/assets/scripts/utilts.js";
 
 const store = useStore();
 const selectedGameId = ref(localStorage.getItem('selectedGameId'));
@@ -477,6 +478,12 @@ const toggleCountdown = () => {
 watch([homeLineUp, awayLineUp], ([newField, newField2]) => {
   saveGame(game.value);
 });
+watch(() => game.value?.plays, () => {
+  const scrollableDiv = document.getElementById('divToScroll');
+  if (scrollableDiv) {
+    smoothScrollToBottom(scrollableDiv);
+  }
+}, { deep: true });
 
 
 // for instance for editing purposes
@@ -809,7 +816,7 @@ const shotPlay = ref({
                   </div>
 
                 </div>
-                <div class="card-body scrollable">
+                <div class="card-body scrollable" id="divToScroll">
                   <div class="row highlight" v-for="play in game.plays">
                     <div class="col-3">
                       {{play.formattedTime}} id {{play.id}}
