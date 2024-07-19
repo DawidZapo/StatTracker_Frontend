@@ -51,6 +51,9 @@ export class Play {
         this.hand = data.hand;
         this.formattedTime = formatMsToHH_MM_SS(data.timeRemaining);
     }
+    describe() {
+        throw new Error("Abstract method 'describe' must be implemented.");
+    }
 }
 
 export class Assist extends Play {
@@ -58,6 +61,10 @@ export class Assist extends Play {
         super(data);
         this.toStatPlayerId = data.toStatPlayerId;
         this.type = data.type;
+    }
+
+    describe() {
+        return this.type + ' ASSIST';
     }
 }
 
@@ -67,6 +74,10 @@ export class Block extends Play {
         this.blockedStatPlayerId = data.blockedStatPlayerId;
         this.inThePaint = data.inThePaint;
     }
+
+    describe() {
+        return 'BLOCK';
+    }
 }
 
 export class Foul extends Play {
@@ -75,11 +86,19 @@ export class Foul extends Play {
         this.foulOnStatPlayerId = data.foulOnStatPlayerId;
         this.type = data.type;
     }
+
+    describe() {
+        return this.type + ' FOUL';
+    }
 }
 export class Rebound extends Play {
     constructor(data) {
         super(data);
         this.isOffensive = data.isOffensive;
+    }
+
+    describe() {
+        return (this.isOffensive ? ' OFFENSIVE' : 'DEFENSIVE') + ' REBOUND';
     }
 }
 export class ShotPlay extends Play {
@@ -92,12 +111,33 @@ export class ShotPlay extends Play {
         this.worth = data.worth;
         this.offTheDribble = data.offTheDribble;
     }
+
+    describe() {
+        // let madeOrMissed = this.made ? 'MADE' : 'MISSED';
+        // if(this.worth === 1){
+        //     return 'FREE_THROW ' + madeOrMissed;
+        // }
+        // else if(this.worth === 2){
+        //     return this.type + '2PT' + madeOrMissed;
+        // }
+        // else if(this.worth === 3){
+        //     return this.type + '3PT' + madeOrMissed;
+        // }
+        // else{
+        //     throw new Error('In function describe: worth not matching to 1PT, 2PT, 3PT');
+        // }
+        return this.worth;
+    }
 }
 
 export class Steal extends Play {
     constructor(data) {
         super(data);
         this.turnoverForStatPlayerId = data.turnoverForStatPlayerId;
+    }
+
+    describe() {
+        return 'STEAL';
     }
 }
 
@@ -107,8 +147,19 @@ export class Turnover extends Play {
         this.stealForStatPlayerId = data.stealForStatPlayerId;
         this.type = data.type;
     }
-}
 
+    describe() {
+        return this.type + ' TURNOVER';
+    }
+}
+class Score {
+    constructor(data) {
+        this.id = data.id;
+        this.statTeamId = data.id;
+        this.worth = data.worth;
+        this.part = data.part;
+    }
+}
 class Stats {
     constructor(data) {
         this.id = data.id;
@@ -157,7 +208,7 @@ class Team {
         this.statTeamId = data.statTeamId;
         this.name = data.name;
         this.players = data.players.map(playerData => new Player(playerData));
-        this.scores = data.scores;
+        this.scores = data.scores.map(scoreData => new Score(scoreData));
         this.stats = new Stats(data.stats);
     }
 }

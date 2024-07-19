@@ -818,17 +818,17 @@ const shotPlay = ref({
                 </div>
                 <div class="card-body scrollable" id="divToScroll">
                   <div class="row highlight" v-for="play in game.plays">
-                    <div class="col-3">
-                      {{play.formattedTime}} id {{play.id}}
+                    <div class="col-2">
+                      {{play.formattedTime}}
                     </div>
-                    <div class="col-3 no-overflow">
+                    <div class="col-4 no-overflow">
                       {{play.firstName.substring(0,1) + '. ' + play.lastName}}
                     </div>
                     <div class="col-3 no-overflow">
                       {{play.playType}}
                     </div>
                     <div class="col-3 no-overflow">
-                      action
+                      {{ play.describe() }}
                     </div>
                   </div>
                 </div>
