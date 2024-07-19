@@ -301,18 +301,13 @@ const addPlayToPlayerAndGame = (game, createdPlay) => {
 
 const clickShotPlayAdd = async () => {
   const shotPlayCreated = new ShotPlay(createdPlay.value);
-  console.log(shotPlayCreated);
 
   try{
-    // const response = await PlayService.savePlay('shot_play', shotPlayCreated);
-    // const newShotPlay = new ShotPlay(response);
-
-    addPlayToPlayerAndGame(game.value, shotPlayCreated);
-    const gameToUpdate = new GameToHandle(game.value);
-    game.value = await GameService.saveGameToHandle(gameToUpdate);
-
-    // addPlayToPlayerAndGame(game.value, newShotPlay);
+    const response = await PlayService.savePlay('shot_play', shotPlayCreated);
+    const newShotPlay = new ShotPlay(response);
+    addPlayToPlayerAndGame(game.value, newShotPlay);
     resetPlayPlayerAndZone();
+
   }
   catch (error) {
     console.error("Error while saving play: " + error);
@@ -477,6 +472,11 @@ const toggleCountdown = () => {
     startCountdown();
   }
 };
+
+
+watch([homeLineUp, awayLineUp], ([newField, newField2]) => {
+  saveGame(game.value);
+});
 
 
 // for instance for editing purposes
