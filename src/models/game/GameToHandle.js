@@ -113,7 +113,7 @@ export class ShotPlay extends Play {
     }
 
     describe() {
-        // let madeOrMissed = this.made ? 'MADE' : 'MISSED';
+        let madeOrMissed = this.made ? 'MADE' : 'MISSED';
         // if(this.worth === 1){
         //     return 'FREE_THROW ' + madeOrMissed;
         // }
@@ -126,7 +126,6 @@ export class ShotPlay extends Play {
         // else{
         //     throw new Error('In function describe: worth not matching to 1PT, 2PT, 3PT');
         // }
-        return this.worth;
     }
 }
 

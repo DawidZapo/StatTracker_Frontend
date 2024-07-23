@@ -107,6 +107,9 @@ const fetchGameToHandle = async (id) => {
 
 const saveGame = async (gameToHandle) =>{
   console.log('saving game');
+  console.log(gameToHandle);
+  const gameTosave = new GameToHandle(gameToHandle);
+  console.log(gameTosave);
   try{
     if(gameToHandle){
       game.value = await GameService.saveGameToHandle(gameToHandle);
@@ -306,6 +309,8 @@ const clickShotPlayAdd = async () => {
   try{
     const response = await PlayService.savePlay('shot_play', shotPlayCreated);
     const newShotPlay = new ShotPlay(response);
+    console.log(newShotPlay);
+
     addPlayToPlayerAndGame(game.value, newShotPlay);
     resetPlayPlayerAndZone();
 
@@ -321,6 +326,7 @@ const clickAssistAdd = async () => {
   try{
     const response = await PlayService.savePlay('assist', assistCreated);
     const newAssist = new Assist(response);
+    console.log(newAssist);
 
     addPlayToPlayerAndGame(game.value, newAssist);
     resetPlayPlayerAndZone();
@@ -337,6 +343,7 @@ const clickReboundAdd = async () => {
   try{
     const response = await PlayService.savePlay('rebound', reboundCreated);
     const newRebound = new Rebound(response);
+    console.log(newRebound);
 
     addPlayToPlayerAndGame(game.value, newRebound);
     resetPlayPlayerAndZone();
@@ -353,6 +360,7 @@ const clickFoulAdd = async () => {
   try{
     const response = await PlayService.savePlay('foul', foulCreated);
     const newFoul = new Foul(response);
+    console.log(newFoul);
 
     addPlayToPlayerAndGame(game.value, newFoul);
     resetPlayPlayerAndZone();
@@ -369,6 +377,7 @@ const clickStealAdd = async () => {
   try{
     const response = await PlayService.savePlay('steal', stealCreated);
     const newSteal = new Steal(response);
+    console.log(newSteal);
 
     addPlayToPlayerAndGame(game.value, newSteal);
     resetPlayPlayerAndZone();
@@ -385,6 +394,7 @@ const clickTurnoverAdd = async () => {
   try{
     const response = await PlayService.savePlay('turnover', turnoverCreated);
     const newTurnover = new Turnover(response);
+    console.log(newTurnover);
 
     addPlayToPlayerAndGame(game.value, newTurnover);
     resetPlayPlayerAndZone();
@@ -401,6 +411,7 @@ const clickBlockAdd = async () => {
   try{
     const response = await PlayService.savePlay('block', blockCreated);
     const newBlock = new Block(response);
+    console.log(newBlock);
 
     addPlayToPlayerAndGame(game.value, newBlock);
     resetPlayPlayerAndZone();
@@ -475,9 +486,9 @@ const toggleCountdown = () => {
 };
 
 
-watch([homeLineUp, awayLineUp], ([newField, newField2]) => {
-  saveGame(game.value);
-});
+// watch([homeLineUp, awayLineUp], ([newField, newField2]) => {
+//   saveGame(game.value);
+// });
 watch(() => game.value?.plays, () => {
   const scrollableDiv = document.getElementById('divToScroll');
   if (scrollableDiv) {
