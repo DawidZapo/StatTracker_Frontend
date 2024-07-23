@@ -94,11 +94,11 @@ export class Foul extends Play {
 export class Rebound extends Play {
     constructor(data) {
         super(data);
-        this.isOffensive = data.isOffensive;
+        this.offensive = data.offensive;
     }
 
     describe() {
-        return (this.isOffensive ? ' OFFENSIVE' : 'DEFENSIVE') + ' REBOUND';
+        return (this.offensive ? ' OFFENSIVE' : 'DEFENSIVE') + ' REBOUND';
     }
 }
 export class ShotPlay extends Play {

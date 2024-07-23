@@ -34,7 +34,7 @@ const rebound = ref({
       id: null,
       playType : "REBOUND",
       statPlayerId : props.player.statPlayerId,
-      isOffensive : false
+      offensive : false
 });
 
 
@@ -69,7 +69,7 @@ watch(
     <div class="row text-center d-flex align-items-center">
       <div class="col">
         <div class="col d-flex align-items-center justify-content-center">
-          <input type="checkbox" class="form-check-input mx-1" v-model="rebound.isOffensive" id="made">
+          <input type="checkbox" class="form-check-input mx-1" v-model="rebound.offensive" id="made">
           <label class="form-check-label" for="made">Is offensive</label>
         </div>
       </div>
