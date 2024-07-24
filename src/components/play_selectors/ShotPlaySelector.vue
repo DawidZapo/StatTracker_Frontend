@@ -84,7 +84,6 @@ watch(()=> props.selectedZone,
     (newField)=>{
       shotPlay.value.zone = newField;
     }
-
 );
 
 watch(
@@ -95,6 +94,13 @@ watch(
     },
     { immediate: true }
 );
+
+watch(
+    () => props.data,
+    (newData) => {
+      shotPlay.value = newData;
+    }
+)
 
 watch(()=>shotPlay.value.worth, (newValue, oldValue)=>{
   if(shotPlay.value.worth === 1){

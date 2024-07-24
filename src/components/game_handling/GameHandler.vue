@@ -262,44 +262,102 @@ const handlePlaySelect = (play) => {
   // isPlaySubmissionCorrect.value = false;
 }
 
+const handleEditPlaySelect = (play) => {
+  selectedZone.value = null;
+
+  if(playToEdit.value === play){
+    playToEdit.value = null;
+    selectedPlay.value = null
+    selectedPlayer.value = null;
+  }
+  else{
+    playToEdit.value = play;
+    selectedPlay.value = play.playType
+    findPlayerToSelectWhenEditingPlay(play.statPlayerId)
+  }
+}
+
 
 const handleSaveGame = ()=>{
   saveGame(game.value);
 }
 
-const addPlayToPlayerAndGame = (game, createdPlay) => {
-  game.plays.push(createdPlay);
-
-  let added = false;
-  const addPlayToPlayer = (player, createdPlay) => {
-    player.plays.push(createdPlay);
-    added = true;
+const addPlayToPlayerAndGame = (game, createdPlay, doesPlayExist) => {
+  const replacePlayInList = (list, playId, newPlay) => {
+    const index = list.findIndex(play => play.id === playId);
+    if (index !== -1) {
+      list[index] = newPlay;
+    }
   };
 
-  if (createdPlay.statPlayerId) {
-    for (let i = 0; i < game.home.players.length; i++) {
-      const player = game.home.players[i];
-      if (player.statPlayerId === createdPlay.statPlayerId) {
-        addPlayToPlayer(player, createdPlay);
-        break;
-      }
-    }
+  if (doesPlayExist) {
+    replacePlayInList(game.plays, createdPlay.id, createdPlay);
 
-    if (!added) {
-      for (let i = 0; i < game.away.players.length; i++) {
-        const player = game.away.players[i];
+    let replaced = false;
+    const replacePlayInPlayer = (player, createdPlay) => {
+      replacePlayInList(player.plays, createdPlay.id, createdPlay);
+      replaced = true;
+    };
+
+    if (createdPlay.statPlayerId) {
+      for (let i = 0; i < game.home.players.length; i++) {
+        const player = game.home.players[i];
+        if (player.statPlayerId === createdPlay.statPlayerId) {
+          replacePlayInPlayer(player, createdPlay);
+          break;
+        }
+      }
+
+      if (!replaced) {
+        for (let i = 0; i < game.away.players.length; i++) {
+          const player = game.away.players[i];
+          if (player.statPlayerId === createdPlay.statPlayerId) {
+            replacePlayInPlayer(player, createdPlay);
+            break;
+          }
+        }
+      }
+
+      if (!replaced) {
+        console.error(`Nie znaleziono gracza o statPlayerId: ${createdPlay.statPlayerId} w drużynie.`);
+      }
+    } else {
+      console.error('createdPlay.statPlayerId nie zostało zdefiniowane.');
+    }
+  } else {
+    game.plays.push(createdPlay);
+
+    let added = false;
+    const addPlayToPlayer = (player, createdPlay) => {
+      player.plays.push(createdPlay);
+      added = true;
+    };
+
+    if (createdPlay.statPlayerId) {
+      for (let i = 0; i < game.home.players.length; i++) {
+        const player = game.home.players[i];
         if (player.statPlayerId === createdPlay.statPlayerId) {
           addPlayToPlayer(player, createdPlay);
           break;
         }
       }
-    }
 
-    if (!added) {
-      console.error(`Nie znaleziono gracza o statPlayerId: ${createdPlay.statPlayerId} w drużynie.`);
+      if (!added) {
+        for (let i = 0; i < game.away.players.length; i++) {
+          const player = game.away.players[i];
+          if (player.statPlayerId === createdPlay.statPlayerId) {
+            addPlayToPlayer(player, createdPlay);
+            break;
+          }
+        }
+      }
+
+      if (!added) {
+        console.error(`Nie znaleziono gracza o statPlayerId: ${createdPlay.statPlayerId} w drużynie.`);
+      }
+    } else {
+      console.error('createdPlay.statPlayerId nie zostało zdefiniowane.');
     }
-  } else {
-    console.error('createdPlay.statPlayerId nie zostało zdefiniowane.');
   }
 };
 
@@ -311,7 +369,7 @@ const clickShotPlayAdd = async () => {
     const newShotPlay = new ShotPlay(response);
     console.log(newShotPlay);
 
-    addPlayToPlayerAndGame(game.value, newShotPlay);
+    addPlayToPlayerAndGame(game.value, newShotPlay, shotPlayCreated.id === newShotPlay.id);
     resetPlayPlayerAndZone();
 
   }
@@ -496,10 +554,22 @@ watch(() => game.value?.plays, () => {
   }
 }, { deep: true });
 
+const findPlayerToSelectWhenEditingPlay = (id) => {
+  let player = game.value.home.players.find(player => player.statPlayerId === id);
+  if (!player) {
+    player = game.value.away.players.find(player => player.statPlayerId === id);
+  }
+  if (player) {
+    selectedPlayer.value = player;
+  } else {
+    console.error(`Player with ID ${id} not found.`);
+  }
+}
 
+const playToEdit = ref(null);
 // for instance for editing purposes
 const shotPlay = ref({
-  id : 99,
+  id : 999,
   comments: 'hlelelelele',
   contested: 'OPEN',
   timeRemaining: 34534,
@@ -828,7 +898,7 @@ const shotPlay = ref({
 
                 </div>
                 <div class="card-body scrollable" id="divToScroll">
-                  <div class="row highlight" v-for="play in game.plays">
+                  <div class="row highlight" v-for="play in game.plays" @click="handleEditPlaySelect(play)">
                     <div class="col-2">
                       {{play.formattedTime}}
                     </div>
@@ -842,6 +912,7 @@ const shotPlay = ref({
                       {{ play.describe() }}
                     </div>
                   </div>
+                  {{playToEdit}}
                 </div>
               </div>
             </div>
@@ -907,7 +978,7 @@ const shotPlay = ref({
 
                 <div class="card-body p-1">
                   <template v-if="selectedPlay === 'SHOTPLAY'">
-                    <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :quarter="currentQuarter" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
+                    <ShotPlaySelector :data="playToEdit" @update:shotPlay="handlePlayEmit($event)" @update:isFreeThrowSelected="isFreeThrowSelected=$event" @update:selected-zone="selectedZone=$event" :quarter="currentQuarter" :selected-zone="selectedZone || 'NONE'" :zones="zoneTypes" :game-id="game.id" :contested="contestedTypes" :hands="handTypes" :time-stamp="currentTimeStampInMs" :types="shotTypes" :player="selectedPlayer"></ShotPlaySelector>
                   </template>
                   <template v-if="selectedPlay === 'ASSIST'">
                     <AssistSelector @update:assist="handlePlayEmit($event)" :quarter="currentQuarter" :possible-assisted-players="getCurrentTeamPlayers" :time-stamp="currentTimeStampInMs" :types="assistTypes" :game-id="game.id" :hands="handTypes" :player="selectedPlayer"></AssistSelector>
