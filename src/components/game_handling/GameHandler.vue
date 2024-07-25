@@ -269,11 +269,13 @@ const handleEditPlaySelect = (play) => {
     playToEdit.value = null;
     selectedPlay.value = null
     selectedPlayer.value = null;
+    selectedZone.value = null;
   }
   else{
     playToEdit.value = play;
     selectedPlay.value = play.playType
-    findPlayerToSelectWhenEditingPlay(play.statPlayerId)
+    findPlayerToSelectWhenEditingPlay(play.statPlayerId);
+    selectedZone.value = play.zone;
   }
 }
 
@@ -878,7 +880,49 @@ const shotPlay = ref({
             </div>
 
             <div class="col-5">
-              <div class="card small-text text-center">
+
+              <div class="col">
+                <div class="row">
+                  <div class="col">
+                    <div class="card">
+                      <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
+                        <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'SHOTPLAY'}" @click=handlePlaySelect($event.target.innerText)>SHOTPLAY</button>
+                        <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'ASSIST'}" @click=handlePlaySelect($event.target.innerText)>ASSIST</button>
+                        <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'REBOUND'}" @click=handlePlaySelect($event.target.innerText)>REBOUND</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div class="card">
+                      <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
+                        <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'FOUL'}" @click=handlePlaySelect($event.target.innerText)>FOUL</button>
+                        <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'STEAL'}" @click=handlePlaySelect($event.target.innerText)>STEAL</button>
+                        <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'TURNOVER'}" @click=handlePlaySelect($event.target.innerText)>TURNOVER</button>
+                        <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'BLOCK'}" @click=handlePlaySelect($event.target.innerText)>BLOCK</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col">
+                    <div class="card">
+                      <div class="d-flex justify-content-between">
+                        <button @click="toggleCountdown" class="btn btn-light w-100 small-text">Start/Stop</button>
+                        <button @click="handleSaveGame" class="btn btn-light w-100 small-text">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="card small-text text-center mb-2">
                 <div class="card-header" >
                   <div class="d-flex">
                     <div class="col-4">
@@ -898,7 +942,8 @@ const shotPlay = ref({
 
                 </div>
                 <div class="card-body scrollable" id="divToScroll">
-                  <div class="row highlight" v-for="play in game.plays" @click="handleEditPlaySelect(play)">
+                  <div class="row highlight" v-for="play in game.plays">
+                    <!--                    @click="handleEditPlaySelect(play)" :class="{'custom-btn-light-selected' : playToEdit === play}"-->
                     <div class="col-2">
                       {{play.formattedTime}}
                     </div>
@@ -912,41 +957,10 @@ const shotPlay = ref({
                       {{ play.describe() }}
                     </div>
                   </div>
-                  {{playToEdit}}
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="row">
-            <div class="col">
-              <div class="row">
-                <div class="col">
-                  <div class="card">
-                    <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'SHOTPLAY'}" @click=handlePlaySelect($event.target.innerText)>SHOTPLAY</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'ASSIST'}" @click=handlePlaySelect($event.target.innerText)>ASSIST</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'REBOUND'}" @click=handlePlaySelect($event.target.innerText)>REBOUND</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'FOUL'}" @click=handlePlaySelect($event.target.innerText)>FOUL</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'STEAL'}" @click=handlePlaySelect($event.target.innerText)>STEAL</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'TURNOVER'}" @click=handlePlaySelect($event.target.innerText)>TURNOVER</button>
-                      <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'BLOCK'}" @click=handlePlaySelect($event.target.innerText)>BLOCK</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row mt-3">
-                <div class="col">
-                  <div class="card">
-                    <div class="d-flex justify-content-between">
-                      <button @click="toggleCountdown" class="btn btn-light w-100 small-text">Start/Stop</button>
-                      <button @click="handleSaveGame" class="btn btn-light w-100 small-text">Save</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
             <div class="col-5">
               <div class="card">
                 <div class="card-header d-flex justify-content-center" style="height: 45px">
