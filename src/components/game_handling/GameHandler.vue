@@ -65,6 +65,10 @@ const getCurrentTeamPlayers = computed(()=>{
 
 });
 
+const allPlayers = computed(() => {
+  return [...game.value.home.players, ...game.value.away.players];
+});
+
 const getOpposingTeamPlayers = computed(()=>{
   if(homeLineUp.value.includes(selectedPlayer.value)){
     return awayLineUp.value;
@@ -173,6 +177,7 @@ const clickPlayerSelected = (player) => {
   if(selectedPlayer.value === player){
     selectedPlayer.value = null;
     selectedPlay.value = null;
+    isFreeThrowSelected.value = false;
     return;
   }
   selectedPlayer.value = player;
@@ -263,18 +268,13 @@ const handlePlaySelect = (play) => {
 }
 
 const handleEditPlaySelect = (play) => {
-  selectedZone.value = null;
-
   if(playToEdit.value === play){
     playToEdit.value = null;
-    selectedPlay.value = null
-    selectedPlayer.value = null;
     selectedZone.value = null;
+    createdPlay.value = null;
   }
   else{
     playToEdit.value = play;
-    selectedPlay.value = play.playType
-    findPlayerToSelectWhenEditingPlay(play.statPlayerId);
     selectedZone.value = play.zone;
   }
 }
@@ -562,9 +562,10 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
     player = game.value.away.players.find(player => player.statPlayerId === id);
   }
   if (player) {
-    selectedPlayer.value = player;
+    return player;
   } else {
     console.error(`Player with ID ${id} not found.`);
+    return null;
   }
 }
 
@@ -691,7 +692,7 @@ const shotPlay = ref({
                   </div>
                 </div>
               </div>
-              <div class="col-4 d-flex justify-content-center" :class="{'disabled' : selectedPlay !== 'SHOTPLAY' || isFreeThrowSelected === true}">
+              <div class="col-4 d-flex justify-content-center" :class="{'disabled' : !(selectedPlay === 'SHOTPLAY' || playToEdit?.playType === 'SHOTPLAY') || isFreeThrowSelected === true}">
                 <svg
                     viewBox="0 0 47 50"
                     xmlns="http://www.w3.org/2000/svg"
@@ -884,7 +885,7 @@ const shotPlay = ref({
               <div class="col">
                 <div class="row">
                   <div class="col">
-                    <div class="card">
+                    <div class="card mt-1">
                       <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
                         <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'SHOTPLAY'}" @click=handlePlaySelect($event.target.innerText)>SHOTPLAY</button>
                         <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'ASSIST'}" @click=handlePlaySelect($event.target.innerText)>ASSIST</button>
@@ -895,7 +896,7 @@ const shotPlay = ref({
                 </div>
                 <div class="row">
                   <div class="col">
-                    <div class="card">
+                    <div class="card mt-1">
                       <div class="d-flex justify-content-between" :class="{'disabled' : selectedPlayer === null}">
                         <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'FOUL'}" @click=handlePlaySelect($event.target.innerText)>FOUL</button>
                         <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'STEAL'}" @click=handlePlaySelect($event.target.innerText)>STEAL</button>
@@ -942,7 +943,7 @@ const shotPlay = ref({
 
                 </div>
                 <div class="card-body scrollable" id="divToScroll">
-                  <div class="row highlight" v-for="play in game.plays">
+                  <div class="row highlight" v-for="play in game.plays" @click="handleEditPlaySelect(play)" :class="{'custom-btn-light-selected' : playToEdit === play}">
                     <!--                    @click="handleEditPlaySelect(play)" :class="{'custom-btn-light-selected' : playToEdit === play}"-->
                     <div class="col-2">
                       {{play.formattedTime}}
@@ -955,6 +956,30 @@ const shotPlay = ref({
                     </div>
                     <div class="col-3 no-overflow">
                       {{ play.describe() }}
+                    </div>
+                  </div>
+                  <div v-if="playToEdit !== null" class="container mt-2" style="position: absolute; z-index: 9999; top: -15%; left: 0;">
+                    <div class="card">
+                      <div class="card-header d-flex" style="height: 45px">
+                        <div class="form-control small-text w-25 text-center">{{playToEdit.playType}}</div>
+<!--                        <select-->
+<!--                            id="season-select" class="form-control w-50 small-text text-center" v-model="playToEdit.statPlayerId">-->
+<!--                          <option v-for="player in allPlayers" :value="player.statPlayerId">-->
+<!--                            {{ player.firstName + ' ' + player.lastName }}-->
+<!--                          </option>-->
+<!--                        </select>-->
+                        <div class="form-control small-text w-50 text-center">{{playToEdit.firstName + ' ' + playToEdit.lastName}}</div>
+                        <button class="btn btn-outline-success small small-text w-25">Save</button>
+                      </div>
+                      <template v-if="playToEdit.playType === 'SHOTPLAY'">
+                        <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" :data="playToEdit" :selected-zone="selectedZone" :game-id="game.id" :zones="zoneTypes" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :contested="contestedTypes" :hands="handTypes" :types="shotTypes"></ShotPlaySelector>
+                      </template>
+                      <div class="d-flex justify-content-center mb-1">
+                        <button @click="handleEditPlaySelect(playToEdit)" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
+                          <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
+                        </button>
+                      </div>
+                      {{createdPlay}}
                     </div>
                   </div>
                 </div>
@@ -1013,6 +1038,11 @@ const shotPlay = ref({
 <!--                    @update:play-submission="handlePlaySubmissionEmit($event)"-->
                     <BlockSelector @update:block="handlePlayEmit($event)" :quarter="currentQuarter" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
                   </template>
+                  <div v-if="selectedPlay !== null" class="d-flex justify-content-center mb-1">
+                    <button @click="selectedPlayer = null ; selectedPlay = null; isFreeThrowSelected=false" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
+                      <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1078,6 +1108,14 @@ const shotPlay = ref({
   background-color: #f0f0f0; /* Kolor tła podczas najechania kursorem */
   cursor: pointer; /* Zmiana kursora na wskazujący */
 }
-
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* półprzezroczyste tło */
+  z-index: 1000; /* poniżej głównego elementu */
+}
 
 </style>

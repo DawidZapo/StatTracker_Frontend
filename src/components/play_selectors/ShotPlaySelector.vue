@@ -215,7 +215,6 @@ watch(shotPlay, (newValue) => {
         </div>
       </div>
     </div>
-    {{data}}
   </div>
 </template>
 
