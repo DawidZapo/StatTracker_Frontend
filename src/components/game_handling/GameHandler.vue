@@ -882,7 +882,7 @@ const shotPlay = ref({
 
             <div class="col-5">
 
-              <div class="col">
+              <div class="col" :class="{'disabled' : playToEdit !== null}">
                 <div class="row">
                   <div class="col">
                     <div class="card mt-1">
@@ -943,7 +943,7 @@ const shotPlay = ref({
 
                 </div>
                 <div class="card-body scrollable" id="divToScroll">
-                  <div class="row highlight" v-for="play in game.plays" @click="handleEditPlaySelect(play)" :class="{'custom-btn-light-selected' : playToEdit === play}">
+                  <div class="row highlight" v-for="play in game.plays" @click="handleEditPlaySelect(play)"  :class="{'custom-btn-light-selected': playToEdit === play, 'no-action': selectedPlay !== null}" >
                     <!--                    @click="handleEditPlaySelect(play)" :class="{'custom-btn-light-selected' : playToEdit === play}"-->
                     <div class="col-2">
                       {{play.formattedTime}}
