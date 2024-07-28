@@ -16,6 +16,7 @@ import GameToHandle, {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} f
 import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
 import {smoothScrollToBottom} from "@/assets/scripts/utilts.js";
+import Notification from "@/components/helper/Notification.vue";
 
 const store = useStore();
 const selectedGameId = ref(localStorage.getItem('selectedGameId'));
@@ -42,9 +43,12 @@ const turnoverTypes = ref([]);
 const zoneTypes = ref([]);
 const isFreeThrowSelected = ref(false);
 // const isPlaySubmissionCorrect = ref(false);
+const showNotification = ref(false);
+const notificationMessage = ref('');
+const isNotificationSuccessful = ref(false);
 const currentQuarter = computed(()=>{
   return game.value.currentQuarter;
-})
+});
 const currentTimeStampInMs = computed(()=>{
   if(game.value.currentQuarter === 1){
     return game.value.currentQuarterTimeRemainingMs;
@@ -371,13 +375,27 @@ const clickShotPlayAdd = async () => {
     const newShotPlay = new ShotPlay(response);
     console.log(newShotPlay);
 
-    addPlayToPlayerAndGame(game.value, newShotPlay, shotPlayCreated.id === newShotPlay.id);
+    const doesPlayExist = shotPlayCreated.id === newShotPlay.id;
+
+    if(doesPlayExist){
+      playToEdit.value = null;
+    }
+    addPlayToPlayerAndGame(game.value, newShotPlay, doesPlayExist);
     resetPlayPlayerAndZone();
+
+    isNotificationSuccessful.value = true;
+    showNotification.value = true;
 
   }
   catch (error) {
+    isNotificationSuccessful.value = false;
+    showNotification.value = true;
     console.error("Error while saving play: " + error);
   }
+
+  setTimeout(() => {
+    showNotification.value = false;
+  }, 4000);
 };
 
 const clickAssistAdd = async () => {
@@ -943,6 +961,7 @@ const shotPlay = ref({
 
                 </div>
                 <div class="card-body scrollable" id="divToScroll">
+                  <Notification v-if="showNotification" :successful="isNotificationSuccessful" style="position: absolute; top: 25%; left: 5%; width: 90%; pointer-events: none; z-index: 999"></Notification>
                   <div class="row highlight" v-for="play in game.plays" @click="handleEditPlaySelect(play)"  :class="{'custom-btn-light-selected': playToEdit === play, 'no-action': selectedPlay !== null}" >
                     <!--                    @click="handleEditPlaySelect(play)" :class="{'custom-btn-light-selected' : playToEdit === play}"-->
                     <div class="col-2">
@@ -958,7 +977,7 @@ const shotPlay = ref({
                       {{ play.describe() }}
                     </div>
                   </div>
-                  <div v-if="playToEdit !== null" class="container mt-2" style="position: absolute; z-index: 9999; top: -15%; left: 0;">
+                  <div v-if="playToEdit !== null" class="container mt-2" style="position: absolute; z-index: 1000; top: -15%; left: 0;">
                     <div class="card">
                       <div class="card-header d-flex" style="height: 45px">
                         <div class="form-control small-text w-25 text-center">{{playToEdit.playType}}</div>
@@ -969,7 +988,7 @@ const shotPlay = ref({
 <!--                          </option>-->
 <!--                        </select>-->
                         <div class="form-control small-text w-50 text-center">{{playToEdit.firstName + ' ' + playToEdit.lastName}}</div>
-                        <button class="btn btn-outline-success small small-text w-25">Save</button>
+                        <button @click="clickShotPlayAdd" class="btn btn-outline-success small small-text w-25">Save</button>
                       </div>
                       <template v-if="playToEdit.playType === 'SHOTPLAY'">
                         <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" :data="playToEdit" :selected-zone="selectedZone" :game-id="game.id" :zones="zoneTypes" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :contested="contestedTypes" :hands="handTypes" :types="shotTypes"></ShotPlaySelector>
@@ -979,7 +998,6 @@ const shotPlay = ref({
                           <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
                         </button>
                       </div>
-                      {{createdPlay}}
                     </div>
                   </div>
                 </div>
