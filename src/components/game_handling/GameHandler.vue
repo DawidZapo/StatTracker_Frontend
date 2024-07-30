@@ -367,6 +367,25 @@ const addPlayToPlayerAndGame = (game, createdPlay, doesPlayExist) => {
   }
 };
 
+const handlePlayClick = (type) => {
+  switch (type) {
+    case 'SHOTPLAY': clickShotPlayAdd();
+      break;
+    case 'ASSIST': clickAssistAdd();
+      break;
+    case 'REBOUND': clickReboundAdd();
+      break;
+    case 'STEAL': clickStealAdd();
+      break;
+    case 'TURNOVER': clickTurnoverAdd();
+      break;
+    case 'FOUL': clickFoulAdd();
+      break;
+    case 'BLOCK': clickBlockAdd();
+      break;
+
+  }
+};
 const clickShotPlayAdd = async () => {
   const shotPlayCreated = new ShotPlay(createdPlay.value);
 
@@ -379,12 +398,11 @@ const clickShotPlayAdd = async () => {
 
     if(doesPlayExist){
       playToEdit.value = null;
+      isNotificationSuccessful.value = true;
+      showNotification.value = true;
     }
     addPlayToPlayerAndGame(game.value, newShotPlay, doesPlayExist);
     resetPlayPlayerAndZone();
-
-    isNotificationSuccessful.value = true;
-    showNotification.value = true;
 
   }
   catch (error) {
@@ -406,12 +424,26 @@ const clickAssistAdd = async () => {
     const newAssist = new Assist(response);
     console.log(newAssist);
 
-    addPlayToPlayerAndGame(game.value, newAssist);
+    const doesPlayExist = assistCreated.id === newAssist.id;
+
+    if(doesPlayExist){
+      playToEdit.value = null;
+      isNotificationSuccessful.value = true;
+      showNotification.value = true;
+    }
+    addPlayToPlayerAndGame(game.value, newAssist, doesPlayExist);
     resetPlayPlayerAndZone();
+
   }
   catch (error) {
+    isNotificationSuccessful.value = false;
+    showNotification.value = true;
     console.error("Error while saving play: " + error);
   }
+
+  setTimeout(() => {
+    showNotification.value = false;
+  }, 4000);
 };
 
 const clickReboundAdd = async () => {
@@ -988,16 +1020,20 @@ const shotPlay = ref({
 <!--                          </option>-->
 <!--                        </select>-->
                         <div class="form-control small-text w-50 text-center">{{playToEdit.firstName + ' ' + playToEdit.lastName}}</div>
-                        <button @click="clickShotPlayAdd" class="btn btn-outline-success small small-text w-25">Save</button>
+                        <button @click="handlePlayClick(playToEdit.playType)" class="btn btn-outline-success small small-text w-25">Save</button>
                       </div>
                       <template v-if="playToEdit.playType === 'SHOTPLAY'">
                         <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" :data="playToEdit" :selected-zone="selectedZone" :game-id="game.id" :zones="zoneTypes" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :contested="contestedTypes" :hands="handTypes" :types="shotTypes"></ShotPlaySelector>
+                      </template>
+                      <template v-else-if="playToEdit.playType === 'ASSIST'">
+                        <AssistSelector @update:assist="handlePlayEmit($event)" :data="playToEdit" :possible-assisted-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes" :types="assistTypes"></AssistSelector>
                       </template>
                       <div class="d-flex justify-content-center mb-1">
                         <button @click="handleEditPlaySelect(playToEdit)" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
                           <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
                         </button>
                       </div>
+                      {{createdPlay}}
                     </div>
                   </div>
                 </div>

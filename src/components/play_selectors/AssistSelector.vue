@@ -31,21 +31,32 @@ const props = defineProps({
   possibleAssistedPlayers: {
     type: Array,
     required: true
+  },
+  data: {
+    type: Object,
+    required: false
   }
 });
 
 const assist = ref({
-  comments : null,
-  timeRemaining: props.timeStamp,
-  quarter: props.quarter,
-  gameId: props.gameId,
-  hand: props.player.dominatHand,
-  id: null,
-  playType : "ASSIST",
-  statPlayerId : props.player.statPlayerId,
-  toStatPlayerId : null,
-  type : null
+  comments: props.data ? props.data.comments : null,
+  timeRemaining: props.data ? props.data.timeRemaining : props.timeStamp,
+  quarter: props.data ? props.data.quarter : props.quarter,
+  gameId: props.data ? props.data.gameId : props.gameId,
+  hand: props.data ? props.data.hand : props.player.dominantHand,
+  id: props.data ? props.data.id : null,
+  playType: props.data ? props.data.playType : 'ASSIST',
+  statPlayerId: props.data ? props.data.statPlayerId : props.player.statPlayerId,
+  toStatPlayerId: props.data ? props.data.toStatPlayerId : null,
+  type: props.data ? props.data.type : null
 });
+
+watch(
+    () => props.data,
+    (newData) => {
+      assist.value = newData;
+    }
+)
 
 const emit = defineEmits(['update:assist']);
 
@@ -99,7 +110,6 @@ watch(assist, (newValue) => {
         <input @input="handleCommentsInput(assist.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="assist.comments">
       </div>
     </div>
-    {{assist}}
   </div>
 </template>
 
