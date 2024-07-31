@@ -96,7 +96,7 @@ watch(()=>props.possibleBlockOnPlayers, (newPlayers)=>{
 </script>
 
 <template>
-  <div class="container">
+  <div class="container p-1">
     <div class="row text-center d-flex align-items-center">
       <div class="col">
         <select class="form-select small small-text" :class="{'reduced-opacity' : block.blockedStatPlayerId === null}" v-model="block.blockedStatPlayerId">

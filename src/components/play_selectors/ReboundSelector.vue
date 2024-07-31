@@ -22,20 +22,31 @@ const props = defineProps({
   gameId: {
     type: Number,
     required: true
+  },
+  data: {
+    type: Object,
+    required: false
   }
 });
 
 const rebound = ref({
-      comments: null,
-      timeRemaining: props.timeStamp,
-      quarter: props.quarter,
-      gameId: props.gameId,
-      hand: props.player.dominantHand,
-      id: null,
-      playType : "REBOUND",
-      statPlayerId : props.player.statPlayerId,
-      offensive : false
+      comments: props.data ? props.data.comments : null,
+      timeRemaining: props.data ? props.data.timeRemaining : props.timeStamp,
+      quarter: props.data ? props.data.quarter : props.quarter,
+      gameId: props.data ? props.data.gameId : props.gameId,
+      hand: props.data ? props.data.hand : props.player.dominantHand,
+      id: props.data ? props.data.id : null,
+      playType: props.data ? props.data.playType : "REBOUND",
+      statPlayerId: props.data ? props.data.statPlayerId : props.player.statPlayerId,
+      offensive: props.data ? props.data.offensive : false
 });
+
+watch(
+    () => props.data,
+    (newData) => {
+      rebound.value = newData;
+    }
+)
 
 
 const emit = defineEmits(['update:rebound']);
@@ -57,7 +68,9 @@ watch(
     () => props.player,
     (newPlayer) => {
       rebound.value.statPlayerId = newPlayer.statPlayerId;
-      rebound.value.hand = newPlayer.dominantHand;
+      if(!props.data){
+        rebound.value.hand = newPlayer.dominantHand;
+      }
     },
     { immediate: true }
 );
@@ -65,7 +78,7 @@ watch(
 </script>
 
 <template>
-  <div class="container">
+  <div class="container p-1">
     <div class="row text-center d-flex align-items-center">
       <div class="col">
         <div class="col d-flex align-items-center justify-content-center">
@@ -82,7 +95,6 @@ watch(
         </select>
       </div>
     </div>
-    {{rebound}}
   </div>
 </template>
 

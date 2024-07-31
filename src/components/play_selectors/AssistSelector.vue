@@ -85,7 +85,7 @@ watch(assist, (newValue) => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container p-1">
     <div class="row text-center d-flex align-items-center">
       <div class="col">
         <select class="form-select small small-text" v-model="assist.type" :class="{'reduced-opacity' : assist.type === null}">

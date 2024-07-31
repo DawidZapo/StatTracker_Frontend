@@ -86,7 +86,7 @@ watch(foul, (newValue) => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container p-1">
     <div class="row text-center d-flex align-items-center">
       <div class="col">
         <select class="form-select small small-text" v-model="foul.type" :class="{'reduced-opacity' : foul.type === null}">

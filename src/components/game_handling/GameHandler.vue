@@ -455,12 +455,26 @@ const clickReboundAdd = async () => {
     const newRebound = new Rebound(response);
     console.log(newRebound);
 
-    addPlayToPlayerAndGame(game.value, newRebound);
+    const doesPlayExist = reboundCreated.id === newRebound.id;
+
+    if(doesPlayExist){
+      playToEdit.value = null;
+      isNotificationSuccessful.value = true;
+      showNotification.value = true;
+    }
+    addPlayToPlayerAndGame(game.value, newRebound, doesPlayExist);
     resetPlayPlayerAndZone();
+
   }
   catch (error) {
+    isNotificationSuccessful.value = false;
+    showNotification.value = true;
     console.error("Error while saving play: " + error);
   }
+
+  setTimeout(() => {
+    showNotification.value = false;
+  }, 4000);
 };
 
 const clickFoulAdd = async () => {
@@ -1061,6 +1075,9 @@ const shotPlay = ref({
                       </template>
                       <template v-else-if="playToEdit.playType === 'FOUL'">
                         <FoulSelector @update:foul="handlePlayEmit($event)" :data="playToEdit" :possible-foul-on-players="allPlayers" :types="foulTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></FoulSelector>
+                      </template>
+                      <template v-else-if="playToEdit.playType === 'REBOUND'">
+                        <ReboundSelector @update:rebound="handlePlayEmit($event)" :data="playToEdit" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></ReboundSelector>
                       </template>
                       <div class="d-flex justify-content-center mb-1">
                         <button @click="handleEditPlaySelect(playToEdit)" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
