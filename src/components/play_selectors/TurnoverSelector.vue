@@ -30,22 +30,33 @@ const props = defineProps({
   possibleStealOnPlayers: {
     type: Array,
     required: true
+  },
+  data: {
+    type: Object,
+    required: false
   }
 });
 
 
 const turnover = ref({
-      comments : null,
-      timeRemaining: props.timeStamp,
-      quarter: props.quarter,
-      gameId : props.gameId,
-      hand : props.player.dominantHand,
-      id : null,
-      playType : "TURNOVER",
-      statPlayerId : props.player.statPlayerId,
-      stealForStatPlayerId : null,
-      type : null
+      comments: props.data ? props.data.comments : null,
+      timeRemaining: props.data ? props.data.timeRemaining : props.timeStamp,
+      quarter: props.data ? props.data.quarter : props.quarter,
+      gameId: props.data ? props.data.gameId : props.gameId,
+      hand: props.data ? props.data.hand : props.player.dominantHand,
+      id: props.data ? props.data.id : null,
+      playType: props.data ? props.data.playType : "TURNOVER",
+      statPlayerId: props.data ? props.data.statPlayerId : props.player.statPlayerId,
+      stealForStatPlayerId: props.data ? props.data.stealForStatPlayerId : null,
+      type: props.data ? props.data.type : null
 });
+
+watch(
+    () => props.data,
+    (newData) => {
+      turnover.value = newData;
+    }
+)
 
 const emit = defineEmits(['update:turnover']);
 
@@ -59,7 +70,9 @@ watch(
     () => props.player,
     (newPlayer) => {
       turnover.value.statPlayerId = newPlayer.statPlayerId;
-      turnover.value.hand = newPlayer.dominantHand;
+      if(!props.data){
+        turnover.value.hand = newPlayer.dominantHand;
+      }
     },
     { immediate: true }
 );
@@ -75,7 +88,7 @@ watch(turnover, (newValue) => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container p-1">
     <div class="row text-center d-flex align-items-center">
       <div class="col">
         <select class="form-select small small-text" v-model="turnover.type" :class="{'reduced-opacity' : turnover.type === null}">
@@ -100,7 +113,6 @@ watch(turnover, (newValue) => {
         <input @input="handleCommentsInput(turnover.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="turnover.comments">
       </div>
     </div>
-    {{turnover}}
   </div>
 </template>
 

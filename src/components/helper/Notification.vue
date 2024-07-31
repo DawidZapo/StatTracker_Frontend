@@ -7,9 +7,13 @@ const props = defineProps({
     required: true,
     type: Boolean
   },
+  message: {
+    required: true,
+    type: String
+  }
 });
 
-const message = ref(props.successful ? 'Play has been successfully edited' : 'Ops, there was an error while editing play');
+// const message = ref(props.successful ? 'Play has been successfully edited' : 'Ops, there was an error while editing play');
 
 </script>
 

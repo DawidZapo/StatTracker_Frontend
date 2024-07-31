@@ -46,6 +46,9 @@ const isFreeThrowSelected = ref(false);
 const showNotification = ref(false);
 const notificationMessage = ref('');
 const isNotificationSuccessful = ref(false);
+const goodEditMessage = 'Play has been successfully edited';
+const badMessage = 'Ops, there was an error while saving play';
+const goodAddMessage = 'Play has been successfully added';
 const currentQuarter = computed(()=>{
   return game.value.currentQuarter;
 });
@@ -396,18 +399,25 @@ const clickShotPlayAdd = async () => {
 
     const doesPlayExist = shotPlayCreated.id === newShotPlay.id;
 
+    isNotificationSuccessful.value = true;
+    showNotification.value = true;
     if(doesPlayExist){
       playToEdit.value = null;
-      isNotificationSuccessful.value = true;
-      showNotification.value = true;
+      notificationMessage.value = goodEditMessage;
+    }
+    else{
+      notificationMessage.value = goodAddMessage;
     }
     addPlayToPlayerAndGame(game.value, newShotPlay, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
   catch (error) {
+    playToEdit.value = null;
+    selectedZone.value = null //only for shotplay
     isNotificationSuccessful.value = false;
     showNotification.value = true;
+    notificationMessage.value = badMessage;
     console.error("Error while saving play: " + error);
   }
 
@@ -548,12 +558,26 @@ const clickTurnoverAdd = async () => {
     const newTurnover = new Turnover(response);
     console.log(newTurnover);
 
-    addPlayToPlayerAndGame(game.value, newTurnover);
+    const doesPlayExist = turnoverCreated.id === newTurnover.id;
+
+    if(doesPlayExist){
+      playToEdit.value = null;
+      isNotificationSuccessful.value = true;
+      showNotification.value = true;
+    }
+    addPlayToPlayerAndGame(game.value, newTurnover, doesPlayExist);
     resetPlayPlayerAndZone();
+
   }
   catch (error) {
+    isNotificationSuccessful.value = false;
+    showNotification.value = true;
     console.error("Error while saving play: " + error);
   }
+
+  setTimeout(() => {
+    showNotification.value = false;
+  }, 4000);
 };
 
 const clickBlockAdd = async () => {
@@ -1049,7 +1073,7 @@ const shotPlay = ref({
 
                 </div>
                 <div class="card-body scrollable" id="divToScroll">
-                  <Notification v-if="showNotification" :successful="isNotificationSuccessful" style="position: absolute; top: 25%; left: 5%; width: 90%; pointer-events: none; z-index: 999"></Notification>
+                  <Notification v-if="showNotification" :message="notificationMessage" :successful="isNotificationSuccessful" style="position: absolute; top: 25%; left: 5%; width: 90%; pointer-events: none; z-index: 999"></Notification>
                   <div class="row highlight" v-for="play in game.plays" @click="handleEditPlaySelect(play)"  :class="{'custom-btn-light-selected': playToEdit === play, 'no-action': selectedPlay !== null}" >
                     <!--                    @click="handleEditPlaySelect(play)" :class="{'custom-btn-light-selected' : playToEdit === play}"-->
                     <div class="col-2">
@@ -1095,6 +1119,9 @@ const shotPlay = ref({
                       </template>
                       <template v-else-if="playToEdit.playType === 'STEAL'">
                         <StealSelector @update:steal="handlePlayEmit($event)" :data="playToEdit" :possible-turnover-for-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></StealSelector>
+                      </template>
+                      <template v-else-if="playToEdit.playType === 'TURNOVER'">
+                        <TurnoverSelector @update:turnover="handlePlayEmit($event)" :data="playToEdit" :possible-steal-on-players="allPlayers" :types="turnoverTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></TurnoverSelector>
                       </template>
                       <div class="d-flex justify-content-center mb-1">
                         <button @click="handleEditPlaySelect(playToEdit)" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
