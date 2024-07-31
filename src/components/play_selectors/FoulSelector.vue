@@ -30,23 +30,34 @@ const props = defineProps({
   possibleFoulOnPlayers: {
     type: Array,
     required: true
+  },
+  data: {
+    type: Object,
+    required: false
   }
 });
 
 const foul = ref({
-      comments: null,
-      timeRemaining: props.timeStamp,
-      quarter: props.quarter,
-      gameId: props.gameId,
-      hand: props.player.dominantHand,
-      id: null,
-      playType : "FOUL",
-      statPlayerId : props.player.statPlayerId,
-      foulOnStatPlayerId : null,
-      type : "REGULAR"
+      comments: props.data ? props.data.comments : null,
+      timeRemaining: props.data ? props.data.timeRemaining : props.timeStamp,
+      quarter: props.data ? props.data.quarter : props.quarter,
+      gameId: props.data ? props.data.gameId : props.gameId,
+      hand: props.data ? props.data.hand : props.player.dominantHand,
+      id: props.data ? props.data.id : null,
+      playType: props.data ? props.data.playType : "FOUL",
+      statPlayerId: props.data ? props.data.statPlayerId : props.player.statPlayerId,
+      foulOnStatPlayerId: props.data ? props.data.foulOnStatPlayerId : null,
+      type: props.data ? props.data.type : "REGULAR"
 });
 
 const emit = defineEmits(['update:foul']);
+
+watch(
+    () => props.data,
+    (newData) => {
+      foul.value = newData;
+    }
+)
 
 const handleCommentsInput = (text) => {
   if(text.trim() === ''){
@@ -58,7 +69,9 @@ watch(
     () => props.player,
     (newPlayer) => {
       foul.value.statPlayerId = newPlayer.statPlayerId;
-      foul.value.hand = newPlayer.dominantHand;
+      if(!props.data){
+        foul.value.hand = newPlayer.dominantHand;
+      }
     },
     { immediate: true }
 );
@@ -98,7 +111,6 @@ watch(foul, (newValue) => {
         <input @input="handleCommentsInput(foul.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="foul.comments">
       </div>
     </div>
-    {{foul}}
   </div>
 </template>
 
