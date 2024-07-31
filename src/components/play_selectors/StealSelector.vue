@@ -26,20 +26,31 @@ const props = defineProps({
   possibleTurnoverForPlayers: {
     type: Array,
     required: true
+  },
+  data: {
+    type: Object,
+    required: false
   }
 });
 
 const steal = ref({
-      comments: null,
-      timeRemaining: props.timeStamp,
-      quarter: props.quarter,
-      gameId: props.gameId,
-      hand: props.player.dominantHand,
-      id: null,
-      playType : "STEAL",
-      statPlayerId : props.player.statPlayerId,
-      turnoverForStatPlayerId : null
+      comments: props.data ? props.data.comments : null,
+      timeRemaining: props.data ? props.data.timeRemaining : props.timeStamp,
+      quarter: props.data ? props.data.quarter : props.quarter,
+      gameId: props.data ? props.data.gameId : props.gameId,
+      hand: props.data ? props.data.hand : props.player.dominantHand,
+      id: props.data ? props.data.id : null,
+      playType: props.data ? props.data.playType : "STEAL",
+      statPlayerId: props.data ? props.data.statPlayerId : props.player.statPlayerId,
+      turnoverForStatPlayerId: props.data ? props.data.turnoverForStatPlayerId : null
 });
+
+watch(
+    () => props.data,
+    (newData) => {
+      steal.value = newData;
+    }
+)
 
 const handleCommentsInput = (text) => {
   if(text.trim() === ''){
@@ -53,7 +64,9 @@ watch(
     () => props.player,
     (newPlayer) => {
       steal.value.statPlayerId = newPlayer.statPlayerId;
-      steal.value.hand = newPlayer.dominantHand;
+      if(!props.data) {
+        steal.value.hand = newPlayer.dominantHand;
+      }
     },
     { immediate: true }
 );
@@ -68,7 +81,7 @@ watch(steal, (newValue) => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container p-1">
     <div class="row text-center d-flex align-items-center">
       <div class="col">
         <select class="form-select small small-text" :class="{'reduced-opacity' : steal.turnoverForStatPlayerId === null}" v-model="steal.turnoverForStatPlayerId">
@@ -85,7 +98,6 @@ watch(steal, (newValue) => {
         </select>
       </div>
     </div>
-    {{steal}}
   </div>
 </template>
 
