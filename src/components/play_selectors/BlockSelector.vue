@@ -27,23 +27,34 @@ const props = defineProps({
   possibleBlockOnPlayers: {
     type: Array,
     required: true
+  },
+  data: {
+    type: Object,
+    required: false
   }
 });
 
 const block = ref({
-      comments: null,
-      timeRemaining: props.timeStamp,
-      quarter: props.quarter,
-      gameId: props.gameId,
-      hand: props.player.dominantHand,
-      id: null,
-      playType : "BLOCK",
-      statPlayerId : props.player.statPlayerId,
-      blockedStatPlayerId : null,
-      inThePaint : true
+      comments: props.data ? props.data.comments : null,
+      timeRemaining: props.data ? props.data.timeRemaining : props.timeStamp,
+      quarter: props.data ? props.data.quarter : props.quarter,
+      gameId: props.data ? props.data.gameId : props.gameId,
+      hand: props.data ? props.data.hand : props.player.dominantHand,
+      id: props.data ? props.data.id : null,
+      playType: props.data ? props.data.playType : "BLOCK",
+      statPlayerId: props.data ? props.data.statPlayerId : props.player.statPlayerId,
+      blockedStatPlayerId: props.data ? props.data.blockedStatPlayerId : null,
+      inThePaint: props.data ? props.data.inThePaint : true
 });
 
 const emit = defineEmits(['update:block', 'update:playSubmission']);
+
+// watch(
+//     () => props.data,
+//     (newData) => {
+//       block.value = newData;
+//     }
+// )
 
 const handleCommentsInput = (text) => {
   if(text.trim() === ''){
@@ -55,7 +66,9 @@ watch(
     () => props.player,
     (newPlayer) => {
       block.value.statPlayerId = newPlayer.statPlayerId;
-      block.value.hand = newPlayer.dominantHand;
+      if(!props.data){
+        block.value.hand = newPlayer.dominantHand;
+      }
     },
     { immediate: true }
 );
@@ -69,7 +82,9 @@ watch(block, (newValue) => {
 }, {deep: true});
 
 watch(()=>props.possibleBlockOnPlayers, (newPlayers)=>{
-  block.value.blockedStatPlayerId = null;
+  if (!newPlayers.find(player => player.statPlayerId === block.value.blockedStatPlayerId)) {
+    block.value.blockedStatPlayerId = null;
+  }
 },{ immediate: true });
 
 
@@ -104,7 +119,6 @@ watch(()=>props.possibleBlockOnPlayers, (newPlayers)=>{
         <input @input="handleCommentsInput(block.comments)" placeholder="Add comments" type="text" class="form-control small small-text" v-model="block.comments">
       </div>
     </div>
-    {{block}}
   </div>
 </template>
 

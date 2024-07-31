@@ -523,12 +523,26 @@ const clickBlockAdd = async () => {
     const newBlock = new Block(response);
     console.log(newBlock);
 
-    addPlayToPlayerAndGame(game.value, newBlock);
+    const doesPlayExist = blockCreated.id === newBlock.id;
+
+    if(doesPlayExist){
+      playToEdit.value = null;
+      isNotificationSuccessful.value = true;
+      showNotification.value = true;
+    }
+    addPlayToPlayerAndGame(game.value, newBlock, doesPlayExist);
     resetPlayPlayerAndZone();
+
   }
   catch (error) {
+    isNotificationSuccessful.value = false;
+    showNotification.value = true;
     console.error("Error while saving play: " + error);
   }
+
+  setTimeout(() => {
+    showNotification.value = false;
+  }, 4000);
 };
 
 
@@ -1028,12 +1042,15 @@ const shotPlay = ref({
                       <template v-else-if="playToEdit.playType === 'ASSIST'">
                         <AssistSelector @update:assist="handlePlayEmit($event)" :data="playToEdit" :possible-assisted-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes" :types="assistTypes"></AssistSelector>
                       </template>
+                      <template v-else-if="playToEdit.playType === 'BLOCK'">
+                        <BlockSelector @update:block="handlePlayEmit($event)" :data="playToEdit" :possible-block-on-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></BlockSelector>
+                      </template>
                       <div class="d-flex justify-content-center mb-1">
                         <button @click="handleEditPlaySelect(playToEdit)" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
                           <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
                         </button>
                       </div>
-                      {{createdPlay}}
+                      {{playToEdit}}
                     </div>
                   </div>
                 </div>
