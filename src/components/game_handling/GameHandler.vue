@@ -389,6 +389,29 @@ const handlePlayClick = (type) => {
 
   }
 };
+
+const handleGoodNotificationStuff = (doesPlayExist) => {
+  isNotificationSuccessful.value = true;
+  showNotification.value = true;
+  if(doesPlayExist){
+    playToEdit.value = null;
+    notificationMessage.value = goodEditMessage;
+  }
+  else{
+    notificationMessage.value = goodAddMessage;
+  }
+};
+const handleBadNotificationStuff = () => {
+  playToEdit.value = null;
+  isNotificationSuccessful.value = false;
+  showNotification.value = true;
+  notificationMessage.value = badMessage;
+};
+const turnOffNotification = () => {
+  setTimeout(() => {
+    showNotification.value = false;
+  }, 4000);
+};
 const clickShotPlayAdd = async () => {
   const shotPlayCreated = new ShotPlay(createdPlay.value);
 
@@ -398,32 +421,20 @@ const clickShotPlayAdd = async () => {
     console.log(newShotPlay);
 
     const doesPlayExist = shotPlayCreated.id === newShotPlay.id;
+    handleGoodNotificationStuff(doesPlayExist);
 
-    isNotificationSuccessful.value = true;
-    showNotification.value = true;
-    if(doesPlayExist){
-      playToEdit.value = null;
-      notificationMessage.value = goodEditMessage;
-    }
-    else{
-      notificationMessage.value = goodAddMessage;
-    }
     addPlayToPlayerAndGame(game.value, newShotPlay, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
   catch (error) {
-    playToEdit.value = null;
     selectedZone.value = null //only for shotplay
-    isNotificationSuccessful.value = false;
-    showNotification.value = true;
-    notificationMessage.value = badMessage;
+    handleBadNotificationStuff();
     console.error("Error while saving play: " + error);
   }
 
-  setTimeout(() => {
-    showNotification.value = false;
-  }, 4000);
+  turnOffNotification();
+
 };
 
 const clickAssistAdd = async () => {
@@ -435,25 +446,18 @@ const clickAssistAdd = async () => {
     console.log(newAssist);
 
     const doesPlayExist = assistCreated.id === newAssist.id;
+    handleGoodNotificationStuff(doesPlayExist);
 
-    if(doesPlayExist){
-      playToEdit.value = null;
-      isNotificationSuccessful.value = true;
-      showNotification.value = true;
-    }
     addPlayToPlayerAndGame(game.value, newAssist, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
   catch (error) {
-    isNotificationSuccessful.value = false;
-    showNotification.value = true;
+    handleBadNotificationStuff();
     console.error("Error while saving play: " + error);
   }
 
-  setTimeout(() => {
-    showNotification.value = false;
-  }, 4000);
+  turnOffNotification();
 };
 
 const clickReboundAdd = async () => {
@@ -466,25 +470,18 @@ const clickReboundAdd = async () => {
     console.log(newRebound);
 
     const doesPlayExist = reboundCreated.id === newRebound.id;
+    handleGoodNotificationStuff(doesPlayExist);
 
-    if(doesPlayExist){
-      playToEdit.value = null;
-      isNotificationSuccessful.value = true;
-      showNotification.value = true;
-    }
     addPlayToPlayerAndGame(game.value, newRebound, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
   catch (error) {
-    isNotificationSuccessful.value = false;
-    showNotification.value = true;
+    handleBadNotificationStuff();
     console.error("Error while saving play: " + error);
   }
 
-  setTimeout(() => {
-    showNotification.value = false;
-  }, 4000);
+  turnOffNotification();
 };
 
 const clickFoulAdd = async () => {
@@ -497,25 +494,18 @@ const clickFoulAdd = async () => {
     console.log(newFoul);
 
     const doesPlayExist = foulCreated.id === newFoul.id;
+    handleGoodNotificationStuff(doesPlayExist);
 
-    if(doesPlayExist){
-      playToEdit.value = null;
-      isNotificationSuccessful.value = true;
-      showNotification.value = true;
-    }
     addPlayToPlayerAndGame(game.value, newFoul, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
   catch (error) {
-    isNotificationSuccessful.value = false;
-    showNotification.value = true;
+    handleBadNotificationStuff();
     console.error("Error while saving play: " + error);
   }
 
-  setTimeout(() => {
-    showNotification.value = false;
-  }, 4000);
+  turnOffNotification();
 };
 
 const clickStealAdd = async () => {
@@ -528,25 +518,18 @@ const clickStealAdd = async () => {
     console.log(newSteal);
 
     const doesPlayExist = stealCreated.id === newSteal.id;
+    handleGoodNotificationStuff(doesPlayExist);
 
-    if(doesPlayExist){
-      playToEdit.value = null;
-      isNotificationSuccessful.value = true;
-      showNotification.value = true;
-    }
     addPlayToPlayerAndGame(game.value, newSteal, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
   catch (error) {
-    isNotificationSuccessful.value = false;
-    showNotification.value = true;
+    handleBadNotificationStuff();
     console.error("Error while saving play: " + error);
   }
 
-  setTimeout(() => {
-    showNotification.value = false;
-  }, 4000);
+  turnOffNotification();
 };
 
 const clickTurnoverAdd = async () => {
@@ -559,25 +542,18 @@ const clickTurnoverAdd = async () => {
     console.log(newTurnover);
 
     const doesPlayExist = turnoverCreated.id === newTurnover.id;
+    handleGoodNotificationStuff(doesPlayExist);
 
-    if(doesPlayExist){
-      playToEdit.value = null;
-      isNotificationSuccessful.value = true;
-      showNotification.value = true;
-    }
     addPlayToPlayerAndGame(game.value, newTurnover, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
   catch (error) {
-    isNotificationSuccessful.value = false;
-    showNotification.value = true;
+    handleBadNotificationStuff();
     console.error("Error while saving play: " + error);
   }
 
-  setTimeout(() => {
-    showNotification.value = false;
-  }, 4000);
+  turnOffNotification();
 };
 
 const clickBlockAdd = async () => {
@@ -590,25 +566,18 @@ const clickBlockAdd = async () => {
     console.log(newBlock);
 
     const doesPlayExist = blockCreated.id === newBlock.id;
+    handleGoodNotificationStuff(doesPlayExist);
 
-    if(doesPlayExist){
-      playToEdit.value = null;
-      isNotificationSuccessful.value = true;
-      showNotification.value = true;
-    }
     addPlayToPlayerAndGame(game.value, newBlock, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
   catch (error) {
-    isNotificationSuccessful.value = false;
-    showNotification.value = true;
+    handleBadNotificationStuff();
     console.error("Error while saving play: " + error);
   }
 
-  setTimeout(() => {
-    showNotification.value = false;
-  }, 4000);
+  turnOffNotification();
 };
 
 
