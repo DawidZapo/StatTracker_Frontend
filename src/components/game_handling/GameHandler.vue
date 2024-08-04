@@ -12,11 +12,21 @@ import BlockSelector from "@/components/play_selectors/BlockSelector.vue";
 import TurnoverSelector from "@/components/play_selectors/TurnoverSelector.vue";
 import StealSelector from "@/components/play_selectors/StealSelector.vue";
 import {getBenchPlayers, getOnCourtPlayers} from "@/assets/scripts/stats.js";
-import GameToHandle, {Assist, Foul, Rebound, ShotPlay, Steal, Turnover, Block} from "@/models/game/GameToHandle.js";
+import GameToHandle, {
+  Assist,
+  Foul,
+  Rebound,
+  ShotPlay,
+  Steal,
+  Turnover,
+  Block,
+  Violation
+} from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
 import {smoothScrollToBottom} from "@/assets/scripts/utilts.js";
 import Notification from "@/components/helper/Notification.vue";
+import ViolationSelector from "@/components/play_selectors/ViolationSelector.vue";
 
 const store = useStore();
 const selectedGameId = ref(localStorage.getItem('selectedGameId'));
@@ -41,6 +51,7 @@ const handTypes = ref([]);
 const shotTypes = ref([]);
 const turnoverTypes = ref([]);
 const zoneTypes = ref([]);
+const violationTypes = ref([]);
 const isFreeThrowSelected = ref(false);
 // const isPlaySubmissionCorrect = ref(false);
 const showNotification = ref(false);
@@ -140,6 +151,7 @@ const fetchTypes = async () => {
     shotTypes.value = await EnumService.fetchEnumTypes('shot');
     turnoverTypes.value = await EnumService.fetchEnumTypes('turnover');
     zoneTypes.value = await EnumService.fetchEnumTypes('zone');
+    violationTypes.value = await EnumService.fetchEnumTypes('violation');
   }
   catch (error) {
     console.error('Error while fetching types of:' + error);
@@ -386,6 +398,8 @@ const handlePlayClick = (type) => {
       break;
     case 'BLOCK': clickBlockAdd();
       break;
+    case 'VIOLATION': clickViolationAdd();
+      break;
 
   }
 };
@@ -569,6 +583,30 @@ const clickBlockAdd = async () => {
     handleGoodNotificationStuff(doesPlayExist);
 
     addPlayToPlayerAndGame(game.value, newBlock, doesPlayExist);
+    resetPlayPlayerAndZone();
+
+  }
+  catch (error) {
+    handleBadNotificationStuff();
+    console.error("Error while saving play: " + error);
+  }
+
+  turnOffNotification();
+};
+
+const clickViolationAdd = async () => {
+  const violationCreated = new Violation(createdPlay.value);
+  console.log(violationCreated);
+
+  try{
+    const response = await PlayService.savePlay('violation', violationCreated);
+    const newViolation = new Violation(response);
+    console.log(newViolation);
+
+    const doesPlayExist = violationCreated.id === newViolation.id;
+    handleGoodNotificationStuff(doesPlayExist);
+
+    addPlayToPlayerAndGame(game.value, newViolation, doesPlayExist);
     resetPlayPlayerAndZone();
 
   }
@@ -989,6 +1027,7 @@ const shotPlay = ref({
                         <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'SHOTPLAY'}" @click=handlePlaySelect($event.target.innerText)>SHOTPLAY</button>
                         <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'ASSIST'}" @click=handlePlaySelect($event.target.innerText)>ASSIST</button>
                         <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'REBOUND'}" @click=handlePlaySelect($event.target.innerText)>REBOUND</button>
+                        <button class="btn btn-light w-100 small-text" :class="{'custom-btn-light-selected' : selectedPlay === 'VIOLATION'}" @click="handlePlaySelect($event.target.innerText)">VIOLATION</button>
                       </div>
                     </div>
                   </div>
@@ -1092,6 +1131,9 @@ const shotPlay = ref({
                       <template v-else-if="playToEdit.playType === 'TURNOVER'">
                         <TurnoverSelector @update:turnover="handlePlayEmit($event)" :data="playToEdit" :possible-steal-on-players="allPlayers" :types="turnoverTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></TurnoverSelector>
                       </template>
+                      <template v-else-if="playToEdit.playType === 'VIOLATION'">
+                        <ViolationSelector @update:violation="handlePlayEmit($event)" :data="playToEdit" :types="violationTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></ViolationSelector>
+                      </template>
                       <div class="d-flex justify-content-center mb-1">
                         <button @click="handleEditPlaySelect(playToEdit)" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
                           <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
@@ -1131,6 +1173,9 @@ const shotPlay = ref({
 <!--                    :class="{'disabled' : !isPlaySubmissionCorrect}"-->
                     <button @click="clickBlockAdd" class="btn btn-outline-success small small-text">Add block</button>
                   </template>
+                  <template v-if="selectedPlay === 'VIOLATION'">
+                    <button @click="clickViolationAdd" class="btn btn-outline-success small small-text">Add violation</button>
+                  </template>
                 </div>
 
                 <div class="card-body p-1">
@@ -1155,6 +1200,9 @@ const shotPlay = ref({
                   <template v-if="selectedPlay === 'BLOCK'">
 <!--                    @update:play-submission="handlePlaySubmissionEmit($event)"-->
                     <BlockSelector @update:block="handlePlayEmit($event)" :quarter="currentQuarter" :possible-block-on-players="getOpposingTeamPlayers" :game-id="game.id" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></BlockSelector>
+                  </template>
+                  <template v-if="selectedPlay === 'VIOLATION'">
+                    <ViolationSelector @update:violation="handlePlayEmit($event)" :types="violationTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="selectedPlayer" :hands="handTypes"></ViolationSelector>
                   </template>
                   <div v-if="selectedPlay !== null" class="d-flex justify-content-center mb-1">
                     <button @click="selectedPlayer = null ; selectedPlay = null; isFreeThrowSelected=false" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">

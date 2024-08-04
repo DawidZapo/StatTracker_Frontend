@@ -14,19 +14,19 @@ function createPlay(playData) {
             return new Steal(playData);
         case "REBOUND":
             return new Rebound(playData);
+        case "VIOLATION":
+            return new Violation(playData);
         default:
             throw new Error(`Unknown play type: ${playData.playType}`);
     }
 }
 
 function formatMsToHH_MM_SS(ms) {
-    // Calculate minutes, seconds, and milliseconds
     let minutes = Math.floor(ms / 60000);
     ms %= 60000;
     let seconds = Math.floor(ms / 1000);
-    let milliseconds = Math.floor((ms % 1000) / 10); // Convert to two-digit milliseconds
+    let milliseconds = Math.floor((ms % 1000) / 10);
 
-    // Pad with leading zeros if necessary
     minutes = String(minutes).padStart(2, '0');
     seconds = String(seconds).padStart(2, '0');
     milliseconds = String(milliseconds).padStart(2, '0');
@@ -149,6 +149,17 @@ export class Turnover extends Play {
 
     describe() {
         return this.type + ' TURNOVER';
+    }
+}
+
+export class Violation extends Play {
+    constructor(data) {
+        super(data);
+        this.type = data.type;
+    }
+
+    describe() {
+        return this.type + ' VIOLATION';
     }
 }
 class Score {
