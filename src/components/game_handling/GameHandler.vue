@@ -1151,31 +1151,7 @@ const shotPlay = ref({
                 <div class="card-header d-flex justify-content-center" style="height: 45px">
                   <div class="form-control small-text w-25 text-center" :class="{'reduced-opacity' : selectedPlay === null}" >{{ selectedPlay !== null ? selectedPlay : 'Select play' }}</div>
                   <div class="form-control small-text w-50 text-center no-overflow" :class="{'reduced-opacity' : selectedPlayer === null}" >{{ selectedPlayer !== null ? selectedPlayer.firstName + ' ' + selectedPlayer.lastName : 'Select player' }}</div>
-                  <template v-if="selectedPlay === 'SHOTPLAY'">
-                    <button @click="clickShotPlayAdd" class="btn btn-outline-success small small-text">Add shot</button>
-                  </template>
-                  <template v-if="selectedPlay === 'ASSIST'">
-                    <button @click="clickAssistAdd" class="btn btn-outline-success small small-text">Add assist</button>
-                  </template>
-                  <template v-if="selectedPlay === 'REBOUND'">
-                    <button @click="clickReboundAdd" class="btn btn-outline-success small small-text">Add rebound</button>
-                  </template>
-                  <template v-if="selectedPlay === 'FOUL'">
-                    <button @click="clickFoulAdd" class="btn btn-outline-success small small-text">Add foul</button>
-                  </template>
-                  <template v-if="selectedPlay === 'STEAL'">
-                    <button @click="clickStealAdd" class="btn btn-outline-success small small-text">Add steal</button>
-                  </template>
-                  <template v-if="selectedPlay === 'TURNOVER'">
-                    <button @click="clickTurnoverAdd" class="btn btn-outline-success small small-text">Add turnover</button>
-                  </template>
-                  <template v-if="selectedPlay === 'BLOCK'">
-<!--                    :class="{'disabled' : !isPlaySubmissionCorrect}"-->
-                    <button @click="clickBlockAdd" class="btn btn-outline-success small small-text">Add block</button>
-                  </template>
-                  <template v-if="selectedPlay === 'VIOLATION'">
-                    <button @click="clickViolationAdd" class="btn btn-outline-success small small-text">Add violation</button>
-                  </template>
+                  <button @click="handlePlayClick(selectedPlay)" class="btn btn-outline-success small small-text w-25">Add</button>
                 </div>
 
                 <div class="card-body p-1">
