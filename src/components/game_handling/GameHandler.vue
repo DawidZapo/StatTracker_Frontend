@@ -24,7 +24,7 @@ import GameToHandle, {
 } from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
-import {smoothScrollToBottom} from "@/assets/scripts/utilts.js";
+import {describeArc, smoothScrollToBottom} from "@/assets/scripts/utilts.js";
 import Notification from "@/components/helper/Notification.vue";
 import ViolationSelector from "@/components/play_selectors/ViolationSelector.vue";
 
@@ -60,6 +60,7 @@ const isNotificationSuccessful = ref(false);
 const goodEditMessage = 'Play has been successfully edited';
 const badMessage = 'Ops, there was an error while saving play';
 const goodAddMessage = 'Play has been successfully added';
+const playToEdit = ref(null);
 const currentQuarter = computed(()=>{
   return game.value.currentQuarter;
 });
@@ -97,7 +98,7 @@ const getOpposingTeamPlayers = computed(()=>{
   else{
     return null;
   }
-})
+});
 
 function resetPlayPlayerAndZone(){
   selectedPlay.value = null;
@@ -140,7 +141,7 @@ const saveGame = async (gameToHandle) =>{
   catch (error) {
     console.error('Error while saving game: ' + error);
   }
-}
+};
 
 const fetchTypes = async () => {
   try{
@@ -161,31 +162,13 @@ const fetchTypes = async () => {
 fetchGameToHandle(selectedGameId.value);
 fetchTypes();
 
-const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
-  const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
-  return {
-    x: centerX + (radius * Math.cos(angleInRadians)),
-    y: centerY + (radius * Math.sin(angleInRadians))
-  };
-};
-
-const describeArc = (x, y, radius, startAngle, endAngle) => {
-  const start = polarToCartesian(x, y, radius, endAngle);
-  const end = polarToCartesian(x, y, radius, startAngle);
-  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-  return [
-    "M", start.x, start.y,
-    "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
-  ].join(" ");
-};
-
 const highlightZone = (zone) => {
   highlightedZone.value = zone;
 };
 
 const handleZoneClick = (zone) => {
   selectedZone.value = zone;
-}
+};
 const handleMouseLeave = () => {
   highlightedZone.value = null;
 };
@@ -200,7 +183,7 @@ const clickPlayerSelected = (player) => {
     return;
   }
   selectedPlayer.value = player;
-}
+};
 
 const clickSwapPlayerIcon = (player, team) => {
   if(team === 'home'){
@@ -284,7 +267,7 @@ const handlePlaySelect = (play) => {
   }
   selectedPlay.value = play;
   // isPlaySubmissionCorrect.value = false;
-}
+};
 
 const handleEditPlaySelect = (play) => {
   if(playToEdit.value === play){
@@ -296,90 +279,10 @@ const handleEditPlaySelect = (play) => {
     playToEdit.value = play;
     selectedZone.value = play.zone;
   }
-}
-
+};
 
 const handleSaveGame = ()=>{
   saveGame(game.value);
-}
-
-const addPlayToPlayerAndGame = (game, createdPlay, doesPlayExist) => {
-  const replacePlayInList = (list, playId, newPlay) => {
-    const index = list.findIndex(play => play.id === playId);
-    if (index !== -1) {
-      list[index] = newPlay;
-    }
-  };
-
-  if (doesPlayExist) {
-    replacePlayInList(game.plays, createdPlay.id, createdPlay);
-
-    let replaced = false;
-    const replacePlayInPlayer = (player, createdPlay) => {
-      replacePlayInList(player.plays, createdPlay.id, createdPlay);
-      replaced = true;
-    };
-
-    if (createdPlay.statPlayerId) {
-      for (let i = 0; i < game.home.players.length; i++) {
-        const player = game.home.players[i];
-        if (player.statPlayerId === createdPlay.statPlayerId) {
-          replacePlayInPlayer(player, createdPlay);
-          break;
-        }
-      }
-
-      if (!replaced) {
-        for (let i = 0; i < game.away.players.length; i++) {
-          const player = game.away.players[i];
-          if (player.statPlayerId === createdPlay.statPlayerId) {
-            replacePlayInPlayer(player, createdPlay);
-            break;
-          }
-        }
-      }
-
-      if (!replaced) {
-        console.error(`Nie znaleziono gracza o statPlayerId: ${createdPlay.statPlayerId} w drużynie.`);
-      }
-    } else {
-      console.error('createdPlay.statPlayerId nie zostało zdefiniowane.');
-    }
-  } else {
-    game.plays.push(createdPlay);
-
-    let added = false;
-    const addPlayToPlayer = (player, createdPlay) => {
-      player.plays.push(createdPlay);
-      added = true;
-    };
-
-    if (createdPlay.statPlayerId) {
-      for (let i = 0; i < game.home.players.length; i++) {
-        const player = game.home.players[i];
-        if (player.statPlayerId === createdPlay.statPlayerId) {
-          addPlayToPlayer(player, createdPlay);
-          break;
-        }
-      }
-
-      if (!added) {
-        for (let i = 0; i < game.away.players.length; i++) {
-          const player = game.away.players[i];
-          if (player.statPlayerId === createdPlay.statPlayerId) {
-            addPlayToPlayer(player, createdPlay);
-            break;
-          }
-        }
-      }
-
-      if (!added) {
-        console.error(`Nie znaleziono gracza o statPlayerId: ${createdPlay.statPlayerId} w drużynie.`);
-      }
-    } else {
-      console.error('createdPlay.statPlayerId nie zostało zdefiniowane.');
-    }
-  }
 };
 
 const handlePlayClick = (type) => {
@@ -627,7 +530,6 @@ const isCounting = ref(false);
 
 const formattedTime = computed(() => {
 
-  // let remainingTime = isCounting.value ? game.value.currentQuarterTimeRemainingMs : stopTime;
   let remainingTime = game.value.currentQuarterTimeRemainingMs;
 
   let minutes = Math.floor(remainingTime / 60000);
@@ -683,9 +585,6 @@ const toggleCountdown = () => {
 };
 
 
-// watch([homeLineUp, awayLineUp], ([newField, newField2]) => {
-//   saveGame(game.value);
-// });
 watch(() => game.value?.plays, () => {
   const scrollableDiv = document.getElementById('divToScroll');
   if (scrollableDiv) {
@@ -704,26 +603,7 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
     console.error(`Player with ID ${id} not found.`);
     return null;
   }
-}
-
-const playToEdit = ref(null);
-// for instance for editing purposes
-const shotPlay = ref({
-  id : 999,
-  comments: 'hlelelelele',
-  contested: 'OPEN',
-  timeRemaining: 34534,
-  quarter: 1,
-  gameId: 7,
-  hand: 'RIGHT',
-  made: true,
-  offTheDribble: false,
-  playType: 'SHOTPLAY',
-  statPlayerId: 4,
-  type: 'JUMP_SHOT',
-  worth: 3,
-  zone: 'TOP_3PT'
-});
+};
 
 </script>
 
