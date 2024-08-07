@@ -105,6 +105,8 @@ export const addPlayToPlayerAndGame = (game, createdPlay, doesPlayExist) => {
                 const player = game.home.players[i];
                 if (player.statPlayerId === createdPlay.statPlayerId) {
                     addPlayToPlayer(player, createdPlay);
+                    // updateStats(player.stats, createdPlay);
+                    // updateStats(game.home.stats, createdPlay);
                     break;
                 }
             }
@@ -114,6 +116,8 @@ export const addPlayToPlayerAndGame = (game, createdPlay, doesPlayExist) => {
                     const player = game.away.players[i];
                     if (player.statPlayerId === createdPlay.statPlayerId) {
                         addPlayToPlayer(player, createdPlay);
+                        // updateStats(player.stats, createdPlay);
+                        // updateStats(game.away.stats, createdPlay);
                         break;
                     }
                 }
@@ -126,4 +130,92 @@ export const addPlayToPlayerAndGame = (game, createdPlay, doesPlayExist) => {
             console.error('createdPlay.statPlayerId nie zostało zdefiniowane.');
         }
     }
+};
+
+
+const updateStats = (stats, play, doesPlayExist) => {
+    switch (play.playType) {
+        case 'SHOTPLAY': {
+            incrementShotplay(stats, play)
+        }
+            break;
+        case 'ASSIST': {
+            incrementAssist(stats)
+        }
+            break;
+        case 'BLOCK': {
+            incrementBlocks(stats)
+        }
+            break;
+        case 'FOUL': {
+            incrementFouls(stats)
+        }
+            break;
+        case 'REBOUND': {
+            incrementRebounds(stats, play)
+        }
+            break;
+        case 'STEAL': {
+            incrementSteals(stats)
+        }
+            break;
+        case 'TURNOVER': {
+            incrementTurnovers(stats)
+        }
+            break;
+        default:
+            throw new Error('Unkown type of play: ' + play.playType);
+
+    }
+};
+
+const incrementShotplay = (stats, shotplay) => {
+    if(shotplay.worth === 3){
+        stats.threeAttempted++;
+        if(shotplay.made){
+            stats.threeMade++;
+            stats.totalPoints = stats.totalPoints + 3;
+        }
+    }
+    else if(shotplay.worth === 2){
+        stats.twoAttempted++;
+        if(shotplay.made){
+            stats.twoMade++;
+            stats.totalPoints = stats.totalPoints + 2;
+        }
+    }
+    else if(shotplay.worth === 1){
+        stats.freeThrowAttempted++;
+        if(shotplay.made){
+            stats.freeThrowMade++;
+            stats.totalPoints = stats.totalPoints + 1;
+        }
+    }
+    else{
+        throw new Error('Shotplay worth unknown: ' + shotplay.worth);
+    }
+};
+
+const incrementAssist = (stats) => {
+    stats.assists++;
+};
+const incrementBlocks = (stats) => {
+    stats.blocks++;
+};
+const incrementFouls = (stats) => {
+    stats.fouls++;
+};
+const incrementRebounds = (stats, rebound) => {
+    if(rebound.offensive){
+        stats.offRebounds++;
+    }
+    else{
+        stats.defRebounds++;
+    }
+};
+const incrementSteals = (stats) => {
+    stats.steals++;
+};
+const incrementTurnovers = (stats) => {
+    stats.turnovers++;
 };

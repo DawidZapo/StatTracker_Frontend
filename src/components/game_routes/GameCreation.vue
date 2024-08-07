@@ -222,13 +222,13 @@ const handleAwayClick = () => {
 const handleSubmit = async () => {
   const gameCreated = new GameCreated(gameData.value);
   try{
-    // createGameId.value = await GameService.createGame(gameCreated);
-    // await store.dispatch('selectGame', createGameId.value);
-    // localStorage.setItem('selectedGameId', JSON.stringify(createGameId.value));
-    localStorage.setItem('selectedGameId', JSON.stringify(7));
+    createGameId.value = await GameService.createGame(gameCreated);
+    await store.dispatch('selectGame', createGameId.value);
+    localStorage.setItem('selectedGameId', JSON.stringify(createGameId.value));
+    // localStorage.setItem('selectedGameId', JSON.stringify(7));
+    // await store.dispatch('selectGame', 7);
 
-    await store.dispatch('selectGame', 7);
-     await router.push('/game_handler');
+    await router.push('/game_handler');
   }
   catch (error){
     console.error("Error while creating game: " + error);

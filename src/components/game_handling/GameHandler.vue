@@ -24,7 +24,7 @@ import GameToHandle, {
 } from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
-import {describeArc, smoothScrollToBottom} from "@/assets/scripts/utilts.js";
+import {addPlayToPlayerAndGame, describeArc, smoothScrollToBottom} from "@/assets/scripts/utilts.js";
 import Notification from "@/components/helper/Notification.vue";
 import ViolationSelector from "@/components/play_selectors/ViolationSelector.vue";
 
@@ -990,36 +990,38 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
                         <div class="form-control small-text w-50 text-center">{{playToEdit.firstName + ' ' + playToEdit.lastName}}</div>
                         <button @click="handlePlayClick(playToEdit.playType)" class="btn btn-outline-success small small-text w-25">Save</button>
                       </div>
-                      <template v-if="playToEdit.playType === 'SHOTPLAY'">
-                        <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" :data="playToEdit" :selected-zone="selectedZone" :game-id="game.id" :zones="zoneTypes" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :contested="contestedTypes" :hands="handTypes" :types="shotTypes"></ShotPlaySelector>
-                      </template>
-                      <template v-else-if="playToEdit.playType === 'ASSIST'">
-                        <AssistSelector @update:assist="handlePlayEmit($event)" :data="playToEdit" :possible-assisted-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes" :types="assistTypes"></AssistSelector>
-                      </template>
-                      <template v-else-if="playToEdit.playType === 'BLOCK'">
-                        <BlockSelector @update:block="handlePlayEmit($event)" :data="playToEdit" :possible-block-on-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></BlockSelector>
-                      </template>
-                      <template v-else-if="playToEdit.playType === 'FOUL'">
-                        <FoulSelector @update:foul="handlePlayEmit($event)" :data="playToEdit" :possible-foul-on-players="allPlayers" :types="foulTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></FoulSelector>
-                      </template>
-                      <template v-else-if="playToEdit.playType === 'REBOUND'">
-                        <ReboundSelector @update:rebound="handlePlayEmit($event)" :data="playToEdit" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></ReboundSelector>
-                      </template>
-                      <template v-else-if="playToEdit.playType === 'STEAL'">
-                        <StealSelector @update:steal="handlePlayEmit($event)" :data="playToEdit" :possible-turnover-for-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></StealSelector>
-                      </template>
-                      <template v-else-if="playToEdit.playType === 'TURNOVER'">
-                        <TurnoverSelector @update:turnover="handlePlayEmit($event)" :data="playToEdit" :possible-steal-on-players="allPlayers" :types="turnoverTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></TurnoverSelector>
-                      </template>
-                      <template v-else-if="playToEdit.playType === 'VIOLATION'">
-                        <ViolationSelector @update:violation="handlePlayEmit($event)" :data="playToEdit" :types="violationTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></ViolationSelector>
-                      </template>
-                      <div class="d-flex justify-content-center mb-1">
-                        <button @click="handleEditPlaySelect(playToEdit)" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
-                          <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
-                        </button>
+                      <div class="card-body p-1">
+                        <template v-if="playToEdit.playType === 'SHOTPLAY'">
+                          <ShotPlaySelector @update:shotPlay="handlePlayEmit($event)" :data="playToEdit" :selected-zone="selectedZone" :game-id="game.id" :zones="zoneTypes" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :contested="contestedTypes" :hands="handTypes" :types="shotTypes"></ShotPlaySelector>
+                        </template>
+                        <template v-else-if="playToEdit.playType === 'ASSIST'">
+                          <AssistSelector @update:assist="handlePlayEmit($event)" :data="playToEdit" :possible-assisted-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes" :types="assistTypes"></AssistSelector>
+                        </template>
+                        <template v-else-if="playToEdit.playType === 'BLOCK'">
+                          <BlockSelector @update:block="handlePlayEmit($event)" :data="playToEdit" :possible-block-on-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></BlockSelector>
+                        </template>
+                        <template v-else-if="playToEdit.playType === 'FOUL'">
+                          <FoulSelector @update:foul="handlePlayEmit($event)" :data="playToEdit" :possible-foul-on-players="allPlayers" :types="foulTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></FoulSelector>
+                        </template>
+                        <template v-else-if="playToEdit.playType === 'REBOUND'">
+                          <ReboundSelector @update:rebound="handlePlayEmit($event)" :data="playToEdit" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></ReboundSelector>
+                        </template>
+                        <template v-else-if="playToEdit.playType === 'STEAL'">
+                          <StealSelector @update:steal="handlePlayEmit($event)" :data="playToEdit" :possible-turnover-for-players="allPlayers" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></StealSelector>
+                        </template>
+                        <template v-else-if="playToEdit.playType === 'TURNOVER'">
+                          <TurnoverSelector @update:turnover="handlePlayEmit($event)" :data="playToEdit" :possible-steal-on-players="allPlayers" :types="turnoverTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></TurnoverSelector>
+                        </template>
+                        <template v-else-if="playToEdit.playType === 'VIOLATION'">
+                          <ViolationSelector @update:violation="handlePlayEmit($event)" :data="playToEdit" :types="violationTypes" :game-id="game.id" :quarter="currentQuarter" :time-stamp="currentTimeStampInMs" :player="findPlayerToSelectWhenEditingPlay(playToEdit.statPlayerId)" :hands="handTypes"></ViolationSelector>
+                        </template>
+                        <div class="d-flex justify-content-center mb-1">
+                          <button @click="handleEditPlaySelect(playToEdit)" class="btn btn-outline-danger d-flex align-items-center justify-content-center" style="height: 10px">
+                            <i class="fa-solid fa-xmark" style="font-size: 10px"></i>
+                          </button>
+                        </div>
+                        {{createdPlay}}
                       </div>
-                      {{createdPlay}}
                     </div>
                   </div>
                 </div>
