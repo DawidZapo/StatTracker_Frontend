@@ -46,6 +46,7 @@ export class Play {
         this.lastName = data.lastName;
         this.timeRemaining = data.timeRemaining;
         this.quarter = data.quarter;
+        this.order = data.order;
         this.comments = data.comments;
         this.playType = data.playType;
         this.hand = data.hand;
