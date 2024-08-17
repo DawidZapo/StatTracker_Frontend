@@ -1075,8 +1075,167 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
       </div>
 
       <div v-show="activeTab === 'boxscore'">
-        <div class="container shadow-lg">
-          boxscore
+        <div class="container shadow-lg scrollable" style="max-height: 416px">
+          <div class="d-flex justify-content-center">
+            <h5 class="mt-2">{{game.home.name}}</h5>
+          </div>
+          <hr class="my-2">
+          <table class="table table-striped table-hover table-bordered small-text text-center">
+            <thead>
+            <tr>
+              <th scope="col">No.</th>
+              <th scope="col">Player</th>
+              <th scope="col">S5</th>
+              <th scope="col">PTS</th>
+              <th scope="col" colspan="2">2PT</th>
+              <th scope="col" colspan="2">3PT</th>
+              <th scope="col" colspan="2">FT</th>
+              <th scope="col" colspan="2">FG</th>
+              <th scope="col">OR</th>
+              <th scope="col">DF</th>
+              <th scope="col">A</th>
+              <th scope="col">F</th>
+              <th scope="col">FF</th>
+              <th scope="col">TO</th>
+              <th scope="col">S</th>
+              <th scope="col">B</th>
+              <th scope="col">BR</th>
+              <th scope="col">PS</th>
+              <th scope="col">Eval</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="player in game.home.players">
+              <td>{{player.shirtNumber}}</td>
+              <td>{{player.firstName +  ' ' + player.lastName}}</td>
+              <td>{{ player.startingFive ? '1' : '0' }}</td>
+              <td>{{player.stats.totalPoints}}</td>
+              <td>{{player.stats.twoMade}} / {{player.stats.twoAttempted}}</td>
+              <td>{{player.stats.percentage.twoPoint}} %</td>
+              <td>{{player.stats.threeMade}} / {{player.stats.threeAttempted}}</td>
+              <td>{{player.stats.percentage.threePoint}} % </td>
+              <td>{{player.stats.freeThrowMade}} / {{player.stats.freeThrowAttempted}}</td>
+              <td>{{player.stats.percentage.freeThrow}} %</td>
+              <td>{{player.stats.twoMade + player.stats.threeMade}} / {{player.stats.twoAttempted + player.stats.threeAttempted}}</td>
+              <td>{{player.stats.percentage.fieldGoal}} %</td>
+              <td>{{player.stats.offRebounds}}</td>
+              <td>{{player.stats.defRebounds}}</td>
+              <td>{{player.stats.assists}}</td>
+              <td>{{player.stats.fouls}}</td>
+              <td>{{player.stats.forcedFouls}}</td>
+              <td>{{player.stats.turnovers}}</td>
+              <td>{{player.stats.steals}}</td>
+              <td>{{player.stats.blocks}}</td>
+              <td>{{player.stats.blocksReceived}}</td>
+              <td>{{player.stats.possessions}}</td>
+              <td>{{player.stats.evaluation}}</td>
+            </tr>
+            <tr>
+              <td colspan="3">Totals</td>
+              <td>{{game.home.stats.totalPoints}}</td>
+              <td>{{game.home.stats.twoMade}} / {{game.home.stats.twoAttempted}}</td>
+              <td>{{game.home.stats.percentage.twoPoint}} %</td>
+              <td>{{game.home.stats.threeMade}} / {{game.home.stats.threeAttempted}}</td>
+              <td>{{game.home.stats.percentage.threePoint}} % </td>
+              <td>{{game.home.stats.freeThrowMade}} / {{game.home.stats.freeThrowAttempted}}</td>
+              <td>{{game.home.stats.percentage.freeThrow}} %</td>
+              <td>{{game.home.stats.twoMade + game.home.stats.threeMade}} / {{game.home.stats.twoAttempted + game.home.stats.threeAttempted}}</td>
+              <td>{{game.home.stats.percentage.fieldGoal}} %</td>
+              <td>{{game.home.stats.offRebounds}}</td>
+              <td>{{game.home.stats.defRebounds}}</td>
+              <td>{{game.home.stats.assists}}</td>
+              <td>{{game.home.stats.fouls}}</td>
+              <td>{{game.home.stats.forcedFouls}}</td>
+              <td>{{game.home.stats.turnovers}}</td>
+              <td>{{game.home.stats.steals}}</td>
+              <td>{{game.home.stats.blocks}}</td>
+              <td>{{game.home.stats.blocksReceived}}</td>
+              <td>{{game.home.stats.possessions}}</td>
+              <td>{{game.home.stats.evaluation}}</td>
+            </tr>
+            </tbody>
+          </table>
+
+
+          <div class="d-flex justify-content-center">
+            <h5 class="mt-2">{{game.away.name}}</h5>
+          </div>
+          <hr class="my-2">
+          <table class="table table-striped table-hover table-bordered small-text text-center">
+            <thead>
+            <tr>
+              <th scope="col">No.</th>
+              <th scope="col">Player</th>
+              <th scope="col">S5</th>
+              <th scope="col">PTS</th>
+              <th scope="col" colspan="2">2PT</th>
+              <th scope="col" colspan="2">3PT</th>
+              <th scope="col" colspan="2">FT</th>
+              <th scope="col" colspan="2">FG</th>
+              <th scope="col">OR</th>
+              <th scope="col">DF</th>
+              <th scope="col">A</th>
+              <th scope="col">F</th>
+              <th scope="col">FF</th>
+              <th scope="col">TO</th>
+              <th scope="col">S</th>
+              <th scope="col">B</th>
+              <th scope="col">BR</th>
+              <th scope="col">PS</th>
+              <th scope="col">Eval</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="player in game.away.players">
+              <td>{{player.shirtNumber}}</td>
+              <td>{{player.firstName +  ' ' + player.lastName}}</td>
+              <td>{{ player.startingFive ? '1' : '0' }}</td>
+              <td>{{player.stats.totalPoints}}</td>
+              <td>{{player.stats.twoMade}} / {{player.stats.twoAttempted}}</td>
+              <td>{{player.stats.percentage.twoPoint}} %</td>
+              <td>{{player.stats.threeMade}} / {{player.stats.threeAttempted}}</td>
+              <td>{{player.stats.percentage.threePoint}} % </td>
+              <td>{{player.stats.freeThrowMade}} / {{player.stats.freeThrowAttempted}}</td>
+              <td>{{player.stats.percentage.freeThrow}} %</td>
+              <td>{{player.stats.twoMade + player.stats.threeMade}} / {{player.stats.twoAttempted + player.stats.threeAttempted}}</td>
+              <td>{{player.stats.percentage.fieldGoal}} %</td>
+              <td>{{player.stats.offRebounds}}</td>
+              <td>{{player.stats.defRebounds}}</td>
+              <td>{{player.stats.assists}}</td>
+              <td>{{player.stats.fouls}}</td>
+              <td>{{player.stats.forcedFouls}}</td>
+              <td>{{player.stats.turnovers}}</td>
+              <td>{{player.stats.steals}}</td>
+              <td>{{player.stats.blocks}}</td>
+              <td>{{player.stats.blocksReceived}}</td>
+              <td>{{player.stats.possessions}}</td>
+              <td>{{player.stats.evaluation}}</td>
+            </tr>
+            <tr>
+              <td colspan="3">Totals</td>
+              <td>{{game.away.stats.totalPoints}}</td>
+              <td>{{game.away.stats.twoMade}} / {{game.away.stats.twoAttempted}}</td>
+              <td>{{game.away.stats.percentage.twoPoint}} %</td>
+              <td>{{game.away.stats.threeMade}} / {{game.away.stats.threeAttempted}}</td>
+              <td>{{game.away.stats.percentage.threePoint}} % </td>
+              <td>{{game.away.stats.freeThrowMade}} / {{game.away.stats.freeThrowAttempted}}</td>
+              <td>{{game.away.stats.percentage.freeThrow}} %</td>
+              <td>{{game.away.stats.twoMade + game.away.stats.threeMade}} / {{game.away.stats.twoAttempted + game.away.stats.threeAttempted}}</td>
+              <td>{{game.away.stats.percentage.fieldGoal}} %</td>
+              <td>{{game.away.stats.offRebounds}}</td>
+              <td>{{game.away.stats.defRebounds}}</td>
+              <td>{{game.away.stats.assists}}</td>
+              <td>{{game.away.stats.fouls}}</td>
+              <td>{{game.away.stats.forcedFouls}}</td>
+              <td>{{game.away.stats.turnovers}}</td>
+              <td>{{game.away.stats.steals}}</td>
+              <td>{{game.away.stats.blocks}}</td>
+              <td>{{game.away.stats.blocksReceived}}</td>
+              <td>{{game.away.stats.possessions}}</td>
+              <td>{{game.away.stats.evaluation}}</td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -1141,5 +1300,4 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
   background: rgba(0, 0, 0, 0.5); /* półprzezroczyste tło */
   z-index: 1000; /* poniżej głównego elementu */
 }
-
 </style>

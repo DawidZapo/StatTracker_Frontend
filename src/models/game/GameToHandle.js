@@ -1,3 +1,5 @@
+import {createPercentageComputed} from "@/assets/scripts/stats.js";
+
 function createPlay(playData) {
     switch (playData.playType) {
         case "ASSIST":
@@ -194,6 +196,7 @@ class Stats {
         this.evaluation = data.evaluation;
         this.plusMinus = data.plusMinus;
         this.possessions = data.possessions;
+        this.percentage = createPercentageComputed(data);
     }
 }
 
