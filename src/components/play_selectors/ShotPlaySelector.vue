@@ -62,7 +62,7 @@ const selectedZones = ref([]);
 const shotPlay = ref({
   id: props.data ? props.data.id : null,
   comments: props.data ? props.data.comments : null,
-  contested: props.data ? props.data.contested : null,
+  contested: props.data ? props.data.contested : 'OPEN',
   timeRemaining: props.data ? props.data.timeRemaining : props.timeStamp,
   quarter: props.data ? props.data.quarter : props.quarter,
   gameId: props.data ? props.data.gameId : props.gameId,

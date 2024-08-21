@@ -133,89 +133,128 @@ export const addPlayToPlayerAndGame = (game, createdPlay, doesPlayExist) => {
 };
 
 
-const updateStats = (stats, play, doesPlayExist) => {
-    switch (play.playType) {
-        case 'SHOTPLAY': {
-            incrementShotplay(stats, play)
-        }
+export const findTeamAndPlayerByPlayStatPlayerId = (game, play) => {
+    let player = game.home.players.find(player => player.statPlayerId === play.statPlayerId);
+    if (player) {
+        return { team: game.home, player: player };
+    }
+
+    player = game.away.players.find(player => player.statPlayerId === play.statPlayerId);
+    if (player) {
+        return { team: game.away, player: player };
+    }
+
+    return null;
+};
+
+export const updateTeamAndPlayerStats = (teamStats, playerStats, play) => {
+    switch(play.playType){
+        case 'ASSIST':
+            updateAssist(teamStats, playerStats);
             break;
-        case 'ASSIST': {
-            incrementAssist(stats)
-        }
+        case 'BLOCK':
+            updateBlock(teamStats, playerStats);
             break;
-        case 'BLOCK': {
-            incrementBlocks(stats)
-        }
+        case 'FOUL':
+            updateFoul(teamStats, playerStats);
             break;
-        case 'FOUL': {
-            incrementFouls(stats)
-        }
+        case 'REBOUND':
+            updateRebound(play, teamStats, playerStats);
             break;
-        case 'REBOUND': {
-            incrementRebounds(stats, play)
-        }
+        case 'SHOTPLAY':
+            updateShotPlay(play, teamStats, playerStats);
             break;
-        case 'STEAL': {
-            incrementSteals(stats)
-        }
+        case 'STEAL':
+            updateSteal(teamStats, playerStats);
             break;
-        case 'TURNOVER': {
-            incrementTurnovers(stats)
-        }
+        case 'TURNOVER':
+            updateTurnover(teamStats, playerStats);
             break;
+
         default:
-            throw new Error('Unkown type of play: ' + play.playType);
-
+            throw new Error('play.type not known');
     }
 };
 
-const incrementShotplay = (stats, shotplay) => {
-    if(shotplay.worth === 3){
-        stats.threeAttempted++;
-        if(shotplay.made){
-            stats.threeMade++;
-            stats.totalPoints = stats.totalPoints + 3;
+const updateShotPlay = (shotPlay, teamStats, playerStats) => {
+    if (shotPlay.worth === 1) {
+        teamStats.freeThrowAttempted++;
+        playerStats.freeThrowAttempted++;
+        if (shotPlay.made) {
+            teamStats.freeThrowMade++;
+            playerStats.freeThrowMade++;
+
+            teamStats.totalPoints++;
+            playerStats.totalPoints++;
         }
-    }
-    else if(shotplay.worth === 2){
-        stats.twoAttempted++;
-        if(shotplay.made){
-            stats.twoMade++;
-            stats.totalPoints = stats.totalPoints + 2;
+    } else if (shotPlay.worth === 2) {
+        teamStats.twoAttempted++;
+        playerStats.twoAttempted++;
+        if (shotPlay.made) {
+            teamStats.twoMade++;
+            playerStats.twoMade++;
+
+            teamStats.totalPoints = teamStats.totalPoints + 2;
+            playerStats.totalPoints = playerStats.totalPoints + 2;
+        } else {
+            if (shotPlay.contested === 'BLOCKED') {
+                teamStats.blocksReceived++;
+                playerStats.blocksReceived++;
+            }
         }
-    }
-    else if(shotplay.worth === 1){
-        stats.freeThrowAttempted++;
-        if(shotplay.made){
-            stats.freeThrowMade++;
-            stats.totalPoints = stats.totalPoints + 1;
+    } else if (shotPlay.worth === 3) {
+        teamStats.threeAttempted++;
+        playerStats.threeAttempted++;
+        if (shotPlay.made) {
+            teamStats.threeMade++;
+            playerStats.threeMade++;
+
+            teamStats.totalPoints = teamStats.totalPoints + 3;
+            playerStats.totalPoints = playerStats.totalPoints + 3;
+        } else {
+            if (shotPlay.contested === 'BLOCKED') {
+                teamStats.blocksReceived++;
+                playerStats.blocksReceived++;
+            }
         }
+    } else {
+        throw new Error("Shotplay worth unknown");
     }
-    else{
-        throw new Error('Shotplay worth unknown: ' + shotplay.worth);
-    }
+
 };
 
-const incrementAssist = (stats) => {
-    stats.assists++;
+const updateAssist = (teamStats, playerStats) => {
+  teamStats.assists++;
+  playerStats.assists++;
 };
-const incrementBlocks = (stats) => {
-    stats.blocks++;
+
+const updateBlock = (teamStats, playerStats) => {
+    teamStats.blocks++;
+    playerStats.blocks++;
 };
-const incrementFouls = (stats) => {
-    stats.fouls++;
+
+const updateFoul = (teamStats, playerStats) => {
+    teamStats.fouls++;
+    playerStats.fouls++;
 };
-const incrementRebounds = (stats, rebound) => {
-    if(rebound.offensive){
-        stats.offRebounds++;
-    }
-    else{
-        stats.defRebounds++;
-    }
+
+const updateRebound = (rebound, teamStats, playerStats) => {
+  if(rebound.offensive){
+      teamStats.offRebounds++;
+      playerStats.offRebounds++;
+  }
+  else{
+      teamStats.defRebounds++;
+      playerStats.defRebounds++;
+  }
 };
-const incrementSteals = (stats) => {
-    stats.steals++;
+
+const updateSteal = (teamStats, playerStats) => {
+    teamStats.steals++;
+    playerStats.steals++;
 };
-const incrementTurnovers = (stats) => {
-    stats.turnovers++;
+
+const updateTurnover = (teamStats, playerStats) => {
+    teamStats.turnovers++;
+    playerStats.turnovers++;
 };

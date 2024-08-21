@@ -24,7 +24,12 @@ import GameToHandle, {
 } from "@/models/game/GameToHandle.js";
 import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
-import {addPlayToPlayerAndGame, describeArc, smoothScrollToBottom} from "@/assets/scripts/utilts.js";
+import {
+  addPlayToPlayerAndGame,
+  describeArc, findTeamAndPlayerByPlayStatPlayerId,
+  smoothScrollToBottom,
+  updateTeamAndPlayerStats
+} from "@/assets/scripts/utilts.js";
 import Notification from "@/components/helper/Notification.vue";
 import ViolationSelector from "@/components/play_selectors/ViolationSelector.vue";
 
@@ -343,6 +348,10 @@ const clickShotPlayAdd = async () => {
     addPlayToPlayerAndGame(game.value, newShotPlay, doesPlayExist);
     resetPlayPlayerAndZone();
 
+    const team = findTeamAndPlayerByPlayStatPlayerId(game.value, newShotPlay).team;
+    const player = findTeamAndPlayerByPlayStatPlayerId(game.value, newShotPlay).player;
+    updateTeamAndPlayerStats(team.stats, player.stats, newShotPlay);
+
   }
   catch (error) {
     selectedZone.value = null //only for shotplay
@@ -368,6 +377,10 @@ const clickAssistAdd = async () => {
     addPlayToPlayerAndGame(game.value, newAssist, doesPlayExist);
     resetPlayPlayerAndZone();
 
+    const team = findTeamAndPlayerByPlayStatPlayerId(game.value, newAssist).team;
+    const player = findTeamAndPlayerByPlayStatPlayerId(game.value, newAssist).player;
+    updateTeamAndPlayerStats(team.stats, player.stats, newAssist);
+
   }
   catch (error) {
     handleBadNotificationStuff();
@@ -391,6 +404,10 @@ const clickReboundAdd = async () => {
 
     addPlayToPlayerAndGame(game.value, newRebound, doesPlayExist);
     resetPlayPlayerAndZone();
+
+    const team = findTeamAndPlayerByPlayStatPlayerId(game.value, newRebound).team;
+    const player = findTeamAndPlayerByPlayStatPlayerId(game.value, newRebound).player;
+    updateTeamAndPlayerStats(team.stats, player.stats, newRebound);
 
   }
   catch (error) {
@@ -416,6 +433,10 @@ const clickFoulAdd = async () => {
     addPlayToPlayerAndGame(game.value, newFoul, doesPlayExist);
     resetPlayPlayerAndZone();
 
+    const team = findTeamAndPlayerByPlayStatPlayerId(game.value, newFoul).team;
+    const player = findTeamAndPlayerByPlayStatPlayerId(game.value, newFoul).player;
+    updateTeamAndPlayerStats(team.stats, player.stats, newFoul);
+
   }
   catch (error) {
     handleBadNotificationStuff();
@@ -439,6 +460,10 @@ const clickStealAdd = async () => {
 
     addPlayToPlayerAndGame(game.value, newSteal, doesPlayExist);
     resetPlayPlayerAndZone();
+
+    const team = findTeamAndPlayerByPlayStatPlayerId(game.value, newSteal).team;
+    const player = findTeamAndPlayerByPlayStatPlayerId(game.value, newSteal).player;
+    updateTeamAndPlayerStats(team.stats, player.stats, newSteal);
 
   }
   catch (error) {
@@ -464,6 +489,10 @@ const clickTurnoverAdd = async () => {
     addPlayToPlayerAndGame(game.value, newTurnover, doesPlayExist);
     resetPlayPlayerAndZone();
 
+    const team = findTeamAndPlayerByPlayStatPlayerId(game.value, newTurnover).team;
+    const player = findTeamAndPlayerByPlayStatPlayerId(game.value, newTurnover).player;
+    updateTeamAndPlayerStats(team.stats, player.stats, newTurnover);
+
   }
   catch (error) {
     handleBadNotificationStuff();
@@ -487,6 +516,10 @@ const clickBlockAdd = async () => {
 
     addPlayToPlayerAndGame(game.value, newBlock, doesPlayExist);
     resetPlayPlayerAndZone();
+
+    const team = findTeamAndPlayerByPlayStatPlayerId(game.value, newBlock).team;
+    const player = findTeamAndPlayerByPlayStatPlayerId(game.value, newBlock).player;
+    updateTeamAndPlayerStats(team.stats, player.stats, newBlock);
 
   }
   catch (error) {
