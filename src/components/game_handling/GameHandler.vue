@@ -26,7 +26,7 @@ import PlayService from "@/services/play/play.serivce.js";
 import gameService from "@/services/game/game.service.js";
 import {
   addPlayToPlayerAndGame,
-  describeArc, findTeamAndPlayerByPlayStatPlayerId,
+  describeArc, findLineUpByStatPlayerId, findTeamAndPlayerByPlayStatPlayerId,
   smoothScrollToBottom,
   updateTeamAndPlayerStats
 } from "@/assets/scripts/utilts.js";
@@ -101,7 +101,7 @@ const getOpposingTeamPlayers = computed(()=>{
     return homeLineUp.value;
   }
   else{
-    return null;
+    throw new Error('No opposing team found');
   }
 });
 
@@ -350,7 +350,16 @@ const clickShotPlayAdd = async () => {
 
     const team = findTeamAndPlayerByPlayStatPlayerId(game.value, newShotPlay).team;
     const player = findTeamAndPlayerByPlayStatPlayerId(game.value, newShotPlay).player;
-    updateTeamAndPlayerStats(team.stats, player.stats, newShotPlay);
+    const lineups = findLineUpByStatPlayerId(player, homeLineUp.value, awayLineUp.value);
+    const scoringLineup = lineups.scoringLineup;
+    const loosingLineup = lineups.loosingLineup;
+    updateTeamAndPlayerStats(team.stats, player.stats, newShotPlay, scoringLineup, loosingLineup);
+
+    // console.log('SCORING LINEUP');
+    // console.log(scoringLineup);
+    //
+    // console.log('LOOSING LINEUP');
+    // console.log(loosingLineup);
 
   }
   catch (error) {
@@ -1134,6 +1143,7 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
               <th scope="col">B</th>
               <th scope="col">BR</th>
               <th scope="col">PS</th>
+              <th scope="col">+/-</th>
               <th scope="col">Eval</th>
             </tr>
             </thead>
@@ -1161,6 +1171,7 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
               <td>{{player.stats.blocks}}</td>
               <td>{{player.stats.blocksReceived}}</td>
               <td>{{player.stats.possessions}}</td>
+              <td>{{player.stats.plusMinus}}</td>
               <td>{{player.stats.evaluation}}</td>
             </tr>
             <tr>
@@ -1184,6 +1195,7 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
               <td>{{game.home.stats.blocks}}</td>
               <td>{{game.home.stats.blocksReceived}}</td>
               <td>{{game.home.stats.possessions}}</td>
+              <td>{{game.home.stats.plusMinus}}</td>
               <td>{{game.home.stats.evaluation}}</td>
             </tr>
             </tbody>
@@ -1215,6 +1227,7 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
               <th scope="col">B</th>
               <th scope="col">BR</th>
               <th scope="col">PS</th>
+              <th scope="col">+/-</th>
               <th scope="col">Eval</th>
             </tr>
             </thead>
@@ -1242,6 +1255,7 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
               <td>{{player.stats.blocks}}</td>
               <td>{{player.stats.blocksReceived}}</td>
               <td>{{player.stats.possessions}}</td>
+              <td>{{player.stats.plusMinus}}</td>
               <td>{{player.stats.evaluation}}</td>
             </tr>
             <tr>
@@ -1265,6 +1279,7 @@ const findPlayerToSelectWhenEditingPlay = (id) => {
               <td>{{game.away.stats.blocks}}</td>
               <td>{{game.away.stats.blocksReceived}}</td>
               <td>{{game.away.stats.possessions}}</td>
+              <td>{{game.away.stats.plusMinus}}</td>
               <td>{{game.away.stats.evaluation}}</td>
             </tr>
             </tbody>

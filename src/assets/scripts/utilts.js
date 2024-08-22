@@ -133,6 +133,24 @@ export const addPlayToPlayerAndGame = (game, createdPlay, doesPlayExist) => {
 };
 
 
+export const findLineUpByStatPlayerId = (player, homeLineup, awayLineup) => {
+    const homePlayerIds = homeLineup.map(p => p.statPlayerId);
+    const awayPlayerIds = awayLineup.map(p => p.statPlayerId);
+
+    const isInHomeLineup = homePlayerIds.includes(player.statPlayerId);
+    const isInAwayLineup = awayPlayerIds.includes(player.statPlayerId);
+
+    if(isInHomeLineup){
+        return { scoringLineup : homeLineup, loosingLineup: awayLineup};
+    }
+    else if(isInAwayLineup){
+        return { scoringLineup : awayLineup, loosingLineup: homeLineup};
+    }
+    else{
+        throw new Error('Lineup not found by player.statPlayerId when updating +/-');
+    }
+};
+
 export const findTeamAndPlayerByPlayStatPlayerId = (game, play) => {
     let player = game.home.players.find(player => player.statPlayerId === play.statPlayerId);
     if (player) {
@@ -147,7 +165,7 @@ export const findTeamAndPlayerByPlayStatPlayerId = (game, play) => {
     return null;
 };
 
-export const updateTeamAndPlayerStats = (teamStats, playerStats, play) => {
+export const updateTeamAndPlayerStats = (teamStats, playerStats, play, scoringLineup, loosingLineup) => {
     switch(play.playType){
         case 'ASSIST':
             updateAssist(teamStats, playerStats);
@@ -162,7 +180,7 @@ export const updateTeamAndPlayerStats = (teamStats, playerStats, play) => {
             updateRebound(play, teamStats, playerStats);
             break;
         case 'SHOTPLAY':
-            updateShotPlay(play, teamStats, playerStats);
+            updateShotPlay(play, teamStats, playerStats, scoringLineup, loosingLineup);
             break;
         case 'STEAL':
             updateSteal(teamStats, playerStats);
@@ -176,7 +194,7 @@ export const updateTeamAndPlayerStats = (teamStats, playerStats, play) => {
     }
 };
 
-const updateShotPlay = (shotPlay, teamStats, playerStats) => {
+const updateShotPlay = (shotPlay, teamStats, playerStats, scoringLineup, loosingLineup) => {
     if (shotPlay.worth === 1) {
         teamStats.freeThrowAttempted++;
         playerStats.freeThrowAttempted++;
@@ -186,6 +204,9 @@ const updateShotPlay = (shotPlay, teamStats, playerStats) => {
 
             teamStats.totalPoints++;
             playerStats.totalPoints++;
+
+            updatePlusMinus(scoringLineup, 1);
+            updatePlusMinus(loosingLineup, -1);
         }
     } else if (shotPlay.worth === 2) {
         teamStats.twoAttempted++;
@@ -196,6 +217,9 @@ const updateShotPlay = (shotPlay, teamStats, playerStats) => {
 
             teamStats.totalPoints = teamStats.totalPoints + 2;
             playerStats.totalPoints = playerStats.totalPoints + 2;
+
+            updatePlusMinus(scoringLineup, 2);
+            updatePlusMinus(loosingLineup, -2);
         } else {
             if (shotPlay.contested === 'BLOCKED') {
                 teamStats.blocksReceived++;
@@ -211,6 +235,9 @@ const updateShotPlay = (shotPlay, teamStats, playerStats) => {
 
             teamStats.totalPoints = teamStats.totalPoints + 3;
             playerStats.totalPoints = playerStats.totalPoints + 3;
+
+            updatePlusMinus(scoringLineup, 3);
+            updatePlusMinus(loosingLineup, -3);
         } else {
             if (shotPlay.contested === 'BLOCKED') {
                 teamStats.blocksReceived++;
@@ -257,4 +284,13 @@ const updateSteal = (teamStats, playerStats) => {
 const updateTurnover = (teamStats, playerStats) => {
     teamStats.turnovers++;
     playerStats.turnovers++;
+};
+
+const updatePlusMinus = (lineup, value) => {
+    lineup.forEach(player => {
+        player.stats.plusMinus = (player.stats.plusMinus + value);
+        console.log(player.lastName);
+        console.log(value);
+        console.log(player.stats.plusMinus)
+    });
 };
