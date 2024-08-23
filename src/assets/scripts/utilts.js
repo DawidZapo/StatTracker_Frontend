@@ -247,22 +247,25 @@ const updateShotPlay = (shotPlay, teamStats, playerStats, scoringLineup, loosing
     } else {
         throw new Error("Shotplay worth unknown");
     }
-
+    updateEval(teamStats, playerStats);
 };
 
 const updateAssist = (teamStats, playerStats) => {
   teamStats.assists++;
   playerStats.assists++;
+  updateEval(teamStats, playerStats);
 };
 
 const updateBlock = (teamStats, playerStats) => {
     teamStats.blocks++;
     playerStats.blocks++;
+    updateEval(teamStats, playerStats);
 };
 
 const updateFoul = (teamStats, playerStats) => {
     teamStats.fouls++;
     playerStats.fouls++;
+    updateEval(teamStats, playerStats);
 };
 
 const updateRebound = (rebound, teamStats, playerStats) => {
@@ -274,23 +277,41 @@ const updateRebound = (rebound, teamStats, playerStats) => {
       teamStats.defRebounds++;
       playerStats.defRebounds++;
   }
+    updateEval(teamStats, playerStats);
 };
 
 const updateSteal = (teamStats, playerStats) => {
     teamStats.steals++;
     playerStats.steals++;
+    updateEval(teamStats, playerStats);
 };
 
 const updateTurnover = (teamStats, playerStats) => {
     teamStats.turnovers++;
     playerStats.turnovers++;
+    updateEval(teamStats, playerStats);
 };
 
 const updatePlusMinus = (lineup, value) => {
     lineup.forEach(player => {
         player.stats.plusMinus = (player.stats.plusMinus + value);
         console.log(player.lastName);
-        console.log(value);
         console.log(player.stats.plusMinus)
     });
 };
+
+
+const updateEval = (teamStatLine, playerStatline) =>{
+    teamStatLine.evaluation = calculateNewEvaluation(teamStatLine);
+    playerStatline.evaluation = calculateNewEvaluation(playerStatline);
+}
+const calculateNewEvaluation = (statLine) => {
+//        (Points + Rebounds + Assists + Steals + Blocks + Fouls Drawn) -
+//         (Missed Field Goals + Missed Free Throws + Turnovers + Shots Rejected + Fouls Committed)
+    const positive = statLine.totalPoints + statLine.offRebounds + statLine.defRebounds
+        + statLine.assists + statLine.steals + statLine.blocks + statLine.forcedFouls
+    const missedFieldGoalsAndFreeThrows = (statLine.twoAttempted - statLine.twoMade) + (statLine.threeAttempted - statLine.threeMade) + (statLine.freeThrowAttempted - statLine.freeThrowMade);
+    const negative = statLine.turnovers + statLine.blocksReceived + statLine.fouls;
+
+    return positive - (missedFieldGoalsAndFreeThrows + negative);
+}

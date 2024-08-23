@@ -133,6 +133,17 @@ const fetchGameToHandle = async (id) => {
   }
 };
 
+const fetchNewUpdateGameToHandle = async (id) => {
+  try{
+    if(id){
+      game.value = await GameService.fetchGameToHandle(id);
+    }
+  }catch (error) {
+    console.error("Error while fetching new update game to handle: " + error);
+    game.value = null;
+  }
+};
+
 const saveGame = async (gameToHandle) =>{
   console.log('saving game');
   console.log(gameToHandle);
@@ -354,12 +365,6 @@ const clickShotPlayAdd = async () => {
     const scoringLineup = lineups.scoringLineup;
     const loosingLineup = lineups.loosingLineup;
     updateTeamAndPlayerStats(team.stats, player.stats, newShotPlay, scoringLineup, loosingLineup);
-
-    // console.log('SCORING LINEUP');
-    // console.log(scoringLineup);
-    //
-    // console.log('LOOSING LINEUP');
-    // console.log(loosingLineup);
 
   }
   catch (error) {
